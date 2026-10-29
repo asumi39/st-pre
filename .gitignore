@@ -1,0 +1,15 @@
+# 密钥与敏感配置 —— 永不进仓库
+deepseek-key.txt
+imagegen.txt
+.env
+.env.*
+
+# 依赖与运行时缓存
+node_modules/
+.hyperframes/
+
+# 系统与临时产物
+.DS_Store
+*.log
+tmp/
+dist-cache/
