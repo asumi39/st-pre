@@ -1,0 +1,32 @@
+# SillyTavern 预配置模板 —— 拷到 deploy/st-data/config/config.yaml 并按需修改
+# ⚠ 以 SillyTavern 1.19.0 实际 config.yaml 为准做字段核对；本模板标注了必改项。
+
+# ── 监听 ─────────────────────────────────────────────
+listen: false            # 容器内保持 false（由 docker ports 映射）；由宿主 nginx 反代
+port: 8000
+whitelistMode: false     # 容器方案关（反代层做访问控制）
+basicAuthMode: false     # 用 ST 自带用户系统，不用 basic auth
+
+# ── 用户系统（体验站核心）───────────────────────────
+enableUserAccounts: true
+enableDiscreetLogin: true
+enableCorsProxy: false
+autorun: true
+
+# ⚠ 官方明示：多用户密码「非安全特性」；聊天/角色卡全部明文存储。
+#   仅限社团可信范围使用；定期备份 data/；敏感内容不上。
+
+# ── DeelSeek 预配置（OpenAI 兼容自定义端点）─────────
+# 在「API 连接 → 自定义(OpenAI 兼容)」里填：
+#   API URL:  https://api.deepseek.com/v1
+#   API Key:  <服务器上注入，勿写死在本文件>
+#   模型:     deepseek-flash
+# ⚠ ST 官方文档的 DeepSeek 条目（deepseek-chat/deepseek-reasoner）已过时，
+#   以 DeepSeek 官方文档为准。
+#
+# 若需服务端代持 Key（体验站用户不填 Key），可用 ST 的 API key 管理或在
+# 反代层做（tavern 站的 /live/ 思路一致：Key 只存在于服务端）。
+
+# ── 性能/限流 ───────────────────────────────────────
+# 30 人同时聊：DeepSeek Flash 并发充足；ST 侧无特殊配置。
+# 反代层（宿主 nginx）对 play.<域名> 加 limit_req 防滥用。

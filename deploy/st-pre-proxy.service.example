@@ -1,0 +1,25 @@
+# LIVE proxy 常驻服务
+# 部署：拷到 /etc/systemd/system/st-pre-proxy.service
+# Key 注入（二选一，永不入 git）：
+#   systemctl edit st-pre-proxy  →  [Service] Environment=DEEPSEEK_KEY=sk-xxx
+#   或：服务器上放 /opt/st-pre/deepseek-key.txt（chmod 600）
+
+[Unit]
+Description=ST-PRE LIVE proxy (DeepSeek SSE forwarder)
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/opt/st-pre/proxy
+ExecStart=/usr/bin/node /opt/st-pre/proxy/server.mjs
+Environment=PORT=3011
+# Environment=DEEPSEEK_KEY=sk-xxx        ← 建议用 systemctl edit 注入，勿写在此文件
+Restart=always
+RestartSec=3
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/opt/st-pre
+
+[Install]
+WantedBy=multi-user.target

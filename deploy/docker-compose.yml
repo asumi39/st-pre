@@ -1,0 +1,36 @@
+# SillyTavern 体验站（阶段 5 · 需确认规模后执行）
+# 用法：cd deploy && docker compose up -d
+# ⚠ 依赖 docker + docker compose plugin；镜像 ghcr.io/sillytavern/sillytavern:latest
+
+services:
+  silltavern:
+    image: ghcr.io/sillytavern/sillytavern:latest
+    container_name: st-experience
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8000:8000"     # 只绑本机回环 —— 由宿主 nginx 反代 play.<域名>
+    volumes:
+      - ./st-data/config:/home/node/app/config
+      - ./st-data/data:/home/node/app/data
+      - ./st-data/plugins:/home/node/app/plugins
+      - ./st-data/extensions:/home/node/app/public/scripts/extensions/third-party
+    environment:
+      # 多用户 + 隐蔽登录（ST 官方：密码为非安全特性，数据明文存储 —— 见 deploy/README.md 安全清单）
+      - ST_ENABLE_USER_ACCOUNTS=true
+      - ST_ENABLE_DISCREET_LOGIN=true
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8000/csrf-token').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+# 预置角色卡：把官方卡放入 ./st-data/data/default-user/characters/
+# （版权干净：SillyTavern 官方仓库自带卡；本仓库 slides/assets/cards/ 已收 5 张）
+#
+# DeepSeek 预配置（OpenAI 兼容自定义端点）：见 config.yaml.template
+# ⚠ ST 官方文档的 DeepSeek 条目（deepseek-chat / deepseek-reasoner）已过时，
+#   以 DeepSeek 官方文档为准：模型填 deepseek-flash
+#
+# 批量建号 u001~N：
+#   admin 登录 → 设置 → 用户管理，或脚本循环调用 users-admin HTTP 端点
+#   （handle 规则：小写字母/数字/短横线）

@@ -1,0 +1,43 @@
+# tavern.<域名> — 静态站（幻灯片回看 + 指南）+ LIVE proxy 反代
+# 部署：拷到 /etc/nginx/sites-available/tavern.conf，改 server_name 后 nginx -t && reload
+
+server {
+    listen 80;
+    server_name tavern.example.com;          # ← 改成真实域名
+
+    # --- 静态站 ---
+    root /opt/st-pre/slides;
+    index deck.html;                          # 入口 = 独立放映 wrapper
+    error_page 404 = /deck.html;
+
+    location /guide/ {
+        alias /opt/st-pre/guide/;
+        index index.html;
+    }
+
+    # --- LIVE proxy 反代（node 3011）---
+    location /live/ {
+        proxy_pass http://127.0.0.1:3011/live/;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_buffering off;                  # SSE 必须关缓冲
+        proxy_read_timeout 30s;
+        proxy_set_header X-Real-IP $remote_addr;
+        # 注意：proxy 端限流基于 socket 地址；经 nginx 反代后所有请求同源，
+        # 退化为全站共享窗口——如需按 IP 限流，在此加 nginx limit_req。
+        limit_req zone=live burst=5 nodelay;
+    }
+
+    # 静态资源缓存
+    location ~* \.(png|jpg|mp4|woff2|css|js)$ {
+        expires 7d;
+        add_header Cache-Control "public";
+    }
+
+    # 安全头
+    add_header X-Content-Type-Options nosniff always;
+    add_header Referrer-Policy strict-origin-when-cross-origin always;
+}
+
+# limit_req 区定义（放 http{} 层 —— 本例给出参考值，放 conf.d/tavern-limits.conf）
+# limit_req_zone $binary_remote_addr zone=live:10m rate=2r/s;
