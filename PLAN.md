@@ -11,7 +11,8 @@
 2. **不降级，升级留痕**：禁止降级——更省事的实现、次一等的选型、砍功能、跳过既定环节都算。文档中的页面结构、内容文案、技术细节均为基准参考而非上限：发现明确更优的做法（同等满足铁律：离线可放映、动效即知识点、Key 零暴露）可以直接采用，并在交付说明中留痕（改了什么、为什么更好）。
 3. **遇阻让路**：某一步走不通（依赖缺失、环境受限、外部服务异常）时，不原地卡死、不擅自换方案——记录阻塞点与已试路径，转做下一个可执行的部分。
 4. **残项上交**：可执行部分全部完成后，把残留阻塞项汇总为「现象 / 已尝试 / 影响范围 / 待决选项」提交用户裁定；裁定前保持原样，不得自行定案。
-5. **审查门不动**：标注"用户审 / 用户选定 / 用户确认"的产出（内容稿、视觉方向、幻灯片定稿、部署动作），未经确认不进入下一阶段。
+5. **连续执行**：阶段 1~3（内容稿、视觉定调、实现、打磨、LIVE、指南站）一次做完——中途不征询、不停等评审，全部完成（或按第 3 条让路）后整体交付用户复核。阶段 4 起涉及服务器与公网暴露的动作，执行前取得用户确认。
+6. **善用子代理**：相互独立的工作（内容稿、设计探索、素材生产、事实调研、指南站）并行派发子代理；主线负责集成、串行依赖与最终一致性审查，子代理产出按本文档同等标准验收。
 
 ---
 
@@ -124,7 +125,7 @@ ST-PRE/
 
 | # | 交付物 | 形态 | 验收 |
 |---|---|---|---|
-| 1 | 内容稿 | `notes/content.md` | 用户审 |
+| 1 | 内容稿 | `notes/content.md` | 随阶段 1~3 整体交付，用户复核 |
 | 2 | 幻灯片（含 LIVE 开关） | `slides/` | `check --json` 干净 + design-taste-frontend 验收 + Chromium/Firefox/WebKit 三引擎 + chrome-devtools trace 60fps |
 | 3 | LIVE 代理 | `proxy/server.mjs` | 真实调用跑通 + 断网回退 + Key 零暴露 |
 | 4 | PDF 讲义 | `snapshot --at` 逐页合成 | 版式完整 |
@@ -139,13 +140,13 @@ ST-PRE/
 - **构建**：`web-design-engineer`（HTML 幻灯片）+ slideshow 契约；**design-taste-frontend** 统一验收（`inspect.mjs`/`lint.mjs` 兼验指南站）
 - **QA**：agent-browser（默认走查+上线验收，Chromium 系）→ firefox MCP（引擎兼容）→ safari-official（WebKit/观众 iPhone）→ chrome-devtools 仅 trace/CDP 性能分析
 - **素材**：本机 Docker 起真 ST 抓截图录屏（peekaboo.capture 直出 MP4）；chrome-devtools.screencast 录幻灯片动画兜底；ffmpeg 压缩；`gh` 拉 SillyTavern 官方仓库取自带角色卡（版权干净）
-- **图片生成**：`imagegen.txt` 通道（OpenAI 兼容中转）：`POST https://wawapii.com/v1/images/generations`，JSON + Bearer，最小规格 `{"model":"gpt-image-2.5-sunburst","prompt":"…","size":"1024x1024","quality":"low","n":1}`；响应同时含 `b64_json` 与 `url`，**优先取 b64 落盘**（url 为中转 OSS 直链，保存期无承诺）；单张约 35s；图生图走 `/v1/images/edits`（multipart，仅回 url）。**逐张先给 prompt 确认再花钱**
+- **图片生成**：`imagegen.txt` 通道（OpenAI 兼容中转）：`POST https://wawapii.com/v1/images/generations`，JSON + Bearer，最小规格 `{"model":"gpt-image-2.5-sunburst","prompt":"…","size":"1024x1024","quality":"low","n":1}`；响应同时含 `b64_json` 与 `url`，**优先取 b64 落盘**（url 为中转 OSS 直链，保存期无承诺）；单张约 35s；图生图走 `/v1/images/edits`（multipart，仅回 url）。在 §8 清单与数量上限内自主执行，无需逐张征询
 - **研究**：websearch / tavily（ST 最新特性、生态事实核查）
 - **提醒/知识**：openchamber_notify（长任务）；openchamber_knowledge（跨会话计划）
 - **部署/验收**：rsync+ssh；agent-browser 全链路自动化；二维码 `npx qrcode`
 - **辅助技能**：animation-performance、fixing-motion-performance、impeccable/extract
 
-## 8. 图片生成清单（5~8 张，逐张确认）
+## 8. 图片生成清单（5~8 张，限额内自主执行，超出上限即挂起为残项）
 
 | # | 图 | 用途 |
 |---|---|---|
@@ -161,8 +162,8 @@ ST-PRE/
 | 阶段 | 内容 | 产出 | 依赖 |
 |---|---|---|---|
 | 0 开工 | `git init`+`.gitignore`、GitHub 私有仓库、装三项技能 | 工程底座 | — |
-| 1 内容稿 | 21 页逐页文案+图示创意+备注 | `notes/content.md` | **用户审** |
-| 2a 视觉定调 | OpenDesign 出 2~3 个视觉方向样张（各含封面+解剖页，run 与阶段 1 并行）→ 用户在 OD 内评审选定 → `get_artifact` 拉回 → 沉淀 tokens.css | 设计系统 | — |
+| 1 内容稿 | 21 页逐页文案+图示创意+备注 | `notes/content.md` | — |
+| 2a 视觉定调 | OpenDesign 出 2~3 个视觉方向样张（各含封面+解剖页）→ 按 §1 铁律与内容气质择优（留痕理由）→ `get_artifact` 拉回 → 沉淀 tokens.css | 设计系统 | — |
 | 2b 实现 | slideshow spike 验证 → 全量 21 页+活演示（模拟路径）+素材生产（本机 Docker ST 实拍：截图/官方卡/⑮页案例实录） | `slides/` 初版 | 1+2a |
 | 2c 打磨 | 讲者备注、fragments 节奏、分支热点、三引擎 QA、trace、**关 Wi-Fi 干跑**、PDF | 幻灯片定稿 | 2b |
 | 2d LIVE | proxy 开发+接线+DeepSeek 真实调用验证+回退测试 | 交付物 3 | 2c |
