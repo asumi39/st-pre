@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+
+    <!-- 离线铁律：GSAP 与插件全部来自 vendor/（0 CDN） -->
+    <script src="vendor/gsap.min.js"></script>
+    <script src="vendor/SplitText.min.js"></script>
+    <script src="vendor/DrawSVGPlugin.min.js"></script>
+
+    <link rel="stylesheet" href="tokens.css" />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: var(--bg);
+      }
+      #root {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        font-family: var(--font-body);
+      }
+
+      /* -- 共用页面骨架：眉标 + 标题 + 页码 -- */
+      .page-head {
+        position: absolute;
+        top: 72px;
+        left: 108px;
+        right: 108px;
+        display: flex;
+        align-items: baseline;
+        gap: var(--s2);
+      }
+      .page-no {
+        position: absolute;
+        right: 108px;
+        bottom: 150px;
+        font-family: var(--font-mono);
+        font-size: var(--fs-micro);
+        color: var(--muted);
+        letter-spacing: 0.2em;
+      }
+      .act-chip {
+        position: absolute;
+        left: 108px;
+        bottom: 90px;
+        font-size: var(--fs-micro);
+        color: var(--muted);
+        letter-spacing: 0.3em;
+      }
+    </style>
+  </head>
+  <body>
+    <!--
+      ISLAND 主本。独立放映入口 deck.html 内有一份副本，两处必须保持同步！
+      （<hyperframes-slideshow> 从自身 innerHTML 读清单，而非从 composition 读。）
+      fragments = 绝对时间（与 data-start 同一时钟）；分支场景只出现在 slideSequences。
+    -->
+    <script type="application/hyperframes-slideshow+json">
+      {
+        "slides": [
+          {
+            "sceneId": "cover",
+            "notes": "开场白：今晚不讲 PPT，讲一个能玩的东西。有人听过『酒馆』吗？举手看看。今晚结束你会看懂 AI 角色扮演的全部原理，还能自己搭一个。→ 先别解释，直接看。"
+          },
+          {
+            "sceneId": "anatomy",
+            "fragments": [46.5, 47.5, 48.5, 49.5, 50.5, 51.5, 53],
+            "hotspots": [
+              {
+                "id": "h-card-json",
+                "label": "拆开看：真实 V2 卡长什么样",
+                "target": "branch-card",
+                "region": { "x": 63, "y": 22, "w": 15, "h": 13 }
+              }
+            ],
+            "notes": "全场核心页。前面 15 页都是为了让你看懂这几秒的动画：人设、设定、记忆、参数——没有魔法，全部是这包里的字。LIVE 开关打开时旁边同步亮起真实请求计时。→ 这个按需装字的动作，工业界有个名字（下一页 RAG）。Q&A 弹药：点『角色卡』块可深挖真实卡结构。"
+          }
+        ],
+        "slideSequences": [
+          {
+            "id": "branch-card",
+            "label": "卡结构深挖",
+            "slides": [
+              {
+                "sceneId": "branch-card",
+                "notes": "Q&A 弹药：PNG 里藏着结构化 JSON，图片是皮数据是魂。社区百万张卡流通格式统一（V2/V3 互通），别人的卡直接导入就能玩。"
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+
+    <!--
+      场景宿主：每个 host 与其场景文件、时间线 key 同 id。
+      分支场景（branch-card）也占时间线槽位，但不出现在主 slides 数组。
+      data-composition-src 相对【项目根】解析。
+    -->
+    <div data-hf-id="hf-ffgg"
+      id="root"
+      data-composition-id="root"
+      data-start="0"
+      data-duration="135"
+      data-width="1920"
+      data-height="1080"
+    >
+      <div data-hf-id="hf-twqn"
+        id="cover"
+        class="clip"
+        data-composition-id="cover"
+        data-composition-src="deck/scenes/s01-cover.html"
+        data-start="0"
+        data-duration="45"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+
+      <div data-hf-id="hf-lg51"
+        id="anatomy"
+        class="clip"
+        data-composition-id="anatomy"
+        data-composition-src="deck/scenes/s16-anatomy.html"
+        data-start="45"
+        data-duration="60"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+
+      <div data-hf-id="hf-6wcl"
+        id="branch-card"
+        class="clip"
+        data-composition-id="branch-card"
+        data-composition-src="deck/scenes/branch-card-json.html"
+        data-start="105"
+        data-duration="30"
+        data-width="1920"
+        data-height="1080"
+      ></div>
+    </div>
+
+    <script>
+      gsap.registerPlugin(SplitText, DrawSVGPlugin);
+
+      window.__timelines = window.__timelines || {};
+      // 根时间线：只负责铺满 seek 范围（standalone 模式约定 key 为 "root"）；
+      // 场景时间线由引擎自行驱动，绝不 add 进根。
+      var rootTl = gsap.timeline({ paused: true });
+      rootTl.to({}, { duration: 135 });
+      window.__timelines["root"] = rootTl;
+
+      // standalone 模式：向父页面 post 场景清单（present 模式下被忽略，无害）。
+      (function () {
+        var scenes = [
+          { id: "cover", start: 0, duration: 45 },
+          { id: "anatomy", start: 45, duration: 60 },
+          { id: "branch-card", start: 105, duration: 30 },
+        ];
+        function postTimeline() {
+          try {
+            parent.postMessage(
+              {
+                source: "hf-preview",
+                type: "timeline",
+                durationInFrames: 135 * 30,
+                scenes: scenes,
+              },
+              "*",
+            );
+          } catch (e) {}
+        }
+        if (document.readyState === "complete") setTimeout(postTimeline, 300);
+        else window.addEventListener("load", function () { setTimeout(postTimeline, 300); });
+      })();
+    </script>
+  </body>
+</html>

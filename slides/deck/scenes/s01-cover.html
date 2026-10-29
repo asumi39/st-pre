@@ -1,0 +1,168 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: radial-gradient(120% 90% at 50% 108%, #2a1c10 0%, var(--bg) 58%);
+      color: var(--ink);
+    }
+    /* 木纹暗纹理：极低对比横向纹路，只给质感不给注意力 */
+    #cover-grain {
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        180deg,
+        rgba(245, 234, 214, 0.016) 0px,
+        rgba(245, 234, 214, 0.016) 2px,
+        transparent 2px,
+        transparent 9px
+      );
+    }
+    /* 暗角 */
+    #cover-vignette {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(90% 90% at 50% 46%, transparent 55%, rgba(0, 0, 0, 0.55) 100%);
+      pointer-events: none;
+    }
+    /* 烛光：标题后方一团呼吸暖光 */
+    #cover-glow {
+      position: absolute;
+      left: 50%;
+      top: 58%;
+      width: 1400px;
+      height: 700px;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(50% 50% at 50% 50%, var(--glow) 0%, transparent 70%);
+      filter: blur(6px);
+      animation: candle-flicker 3.4s infinite;
+      pointer-events: none;
+    }
+    #cover-ember {
+      position: absolute;
+      left: 50%;
+      bottom: 210px;
+      width: 10px;
+      height: 10px;
+      transform: translateX(-50%);
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow:
+        0 0 18px 6px rgba(232, 163, 76, 0.55),
+        0 0 60px 24px rgba(192, 95, 51, 0.28);
+      animation: candle-flicker 2.6s infinite;
+    }
+    #cover-ember::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 100%;
+      width: 3px;
+      height: 46px;
+      transform: translateX(-50%);
+      background: linear-gradient(180deg, transparent, rgba(232, 163, 76, 0.35));
+    }
+
+    #cover-content {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--s2);
+      text-align: center;
+    }
+    #cover-eyebrow {
+      font-size: var(--fs-micro);
+      letter-spacing: 0.5em;
+      color: var(--muted);
+      font-weight: 600;
+      text-indent: 0.5em; /* 抵消末字符字距，保持视觉居中 */
+    }
+    #cover-title {
+      font-family: var(--font-display);
+      font-size: var(--fs-display);
+      font-weight: 700;
+      color: var(--ink-strong);
+      letter-spacing: 0.06em;
+      line-height: 1.15;
+      text-shadow: 0 6px 40px rgba(232, 163, 76, 0.22);
+    }
+    #cover-title .comma {
+      color: var(--accent);
+    }
+    #cover-rule {
+      width: 320px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      transform-origin: center;
+    }
+    #cover-sub {
+      font-size: var(--fs-h2);
+      color: var(--ink);
+      font-weight: 400;
+      letter-spacing: 0.08em;
+    }
+    #cover-sub .en {
+      font-family: var(--font-mono);
+      color: var(--accent);
+    }
+    #cover-footer {
+      position: absolute;
+      bottom: 96px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: var(--fs-small);
+      color: var(--muted);
+      letter-spacing: 0.35em;
+    }
+  </style>
+
+  <div data-hf-id="hf-scbp" id="root" data-composition-id="cover" data-width="1920" data-height="1080" data-hold>
+    <div data-hf-id="hf-31nk" id="cover-glow"></div>
+    <div data-hf-id="hf-5wm7" id="cover-grain" data-layout-ignore></div>
+    <div data-hf-id="hf-g1pc" id="cover-vignette" data-layout-ignore></div>
+    <div data-hf-id="hf-gxxf" id="cover-ember" data-layout-ignore></div>
+
+    <div data-hf-id="hf-hpiy" id="cover-content">
+      <div data-hf-id="hf-ydua" id="cover-eyebrow">AI 社团 · 分享夜</div>
+      <h1 data-hf-id="hf-zhrh" id="cover-title">今晚<span data-hf-id="hf-f5a2" class="comma">，</span>酒馆开张</h1>
+      <div data-hf-id="hf-w09g" id="cover-rule" data-layout-ignore></div>
+      <div data-hf-id="hf-g02b" id="cover-sub"><span data-hf-id="hf-nvk5" class="en">SillyTavern</span>：一个通往无数世界的前端</div>
+    </div>
+
+    <div data-hf-id="hf-nkqh" id="cover-footer">AI 社团 · 2026</div>
+  </div>
+
+  <script>
+    (function () {
+      var tl = gsap.timeline({ paused: true });
+
+      // 标题逐字：blur + 浮现（SplitText per-char）——"开场 10 秒建立氛围"
+      var split = new SplitText("#cover-title", { type: "chars" });
+      tl.fromTo(
+        split.chars,
+        { opacity: 0, filter: "blur(10px)" },
+        { opacity: 1, filter: "blur(0px)", duration: 0.5, stagger: 0.06, ease: "power2.out", immediateRender: false },
+        0.1
+      );
+      // 分隔线：中心展开
+      tl.fromTo("#cover-rule", { scaleX: 0 }, { scaleX: 1, duration: 0.45, ease: "power3.out", immediateRender: false }, 0.75);
+      // 副题：轻升浮现
+      tl.fromTo(
+        "#cover-sub",
+        { opacity: 0, y: 22 },
+        { opacity: 1, y: 0, duration: 0.45, ease: "power2.out", immediateRender: false },
+        0.85
+      );
+      // 眉标与落款
+      tl.fromTo("#cover-eyebrow", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.out", immediateRender: false }, 0.95);
+      tl.fromTo("#cover-footer", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.out", immediateRender: false }, 1.05);
+
+      window.__timelines["cover"] = tl;
+    })();
+  </script>
+</template>

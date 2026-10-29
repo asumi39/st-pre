@@ -1,0 +1,104 @@
+/* ============================================================
+   ST-PRE 设计系统 tokens · v1（spike 暂定：方向 A「烛光酒馆」基调）
+   来源：PLAN.md §2a / OpenDesign 视觉探索定稿后将替换为 tokens-final
+   用法：deck/main.html 与 index.html(wrapper) 都引入本文件
+   ============================================================ */
+
+:root {
+  /* -- 色板：深色木质 + 烛光暖琥珀，投影可读性优先 -- */
+  --bg: #16100a;
+  --bg-2: #1e1610;
+  --surface: rgba(245, 234, 214, 0.045);
+  --surface-strong: #261b11;
+  --line: rgba(232, 163, 76, 0.22);
+  --line-soft: rgba(245, 234, 214, 0.1);
+  --ink: #f5ead6;
+  --ink-strong: #fff7e8;
+  --muted: #b5a184;
+  --accent: #e8a34c;        /* 烛光琥珀：强调、关键词、动效主体 */
+  --accent-2: #c05f33;      /* 余烬红：次强调、危险/警示 */
+  --glow: rgba(232, 163, 76, 0.16);
+
+  /* -- 字阶（1920×1080 画布；观众可读下限 40px， craft 地板 28px）-- */
+  --fs-display: 132px;
+  --fs-h1: 68px;
+  --fs-h2: 46px;
+  --fs-body: 33px;
+  --fs-small: 30px;
+  --fs-micro: 28px;
+
+  /* -- 字族：中文系统栈（零字体下载 = 离线铁律）--
+     @font-face local() 声明仅为满足渲染器字体校验：这些都是 OS 自带字体，
+     local() 命中即用，不产生任何下载。 */
+  --font-display: "Songti SC", "Noto Serif SC", serif;
+  --font-body: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", monospace;
+
+  /* -- 间距 / 质感 -- */
+  --s1: 16px;
+  --s2: 32px;
+  --s3: 64px;
+  --s4: 96px;
+  --r: 20px;
+  --r-sm: 12px;
+  --shadow: 0 18px 60px rgba(0, 0, 0, 0.5);
+  --card-border: 1px solid var(--line-soft);
+}
+
+/* -- 全局幕布：暖黑 + 轻 vignette，正文文字系统 -- */
+html,
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+}
+
+/* -- OS 自带中文字体的 local() 声明（零下载；仅为满足渲染器字体校验）-- */
+@font-face {
+  font-family: "Songti SC";
+  src: local("Songti SC");
+}
+@font-face {
+  font-family: "Noto Serif SC";
+  src: local("Noto Serif SC"), local("Noto Serif CJK SC");
+}
+@font-face {
+  font-family: "PingFang SC";
+  src: local("PingFang SC");
+}
+@font-face {
+  font-family: "Microsoft YaHei";
+  src: local("Microsoft YaHei");
+}
+
+/* -- 共用页面骨架（各场景 .page 内）-- */
+.eyebrow {
+  font-size: var(--fs-micro);
+  letter-spacing: 0.42em;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.slide-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-h1);
+  color: var(--ink-strong);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.card {
+  background: var(--surface);
+  border: var(--card-border);
+  border-radius: var(--r);
+}
+
+/* -- 烛光氛围：呼吸光晕（CSS ambient loop，引擎自动驱动）-- */
+@keyframes candle-flicker {
+  0%, 100% { opacity: 0.85; }
+  23% { opacity: 1; }
+  47% { opacity: 0.78; }
+  71% { opacity: 0.95; }
+}
+
+/* -- 动效纪律：入场统一 0.4s 级、power2/3.out；停留态即完成态 -- */

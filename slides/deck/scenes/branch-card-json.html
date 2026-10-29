@@ -1,0 +1,154 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: radial-gradient(110% 80% at 50% -10%, #211711 0%, var(--bg) 60%);
+      color: var(--ink);
+    }
+    #bc-code {
+      position: absolute;
+      left: 740px;
+      top: 250px;
+      width: 1072px;
+      height: 640px;
+      background: rgba(0, 0, 0, 0.32);
+      border: var(--card-border);
+      border-radius: var(--r);
+      padding: 36px 44px;
+      font-family: var(--font-mono);
+      font-size: 28px;
+      line-height: 1.58;
+      white-space: pre;
+      color: var(--ink);
+      box-shadow: var(--shadow);
+    }
+    #bc-code .k {
+      color: var(--accent);
+    }
+    #bc-code .s {
+      color: #d8c9a8;
+    }
+    #bc-code .p {
+      color: var(--muted);
+    }
+    #bc-code .c {
+      color: var(--muted);
+      font-style: italic;
+    }
+    #bc-card {
+      position: absolute;
+      left: 128px;
+      top: 300px;
+      width: 460px;
+      height: 560px;
+      border-radius: var(--r);
+      border: 1px solid rgba(232, 163, 76, 0.35);
+      background:
+        radial-gradient(80% 60% at 50% 20%, rgba(232, 163, 76, 0.16), transparent 70%),
+        var(--surface-strong);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 48px;
+      gap: 18px;
+    }
+    #bc-card-art {
+      width: 220px;
+      height: 300px;
+      border-radius: var(--r-sm);
+      border: 1px solid var(--line-soft);
+      background: linear-gradient(160deg, rgba(232, 163, 76, 0.28), rgba(192, 95, 51, 0.24) 60%, rgba(0, 0, 0, 0.3));
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      font-size: 96px;
+      overflow: hidden;
+    }
+    #bc-card-name {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--ink-strong);
+    }
+    #bc-card-tag {
+      font-family: var(--font-mono);
+      font-size: 28px;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+    }
+    #bc-card-label {
+      position: absolute;
+      left: 128px;
+      top: 892px;
+      width: 460px;
+      text-align: center;
+      font-size: var(--fs-micro);
+      color: var(--muted);
+      letter-spacing: 0.2em;
+    }
+    #bc-takeaway {
+      position: absolute;
+      left: 740px;
+      top: 930px;
+      width: 1072px;
+      font-size: 30px;
+      color: var(--ink);
+    }
+    #bc-takeaway b {
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .bc-back {
+      position: absolute;
+      right: 108px;
+      bottom: 150px;
+      font-size: var(--fs-micro);
+      color: var(--muted);
+      letter-spacing: 0.2em;
+    }
+  </style>
+
+  <div data-hf-id="hf-t6ob" id="root" data-composition-id="branch-card" data-width="1920" data-height="1080" data-hold>
+    <div data-hf-id="hf-5o30" class="page-head">
+      <div data-hf-id="hf-ao0b" class="eyebrow">深挖 · Q&amp;A 弹药</div>
+      <h1 data-hf-id="hf-fjbz" class="slide-title">拆开角色卡：一张 PNG 的内部</h1>
+    </div>
+
+    <div data-hf-id="hf-2x6v" id="bc-card">
+      <div data-hf-id="hf-q6l1" id="bc-card-art">🏮</div>
+      <div data-hf-id="hf-bt2j" id="bc-card-name">半夜的店主</div>
+      <div data-hf-id="hf-dooo" id="bc-card-tag">owner_midnight.png · 1.8 MB</div>
+    </div>
+    <div data-hf-id="hf-khqx" id="bc-card-label">你看到的是立绘 · 汤底下是数据</div>
+
+    <div data-hf-id="hf-q7ta" id="bc-code"><span data-hf-id="hf-jjhw" class="p">{</span>
+  <span data-hf-id="hf-6cqt" class="k">"spec"</span><span data-hf-id="hf-tpl3" class="p">:</span> <span data-hf-id="hf-himd" class="s">"chara_card_v2"</span><span data-hf-id="hf-0v3l" class="p">,</span>   <span data-hf-id="hf-ixz1" class="c">// 规范版本，V3 向下兼容</span>
+  <span data-hf-id="hf-macw" class="k">"data"</span><span data-hf-id="hf-rq3r" class="p">:</span> <span data-hf-id="hf-k9l8" class="p">{</span>
+    <span data-hf-id="hf-0r2p" class="k">"name"</span><span data-hf-id="hf-rbsq" class="p">:</span> <span data-hf-id="hf-53qw" class="s">"半夜的店主"</span><span data-hf-id="hf-cqqt" class="p">,</span>
+    <span data-hf-id="hf-ow9u" class="k">"description"</span><span data-hf-id="hf-qxhp" class="p">:</span> <span data-hf-id="hf-otzw" class="s">"深夜酒馆的店主，慵懒毒舌…"</span><span data-hf-id="hf-hzn0" class="p">,</span>
+    <span data-hf-id="hf-ziio" class="k">"personality"</span><span data-hf-id="hf-tpmw" class="p">:</span> <span data-hf-id="hf-k71g" class="s">"外冷内热，记住每位常客"</span><span data-hf-id="hf-hlbz" class="p">,</span>
+    <span data-hf-id="hf-svvq" class="k">"scenario"</span><span data-hf-id="hf-tbbv" class="p">:</span> <span data-hf-id="hf-1gip" class="s">"打烊前最后一杯酒的时间"</span><span data-hf-id="hf-is92" class="p">,</span>
+    <span data-hf-id="hf-da3u" class="k">"first_mes"</span><span data-hf-id="hf-sx0u" class="p">:</span> <span data-hf-id="hf-hoor" class="s">"欢迎光临。想喝点什么？"</span><span data-hf-id="hf-idy1" class="p">,</span>
+    <span data-hf-id="hf-m3qa" class="k">"mes_example"</span><span data-hf-id="hf-sipt" class="p">:</span> <span data-hf-id="hf-cmxw" class="s">"&lt;START&gt;…"</span>
+  <span data-hf-id="hf-kc3y" class="p">}</span>
+<span data-hf-id="hf-bo7m" class="p">}</span></div>
+
+    <div data-hf-id="hf-j2yf" id="bc-takeaway">
+      图片是<b data-hf-id="hf-ko41">皮</b>，JSON 是<b data-hf-id="hf-h3vp">魂</b>——每个字段都是提示词模板的一个槽位。社区百万张卡格式统一，<b data-hf-id="hf-9v7q">导入即玩</b>。
+    </div>
+
+    <div data-hf-id="hf-1r9p" class="bc-back">按 ← 返回上一页</div>
+  </div>
+
+  <script>
+    (function () {
+      var tl = gsap.timeline({ paused: true });
+      tl.fromTo("#bc-card", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.42, ease: "power2.out", immediateRender: false }, 0.08);
+      tl.fromTo("#bc-code", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.42, ease: "power2.out", immediateRender: false }, 0.18);
+      tl.fromTo(["#bc-takeaway", "#bc-card-label"], { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.out", immediateRender: false }, 0.4);
+      window.__timelines["branch-card"] = tl;
+    })();
+  </script>
+</template>

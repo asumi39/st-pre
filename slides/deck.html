@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>今晚，酒馆开张 — SillyTavern 社团分享</title>
+
+    <!--
+      独立放映入口（无 present 服务时的静态部署形态；部署时 nginx 把 / 映射到这里）。
+      离线铁律：两个运行时 bundle 全部来自 vendor/（已提交进仓库），零 CDN。
+      global 构建把 <hyperframes-player> 与 <hyperframes-slideshow> 注册为自定义元素。
+    -->
+    <script src="vendor/hyperframes-player.global.js"></script>
+    <script src="vendor/hyperframes-slideshow.global.js"></script>
+
+    <link rel="stylesheet" href="tokens.css" />
+
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: var(--bg);
+      }
+    </style>
+  </head>
+  <body>
+    <!--
+      tabindex="0" 关键：方向键绑定在元素上，无焦点则按键失效。
+      interactive：第④页滑块模拟器与各页点击交互需要 iframe 指针事件。
+      notes-storage-key：讲者备注按 deck 稳定存储。
+    -->
+    <hyperframes-slideshow
+      tabindex="0"
+      interactive
+      notes-storage-key="st-pre-deck-v1"
+      style="display: block; position: relative; width: 100vw; height: 100vh"
+    >
+      <hyperframes-player
+        interactive
+        style="position: absolute; inset: 0"
+        src="index.html"
+      ></hyperframes-player>
+
+      <!--
+        ISLAND 副本 —— 与 index.html 内的主本保持同步！
+        改 slides/fragments/hotspots/sequences 时两处都要改。
+      -->
+      <script type="application/hyperframes-slideshow+json">
+        {
+          "slides": [
+            {
+              "sceneId": "cover",
+              "notes": "开场白：今晚不讲 PPT，讲一个能玩的东西。有人听过『酒馆』吗？举手看看。今晚结束你会看懂 AI 角色扮演的全部原理，还能自己搭一个。→ 先别解释，直接看。"
+            },
+            {
+              "sceneId": "anatomy",
+              "fragments": [46.5, 47.5, 48.5, 49.5, 50.5, 51.5, 53],
+              "hotspots": [
+                {
+                  "id": "h-card-json",
+                  "label": "拆开看：真实 V2 卡长什么样",
+                  "target": "branch-card",
+                  "region": { "x": 63, "y": 22, "w": 15, "h": 13 }
+                }
+              ],
+              "notes": "全场核心页。前面 15 页都是为了让你看懂这几秒的动画：人设、设定、记忆、参数——没有魔法，全部是这包里的字。LIVE 开关打开时旁边同步亮起真实请求计时。→ 这个按需装字的动作，工业界有个名字（下一页 RAG）。Q&A 弹药：点『角色卡』块可深挖真实卡结构。"
+            }
+          ],
+          "slideSequences": [
+            {
+              "id": "branch-card",
+              "label": "卡结构深挖",
+              "slides": [
+                {
+                  "sceneId": "branch-card",
+                  "notes": "Q&A 弹药：PNG 里藏着结构化 JSON，图片是皮数据是魂。社区百万张卡流通格式统一（V2/V3 互通），别人的卡直接导入就能玩。"
+                }
+              ]
+            }
+          ]
+        }
+      </script>
+    </hyperframes-slideshow>
+  </body>
+</html>

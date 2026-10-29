@@ -1,0 +1,421 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: radial-gradient(110% 80% at 50% -10%, #211711 0%, var(--bg) 60%);
+      color: var(--ink);
+    }
+
+    /* seek 双保险：CSS 即完成态；入场 fromTo 只在 0.08~0.8s 短暂掠过 */
+
+    /* -- 聊天窗口 -- */
+    #anat-chat {
+      position: absolute;
+      left: 108px;
+      top: 240px;
+      width: 660px;
+      height: 700px;
+      background: var(--surface);
+      border: var(--card-border);
+      border-radius: var(--r);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    #anat-chat-head {
+      height: 72px;
+      display: flex;
+      align-items: center;
+      gap: var(--s1);
+      padding: 0 var(--s2);
+      border-bottom: 1px solid var(--line-soft);
+    }
+    #anat-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #5a2d18, #33200f);
+      color: #ffd9a0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 700;
+    }
+    #anat-chat-name {
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--ink-strong);
+    }
+    #anat-chat-sub {
+      font-size: var(--fs-micro);
+      color: var(--muted);
+    }
+    #anat-msgs {
+      flex: 1;
+      padding: var(--s2);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      gap: var(--s1);
+    }
+    #anat-user-bubble {
+      align-self: flex-end;
+      max-width: 78%;
+      background: rgba(232, 163, 76, 0.16);
+      border: 1px solid rgba(232, 163, 76, 0.3);
+      color: var(--ink-strong);
+      font-size: 28px;
+      line-height: 1.5;
+      padding: 14px 22px;
+      border-radius: 18px 18px 4px 18px;
+      opacity: 0; /* frag1 发送后才出现（seek 安全：CSS 起始隐藏） */
+    }
+    #anat-reply-bubble {
+      align-self: flex-start;
+      max-width: 82%;
+      background: rgba(245, 234, 214, 0.05);
+      border: 1px solid var(--line-soft);
+      color: var(--ink);
+      font-size: 28px;
+      line-height: 1.55;
+      padding: 14px 22px;
+      border-radius: 18px 18px 18px 4px;
+      opacity: 0; /* frag6 回复才出现 */
+    }
+    #anat-timing {
+      align-self: flex-start;
+      font-family: var(--font-mono);
+      font-size: 28px;
+      color: var(--muted);
+      padding-left: 6px;
+      opacity: 0;
+    }
+    #anat-input {
+      height: 96px;
+      border-top: 1px solid var(--line-soft);
+      display: flex;
+      align-items: center;
+      gap: var(--s1);
+      padding: 0 var(--s2);
+    }
+    #anat-input-text {
+      flex: 1;
+      font-size: 28px;
+      color: var(--muted);
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--line-soft);
+      border-radius: var(--r-sm);
+      padding: 14px 20px;
+    }
+    #anat-send {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 1px solid rgba(232, 163, 76, 0.4);
+      background: rgba(232, 163, 76, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: none;
+    }
+    #anat-send svg {
+      width: 26px;
+      height: 26px;
+    }
+
+    /* -- 请求包 -- */
+    #anat-packet-label {
+      position: absolute;
+      left: 880px;
+      top: 296px;
+      width: 400px;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 28px;
+      letter-spacing: 0.3em;
+      color: var(--accent);
+    }
+    #anat-packet {
+      position: absolute;
+      left: 880px;
+      top: 356px;
+      width: 400px;
+      height: 448px;
+      border: 2px dashed rgba(232, 163, 76, 0.35);
+      border-radius: var(--r);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 26px;
+      padding: 0 40px;
+    }
+    .anat-chip {
+      height: 56px;
+      border-radius: var(--r-sm);
+      background: rgba(232, 163, 76, 0.1);
+      border: 1px solid rgba(232, 163, 76, 0.32);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 0 20px;
+      font-size: 28px;
+      white-space: nowrap;
+      color: var(--ink-strong);
+      opacity: 0; /* 装配后出现 */
+    }
+    .anat-chip svg {
+      width: 26px;
+      height: 26px;
+      flex: none;
+    }
+    #anat-packet-hint {
+      position: absolute;
+      left: 780px;
+      top: 820px;
+      width: 600px;
+      text-align: center;
+      font-size: var(--fs-micro);
+      color: var(--muted);
+    }
+    #anat-note {
+      position: absolute;
+      left: 780px;
+      top: 868px;
+      width: 600px;
+      text-align: center;
+      font-family: var(--font-display);
+      font-size: 35px;
+      color: var(--accent);
+      letter-spacing: 0.04em;
+      opacity: 0; /* frag5 */
+    }
+
+    /* -- 右侧来源块 -- */
+    #anat-blocks {
+      position: absolute;
+      left: 1400px;
+      top: 240px;
+      width: 412px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .anat-block {
+      height: 128px;
+      background: var(--surface);
+      border: var(--card-border);
+      border-radius: var(--r);
+      padding: 20px 26px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 8px;
+    }
+    .anat-block-name {
+      font-size: 30px;
+      font-weight: 700;
+      color: var(--ink-strong);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .anat-block-name svg {
+      width: 30px;
+      height: 30px;
+      color: var(--accent);
+      flex: none;
+    }
+    .anat-block-desc {
+      font-size: var(--fs-micro);
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    #anat-keyword {
+      display: inline-block;
+      font-size: 28px;
+      color: var(--muted);
+      border: 1px solid var(--line-soft);
+      border-radius: 8px;
+      padding: 1px 10px;
+      margin-left: 8px;
+      vertical-align: 4px;
+    }
+
+    /* -- 流线 -- */
+    #anat-streams {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    #anat-streams path {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 3;
+      stroke-linecap: round;
+      opacity: 0.9;
+    }
+  </style>
+
+  <div data-hf-id="hf-1c9n" id="root" data-composition-id="anatomy" data-width="1920" data-height="1080" data-hold>
+    <div data-hf-id="hf-5o30" class="page-head">
+      <div data-hf-id="hf-se82" class="eyebrow">第四幕 · 解剖一次对话</div>
+      <h1 data-hf-id="hf-11nb" class="slide-title">解剖一次请求</h1>
+    </div>
+
+    <!-- 聊天窗口 -->
+    <section data-hf-id="hf-v6lm" id="anat-chat">
+      <div data-hf-id="hf-4gu1" id="anat-chat-head">
+        <div data-hf-id="hf-xhih" id="anat-avatar">夜</div>
+        <div data-hf-id="hf-yeow">
+          <div data-hf-id="hf-124y" id="anat-chat-name">半夜的店主</div>
+          <div data-hf-id="hf-fu7e" id="anat-chat-sub">深夜酒馆</div>
+        </div>
+      </div>
+      <div data-hf-id="hf-dvjy" id="anat-msgs">
+        <div data-hf-id="hf-klgs" id="anat-reply-bubble">欢迎光临。打烊前，想喝点什么？</div>
+        <div data-hf-id="hf-nqo9" id="anat-timing">⏱ 装配 + 回复 · 4.2s</div>
+        <div data-hf-id="hf-m3b7" id="anat-user-bubble">我推门进入酒馆</div>
+      </div>
+      <div data-hf-id="hf-hoqg" id="anat-input">
+        <div data-hf-id="hf-8k43" id="anat-input-text">我推门进入酒馆</div>
+        <div data-hf-id="hf-7x6u" id="anat-send">
+          <svg data-hf-id="hf-v1lk" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round">
+            <path data-hf-id="hf-nzn7" d="M22 2 11 13" /><path data-hf-id="hf-pfol" d="M22 2 15 22l-4-9-9-4z" />
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- 请求包 -->
+    <div data-hf-id="hf-sgcz" id="anat-packet-label">请 求 包</div>
+    <div data-hf-id="hf-xq3g" id="anat-packet">
+      <div data-hf-id="hf-z1w9" class="anat-chip" id="anat-chip-card">
+        <svg data-hf-id="hf-09k4" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><rect data-hf-id="hf-sbof" x="3" y="4" width="18" height="16" rx="3"/><circle data-hf-id="hf-my71" cx="9" cy="11" r="2.4"/><path data-hf-id="hf-h116" d="M5.5 17c.8-1.8 2-2.6 3.5-2.6s2.7.8 3.5 2.6"/><path data-hf-id="hf-kgxc" d="M15.5 9.5h3M15.5 13h3"/></svg>
+        角色卡 · 人设
+      </div>
+      <div data-hf-id="hf-1w5w" class="anat-chip" id="anat-chip-lore">
+        <svg data-hf-id="hf-ahp8" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path data-hf-id="hf-w28i" d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path data-hf-id="hf-g7ob" d="M4 18.5V5.5M9 7.5h7M9 11h5"/></svg>
+        世界书 · 命中
+      </div>
+      <div data-hf-id="hf-vgpx" class="anat-chip" id="anat-chip-preset">
+        <svg data-hf-id="hf-9as5" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path data-hf-id="hf-3m4z" d="M4 7h10M18 7h2M4 12h4M12 12h8M4 17h13M20 17h0"/><circle data-hf-id="hf-el62" cx="16" cy="7" r="2"/><circle data-hf-id="hf-a85a" cx="10" cy="12" r="2"/><circle data-hf-id="hf-b504" cx="18.5" cy="17" r="2"/></svg>
+        预设 · 系统提示
+      </div>
+      <div data-hf-id="hf-484o" class="anat-chip" id="anat-chip-history">
+        <svg data-hf-id="hf-9p36" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path data-hf-id="hf-vs8i" d="M21 12a8 8 0 1 1-3.1-6.3L21 4l-1.2 4.2A8 8 0 0 1 21 12z"/><path data-hf-id="hf-hee3" d="M8 11h8M8 14.5h5"/></svg>
+        聊天记录 · 历史
+      </div>
+    </div>
+    <div data-hf-id="hf-s7g9" id="anat-packet-hint">你按下「发送」的瞬间，这四路内容装进同一包</div>
+    <div data-hf-id="hf-64v5" id="anat-note">这一包，就是模型看到的全世界</div>
+
+    <!-- 四路来源 -->
+    <aside data-hf-id="hf-4p3l" id="anat-blocks">
+      <div data-hf-id="hf-5gsh" class="anat-block" id="anat-block-card">
+        <div data-hf-id="hf-et8d" class="anat-block-name">
+          <svg data-hf-id="hf-092k" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect data-hf-id="hf-s0bj" x="3" y="4" width="18" height="16" rx="3"/><circle data-hf-id="hf-okhd" cx="9" cy="11" r="2.4"/><path data-hf-id="hf-hjxa" d="M5.5 17c.8-1.8 2-2.6 3.5-2.6s2.7.8 3.5 2.6"/></svg>
+          角色卡
+        </div>
+        <div data-hf-id="hf-kuth" class="anat-block-desc">名字 / 描述 / 性格 / 开场白 —— 其实都是提示词字段</div>
+      </div>
+      <div data-hf-id="hf-397v" class="anat-block" id="anat-block-lore">
+        <div data-hf-id="hf-vuui" class="anat-block-name">
+          <svg data-hf-id="hf-uyro" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path data-hf-id="hf-tvo6" d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path data-hf-id="hf-wm17" d="M9 7.5h7"/></svg>
+          世界书<span data-hf-id="hf-2lmu" id="anat-keyword">酒馆</span>
+        </div>
+        <div data-hf-id="hf-gbxs" class="anat-block-desc">关键词命中才注入的设定库 —— 平时睡觉</div>
+      </div>
+      <div data-hf-id="hf-1pwu" class="anat-block" id="anat-block-preset">
+        <div data-hf-id="hf-dokc" class="anat-block-name">
+          <svg data-hf-id="hf-trul" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path data-hf-id="hf-7zee" d="M4 7h10M18 7h2M4 12h4M12 12h8M4 17h13"/><circle data-hf-id="hf-vgby" cx="16" cy="7" r="2"/><circle data-hf-id="hf-rlb6" cx="10" cy="12" r="2"/><circle data-hf-id="hf-znl8" cx="18.5" cy="17" r="2"/></svg>
+          预设
+        </div>
+        <div data-hf-id="hf-mkgo" class="anat-block-desc">系统提示 + 采样参数 —— 酒馆的"咒语书"</div>
+      </div>
+      <div data-hf-id="hf-jl9t" class="anat-block" id="anat-block-history">
+        <div data-hf-id="hf-fx7g" class="anat-block-name">
+          <svg data-hf-id="hf-u65m" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path data-hf-id="hf-xvg6" d="M21 12a8 8 0 1 1-3.1-6.3L21 4l-1.2 4.2A8 8 0 0 1 21 12z"/></svg>
+          聊天记录
+        </div>
+        <div data-hf-id="hf-1tdd" class="anat-block-desc">每一轮都全部重发 —— 记住的代价</div>
+      </div>
+    </aside>
+
+    <!-- 流线（DrawSVG） -->
+    <svg data-hf-id="hf-501f" id="anat-streams" viewBox="0 0 1920 1080" data-layout-ignore>
+      <path data-hf-id="hf-wsrd" id="anat-path-card"    d="M1400,304 C 1345,304 1345,496 1284,496" />
+      <path data-hf-id="hf-hzpl" id="anat-path-lore"    d="M1400,456 C 1345,456 1345,561 1284,561" />
+      <path data-hf-id="hf-zzge" id="anat-path-preset"  d="M1400,608 C 1345,608 1345,626 1284,626" />
+      <path data-hf-id="hf-hyej" id="anat-path-history" d="M1400,760 C 1345,760 1345,691 1284,691" />
+    </svg>
+
+    <div data-hf-id="hf-08v8" class="act-chip">第四幕 · 解剖一次对话</div>
+    <div data-hf-id="hf-16vu" class="page-no">16 / 21</div>
+  </div>
+
+  <script>
+    (function () {
+      var tl = gsap.timeline({ paused: true });
+
+      /* ============================================================
+         slideshow 语义（源码确认）：playTo = 冷 seek 到 fragment 时刻；
+         进入带 fragments 的 slide 落在 fragments[0]；无 fragments 落在中点。
+         铁则：fragment 时刻 = 该状态 settle 完成点，动画窗口在其之前的间隙。
+         fragments(绝对): 46.5(进入·已输入) 47.5(发送) 48.5(卡) 49.5(书) 50.5(预设)
+                    51.5(记录+标注) 53.0(回复)＝本地 1.5/2.5/3.5/4.5/5.5/6.5/8.0
+         ============================================================ */
+      var SETTLE = 0.42;
+
+      /* 入场（双保险：CSS 已是完成态，immediateRender:false 让 t=0 呈现完成态）*/
+      tl.fromTo("#anat-chat", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: SETTLE, ease: "power2.out", immediateRender: false }, 0.08);
+      tl.fromTo(".anat-block", { opacity: 0, x: 26 }, { opacity: 1, x: 0, duration: SETTLE, stagger: 0.07, ease: "power2.out", immediateRender: false }, 0.15);
+      tl.fromTo(["#anat-packet", "#anat-packet-label", "#anat-packet-hint"], { opacity: 0 }, { opacity: 1, duration: SETTLE, ease: "power1.out", immediateRender: false }, 0.3);
+
+      /* 47.5 · 发送：输入落成气泡，包体点亮（settle at 47.5）*/
+      tl.fromTo("#anat-user-bubble", { opacity: 0, scale: 0.92, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.3, ease: "power2.out", immediateRender: false }, 2.16);
+      tl.fromTo("#anat-user-bubble", { scale: 0.92 }, { scale: 1, duration: 0.34, ease: "back.out(1.4)", immediateRender: false }, 2.16);
+      tl.to("#anat-input-text", { opacity: 0.28, duration: 0.3, ease: "power1.out" }, 2.16);
+      tl.fromTo("#anat-send", { backgroundColor: "rgba(232,163,76,0.55)" }, { backgroundColor: "rgba(232,163,76,0.12)", duration: 0.34, ease: "power1.out", immediateRender: false }, 2.16);
+      tl.fromTo("#anat-packet", { borderColor: "rgba(232,163,76,0.85)" }, { borderColor: "rgba(232,163,76,0.35)", duration: 0.34, ease: "power1.out", immediateRender: false }, 2.16);
+
+      /* 48.5 · 角色卡流入 */
+      tl.fromTo("#anat-path-card", { drawSVG: "0%" }, { drawSVG: "100%", duration: 0.4, ease: "power2.out" }, 3.06);
+      tl.fromTo("#anat-chip-card", { opacity: 0, x: 16 }, { opacity: 1, x: 0, duration: 0.22, ease: "power2.out", immediateRender: false }, 3.26);
+
+      /* 49.5 · 世界书：关键词点亮后流入 */
+      tl.fromTo("#anat-keyword", { backgroundColor: "rgba(232,163,76,0.5)", color: "#fff7e8", borderColor: "rgba(232,163,76,0.7)" }, { backgroundColor: "rgba(232,163,76,0.14)", color: "var(--accent)", borderColor: "rgba(232,163,76,0.4)", duration: 0.42, ease: "power1.out", immediateRender: false }, 4.04);
+      tl.fromTo("#anat-path-lore", { drawSVG: "0%" }, { drawSVG: "100%", duration: 0.4, ease: "power2.out" }, 4.06);
+      tl.fromTo("#anat-chip-lore", { opacity: 0, x: 16 }, { opacity: 1, x: 0, duration: 0.22, ease: "power2.out", immediateRender: false }, 4.26);
+
+      /* 50.5 · 预设流入 */
+      tl.fromTo("#anat-path-preset", { drawSVG: "0%" }, { drawSVG: "100%", duration: 0.4, ease: "power2.out" }, 5.06);
+      tl.fromTo("#anat-chip-preset", { opacity: 0, x: 16 }, { opacity: 1, x: 0, duration: 0.22, ease: "power2.out", immediateRender: false }, 5.26);
+
+      /* 51.5 · 聊天记录流入，包完成 → 标注 */
+      tl.fromTo("#anat-path-history", { drawSVG: "0%" }, { drawSVG: "100%", duration: 0.4, ease: "power2.out" }, 6.06);
+      tl.fromTo("#anat-chip-history", { opacity: 0, x: 16 }, { opacity: 1, x: 0, duration: 0.22, ease: "power2.out", immediateRender: false }, 6.26);
+      tl.fromTo("#anat-note", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.36, ease: "power2.out", immediateRender: false }, 6.12);
+
+      /* 53.0 · 回复逐字流回（SplitText per-char）*/
+      tl.fromTo("#anat-reply-bubble", { opacity: 0, scale: 0.97 }, { opacity: 1, scale: 1, duration: 0.3, ease: "power2.out", immediateRender: false }, 7.66);
+      (function () {
+        var split = new SplitText("#anat-reply-bubble", { type: "chars" });
+        tl.fromTo(
+          split.chars,
+          { opacity: 0 },
+          { opacity: 1, duration: 0.1, stagger: 0.028, ease: "none", immediateRender: false },
+          7.7
+        );
+      })();
+      tl.fromTo("#anat-timing", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power1.out", immediateRender: false }, 7.7);
+
+      window.__timelines["anatomy"] = tl;
+    })();
+  </script>
+</template>
