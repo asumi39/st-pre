@@ -14,7 +14,7 @@
   --line-soft: rgba(245, 234, 214, 0.1);
   --ink: #f5ead6;
   --ink-strong: #fff7e8;
-  --muted: #b5a184;
+  --muted: #c7a87e;  /* OD 方向A实测 8.13:1 对底，投影弱字更稳 */
   --accent: #e8a34c;        /* 烛光琥珀：强调、关键词、动效主体 */
   --accent-2: #c05f33;      /* 余烬红：次强调、危险/警示 */
   --glow: rgba(232, 163, 76, 0.16);
