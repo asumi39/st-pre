@@ -25,8 +25,8 @@
 |---|---|---|
 | 开场 | ①② | 封面「今晚，酒馆开张」；Hook：真实 AI 角色对话，抛问"背后发生了什么？" |
 | LLM 背景 | ③④ | 文字接龙 + 提示词就是一切；没有记忆 → 上下文窗口 |
-| ST 是什么 | ⑤~⑨ | 身世与定位（TavernAI 分叉、开源、Power Users）；前端/后端分离架构；能接什么模型（云 API→本地→免费）；跨平台 + 数据自主；诚实的定位（适合谁/不适合谁，提 RisuAI 等替代） |
-| 能做什么 | ⑩~⑮ | 角色卡（PNG 里藏结构化设定）；群聊；世界书（关键词触发）；扩展生态（TTS/绘图/翻译/总结/正则）；界面可玩性；玩法案例（跑团 GM / 语言陪练 / 小说共创，**本机 ST 实录素材**） |
+| ST 是什么 | ⑤~⑨ | 身世与定位（TavernAI 分叉、开源、Power Users）；前端/后端分离架构；能接什么模型（云 API→本地→免费）；跨平台 + 数据自主；诚实的定位（适合谁/不适合谁，提 RisuAI 等替代）。最新版 **v1.19.0（2026.09）**，AGPL-3.0，仍在活跃更新 |
+| 能做什么 | ⑩~⑮ | 角色卡（PNG 里藏结构化设定，V2/V3 卡规范互通）；群聊；世界书（关键词触发）；扩展生态（TTS/绘图/翻译/总结/正则）；界面可玩性；玩法案例（跑团 GM / 语言陪练 / 小说共创，**本机 ST 实录素材**） |
 | 解剖一次对话 | ⑯~⑱ | 请求拼装解剖图；世界书触发 = RAG 思想；聊久了会忘 → 总结与向量 |
 | 上手 | ⑲~㉑ | 三条上手路径 + API 选择；安全避坑（Key/隐私/内容分寸）；从玩到学 + Q&A + 二维码 |
 
@@ -129,7 +129,7 @@ ST-PRE/
 - **构建**：`web-design-engineer`（HTML 幻灯片）+ slideshow 契约；**design-taste-frontend** 统一验收（`inspect.mjs`/`lint.mjs` 兼验指南站）
 - **QA**：agent-browser（默认走查+上线验收，Chromium 系）→ firefox MCP（引擎兼容）→ safari-official（WebKit/观众 iPhone）→ chrome-devtools 仅 trace/CDP 性能分析
 - **素材**：本机 Docker 起真 ST 抓截图录屏（peekaboo.capture 直出 MP4）；chrome-devtools.screencast 录幻灯片动画兜底；ffmpeg 压缩；`gh` 拉 SillyTavern 官方仓库取自带角色卡（版权干净）
-- **图片生成**：`imagegen.txt` 通道（OpenAI 兼容 `POST {baseurl}/v1/images/generations`，model `gpt-image-2.5-sunburst`），prompt 模板由设计 tokens 约束风格；**逐张先给 prompt 确认再花钱**
+- **图片生成**：`imagegen.txt` 通道（OpenAI 兼容中转，model `gpt-image-2.5-sunburst`），prompt 模板由设计 tokens 约束风格；端点路径以阶段 2b 首张图的测试调用为准，**逐张先给 prompt 确认再花钱**
 - **研究**：websearch / tavily（ST 最新特性、生态事实核查）
 - **提醒/知识**：openchamber_notify（长任务）；openchamber_knowledge（跨会话计划）
 - **部署/验收**：rsync+ssh；agent-browser 全链路自动化；二维码 `npx qrcode`
@@ -167,7 +167,8 @@ tavern.<域名>            → slides 静态站（观众扫码回看）+ /guide/
 tavern.<域名>/live/      → proxy（反代，持有 Key，限流：简单 IP 计数）
 play.<域名>              → SillyTavern 实例（阶段 5；子域名不另需备案）
                           enableUserAccounts、批量账号 u001~N、预置官方角色卡
-                          DeepSeek API 预配置（OpenAI 兼容自定义端点，model `deepseek-flash`，见 config.yaml.template）
+                          DeepSeek API 预配置（OpenAI 兼容自定义端点，model `deepseek-flash`，见 config.yaml.template。
+                          ⚠ ST 官方文档的 DeepSeek 条目仍写 `deepseek-chat`/`deepseek-reasoner`，已过时，配置以 DeepSeek 官方文档为准）
 HTTPS：Let's Encrypt / acme.sh；nginx 反代 ST（WebSocket upgrade）
 ```
 
@@ -194,3 +195,23 @@ HTTPS：Let's Encrypt / acme.sh；nginx 反代 ST（WebSocket upgrade）
 2. ~~图片模型~~ ✅ 已就位（`imagegen.txt`）
 3. 阶段 4 前：北京服务器就绪确认（SSH 方式、域名解析到位、备案可用于该子域名）
 4. 阶段 5 前：体验站规模预期（建号数量、是否长期开放）
+
+## 14. 事实核查记录（2026-10-29）
+
+| 事实 | 结论 | 来源 |
+|---|---|---|
+| SillyTavern 最新版 | **1.19.0**（2026-09-14 发布），AGPL-3.0，35k stars，活跃更新 | GitHub API `releases/latest` |
+| ST 定位原话 | "LLM Frontend for Power Users." | 仓库描述 |
+| 免费后端（文档确认） | AI Horde（开箱即用）、Pollinations（免注册免费） | ST 官方文档 API Connections |
+| 本地后端（文档确认） | KoboldCpp、llama.cpp、Ollama、Oobabooga、TabbyAPI | 同上 |
+| 角色卡规范 | V3 规范已在 ST 代码库支持（`chara_card_v3`），与 V2 互通 | GitHub 代码检索 |
+| DeepSeek 现行模型 | `deepseek-flash`（V4.1-Flash-1017 服务）、`deepseek-v4-pro`；`deepseek-chat` 已淘汰 | DeepSeek 官方文档 |
+| DeepSeek thinking | 默认 `enabled`，LIVE 必须显式 `disabled` | 同上 |
+| DeepSeek 流式 | SSE，`data: [DONE]` 终止；usage 搭最后内容 chunk；错误码 401/402/422/429/500/503 | 同上 |
+| GSAP 许可 | 3.13 起全插件免费（含商用），2025-04 起 | gsap.com |
+| ST 文档 DeepSeek 条目 | **过时**（仍写 `deepseek-chat`），配置时以 DeepSeek 官方文档为准 | ST docs 对比 |
+
+**遗留待核**（进对应阶段时处理）：
+- `imagegen.txt` 端点路径 → 阶段 2b 首张图测试调用确认
+- DeepSeek 具体价格数字（定价页抓取被重定向）→ 阶段 1 内容稿涉及价格话术前复核 platform.deepseek.com
+- ST multi-user 批量建号的脚本化路径 → 阶段 5 部署手册编写时验证
