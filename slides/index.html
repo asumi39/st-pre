@@ -211,7 +211,14 @@
             try { return localStorage.getItem("st-pre-live") === "1"; } catch (e) { return false; }
           },
           get url() {
-            try { return localStorage.getItem("st-pre-live-url") || "http://localhost:3011"; } catch (e) { return "http://localhost:3011"; }
+            // 恒为 base（不含 /live 前缀）：客户端统一拼 url + "/live/..."
+            // 生产（https）：空串 = 同源（nginx 把 /live/ 反代到 proxy）
+            // 本地（http）：3011 直连 proxy；?liveurl= 仍可覆盖
+            try {
+              var saved = localStorage.getItem("st-pre-live-url");
+              if (saved !== null) return saved;
+              return location.protocol === "https:" ? "" : "http://localhost:3011";
+            } catch (e) { return "http://localhost:3011"; }
           },
           /* chat(messages, {onDelta, onDone, onError}) —— 返回 abort 函数 */
           chat: function (messages, h) {

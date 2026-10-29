@@ -1,0 +1,55 @@
+# tavern.phuyu.cloud — 静态站（幻灯片回看 + 指南）+ LIVE proxy 反代
+# 部署版：保留 Certbot 管理的证书与 80 跳转段；替换旧的 8001 反代（旧服务已下线，经用户确认移除）
+
+server {
+    server_name tavern.phuyu.cloud;
+
+    root /opt/st-pre/slides;
+    index deck.html;
+    error_page 404 = /deck.html;
+
+    location /guide/ {
+        alias /opt/st-pre/guide/;
+        index index.html;
+    }
+
+    location /live/ {
+        proxy_pass http://127.0.0.1:3011/live/;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_buffering off;
+        proxy_read_timeout 30s;
+        limit_req zone=live burst=5 nodelay;
+    }
+
+    location ~* \.(png|jpg|jpeg|mp4|webm|woff2|css|js)$ {
+        expires 7d;
+        add_header Cache-Control "public";
+        add_header X-Content-Type-Options nosniff always;
+    }
+
+    add_header X-Content-Type-Options nosniff always;
+    add_header Referrer-Policy strict-origin-when-cross-origin always;
+
+    listen [::]:443 ssl; # managed by Certbot
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/tavern.phuyu.cloud/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/tavern.phuyu.cloud/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+
+server {
+    if ($host = tavern.phuyu.cloud) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    listen 80;
+    listen [::]:80;
+    server_name tavern.phuyu.cloud;
+    return 404; # managed by Certbot
+
+
+}
