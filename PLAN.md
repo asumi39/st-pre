@@ -14,7 +14,7 @@
 | 优先级 | 先做**带 LIVE 的完整幻灯片**；体验站为最后增量（阶段 5） |
 | 时长 | 正片 30 分钟 + 现场体验 15 分钟 + Q&A |
 | 讲者备注 | 简洁版：每页 3~5 条要点 + 串场句（换人也能讲） |
-| 模型 | **DeepSeek**（`deepseek-chat`，OpenAI 兼容，Key 已就位） |
+| 模型 | **DeepSeek**（`deepseek-flash`，OpenAI 兼容，Key 已就位） |
 | 视觉协作 | 设计探索由 OpenDesign 承担（`start_run` 出样张、用户在 OD 内迭代、`get_artifact` 拉回 tokens）；验收统一 design-taste-frontend |
 | 代码管理 | 本机开发测试 → GitHub 私有仓库 `asumi39/st-pre` |
 | 设计铁律 | 教室离线可放映；所有动效都在讲知识点；LIVE 必有模拟兜底；Key 永不进仓库 |
@@ -53,23 +53,35 @@
 
 ## 4. LIVE 模式技术设计
 
+> 依据 DeepSeek 官方文档核对（2026-10，api-docs.deepseek.com）。
+
 ```
 幻灯片组件 (fetch, SSE 解析)
-   │  POST /live/chat  {messages, max_tokens≈120}
+   │  POST /live/chat  {messages}     # 预置短剧本，≤4 条消息
    ▼
 proxy/ （单文件 Node 服务，无依赖）
    │  读 DEEPSEEK_KEY（环境变量或本地 key 文件，不进仓库）
    ▼
-https://api.deepseek.com  (OpenAI 兼容, stream=true)
-   │  SSE 流式回传
+POST https://api.deepseek.com/chat/completions   Authorization: Bearer <KEY>
+     { "model": "deepseek-flash",            # 现行模型名（V4.1-Flash-1017 服务）
+       "messages": [...],
+       "thinking": { "type": "disabled" },   # 必须显式关闭：默认 enabled，
+                                             # 会先输出 reasoning_content 且首包延迟大增
+       "max_tokens": 120,
+       "temperature": 0.9,                   # 默认即 1；非思考模式下 top_p 固定无效，不传
+       "stream": true,
+       "stream_options": { "include_usage": true },
+       "user_id": "st-pre-live" }            # 缓存/调度隔离标识
+   │  SSE：choices[0].delta.content 逐段转发，终止于 data: [DONE]；
+   │  usage 统计搭在最后一个内容 chunk 上（无独立 usage chunk）
    ▼
 幻灯片逐字渲染（与模拟路径同一套渲染管线）
 ```
 
 - **双模**：每个活演示组件有 `sim` / `live` 两种数据源，同一渲染管线；全局开关（URL 参数 `?live=1` 或隐藏快捷键）
-- **回退**：fetch 超时（>6s）/网络错误/SSE 中断 → 无感切回罐头剧本；proxy 返回首 token 前显示生成指示
-- **控成本控时长**：预置短 prompt，`max_tokens` 限制 ~120，单次成本可忽略
-- **验证口径**：真实调用跑通 ≥1 次 + 断网回退测试通过 + Key 零暴露
+- **回退触发**：首包 >6s 超时 / 网络错误 / SSE 中断 / 上游错误码——401（Key 错）、402（欠费）、429（限流）、500/503（服务端）→ 无感切回罐头剧本；proxy 返回首 token 前显示生成指示
+- **控成本控时长**：预置短 prompt，`max_tokens` 限制 120，Flash 档单次成本可忽略；usage 随流返回，proxy 记日志做成本观测
+- **验证口径**：真实调用跑通 ≥1 次 + 断网回退测试通过 + 上游 401/429 错误注入各一次 + Key 零暴露
 
 ## 5. 目录结构
 
@@ -155,7 +167,7 @@ tavern.<域名>            → slides 静态站（观众扫码回看）+ /guide/
 tavern.<域名>/live/      → proxy（反代，持有 Key，限流：简单 IP 计数）
 play.<域名>              → SillyTavern 实例（阶段 5；子域名不另需备案）
                           enableUserAccounts、批量账号 u001~N、预置官方角色卡
-                          DeepSeek API 预配置（config.yaml.template）
+                          DeepSeek API 预配置（OpenAI 兼容自定义端点，model `deepseek-flash`，见 config.yaml.template）
 HTTPS：Let's Encrypt / acme.sh；nginx 反代 ST（WebSocket upgrade）
 ```
 
