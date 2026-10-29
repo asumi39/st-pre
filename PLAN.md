@@ -1,4 +1,4 @@
-# SillyTavern 社团分享 · 完整方案（v5 · 执行版）
+# SillyTavern 社团分享 · 执行方案
 
 > 以 SillyTavern 为钩子，让完全不懂 LLM 的同学在"玩"里看懂 LLM 原理。
 > 幻灯片本身是第一件展品——质量优先，所有动效都在讲知识点。
@@ -14,9 +14,9 @@
 | 优先级 | 先做**带 LIVE 的完整幻灯片**；体验站为最后增量（阶段 5） |
 | 时长 | 正片 30 分钟 + 现场体验 15 分钟 + Q&A |
 | 讲者备注 | 简洁版：每页 3~5 条要点 + 串场句（换人也能讲） |
-| 模型 | **DeepSeek**（`deepseek-chat`，OpenAI 兼容，Key 已就位）；免费档思路保留为备用 |
-| 视觉协作 | 不走飞书；不继承旧 H5 视觉；OpenDesign 可用于设计探索（环境已恢复），验收统一走 design-taste-frontend |
-| 代码管理 | 本机开发测试 → **GitHub 私有仓库**（`gh` 已授权），本仓库自建 |
+| 模型 | **DeepSeek**（`deepseek-chat`，OpenAI 兼容，Key 已就位） |
+| 视觉协作 | 不走飞书；不继承旧 H5 视觉；设计探索 + 验收由 design-taste-frontend / web-design-engineer 承担，样张在聊天内渲染评审 |
+| 代码管理 | 本机开发测试 → GitHub 私有仓库 `asumi39/st-pre` |
 | 设计铁律 | 教室离线可放映；所有动效都在讲知识点；LIVE 必有模拟兜底；Key 永不进仓库 |
 
 ## 2. 幻灯片内容（21 页）
@@ -45,12 +45,11 @@
 
 | 层 | 选型 | 说明 |
 |---|---|---|
-| 放映引擎 | **HyperFrames slideshow**（主）/ reveal.js（documented fallback） | 确定性 seek 时间线：导航即 seek，活演示永不失同步；内置讲者备注（按 deck 保存）、fragments、分支热点、全屏、触摸、计数器；`npx hyperframes check --json` 结构校验 |
-| 决策门 | 阶段 2b 初设 spike：先搭封面+解剖页两页 | 工程摩擦大 → 整体切 reveal，当场定不回头（设计 tokens 纯 CSS，两边通用） |
+| 放映引擎 | **HyperFrames slideshow** | 确定性 seek 时间线：导航即 seek，活演示永不失同步；内置讲者备注（按 deck 保存）、fragments、分支热点、全屏、触摸、计数器；`npx hyperframes check --json` 结构校验。2b 初设先以两页样张（封面+解剖页）验证引擎手感 |
 | 动画编排 | GSAP 3.13+（全插件免费，vendor 进仓库） | SplitText / DrawSVG / 时间线编排 |
-| 设计系统 | 2a 定方向 → tokens.css 沉淀（色板/字阶/间距/组件样式） | 纯 CSS，引擎无关 |
-| 教学模拟器 | 自研（GSAP 驱动） | 无现成库的内容组件，这才是自研该在的地方 |
-| LIVE 接线 | `proxy/` 单文件 HTTP 服务（本地演示与服务器部署两用，持有 Key） | 幻灯片 JS 永远接触不到 Key |
+| 设计系统 | 2a 定方向 → tokens.css 沉淀（色板/字阶/间距/组件样式） | 纯 CSS，与引擎解耦 |
+| 教学模拟器 | 自研（GSAP 驱动） | 无现成库的内容组件 |
+| LIVE 接线 | `proxy/` 单文件 Node 服务（本地演示与服务器部署两用，持有 Key） | 幻灯片 JS 永远接触不到 Key |
 
 ## 4. LIVE 模式技术设计
 
@@ -69,7 +68,7 @@ https://api.deepseek.com  (OpenAI 兼容, stream=true)
 
 - **双模**：每个活演示组件有 `sim` / `live` 两种数据源，同一渲染管线；全局开关（URL 参数 `?live=1` 或隐藏快捷键）
 - **回退**：fetch 超时（>6s）/网络错误/SSE 中断 → 无感切回罐头剧本；proxy 返回首 token 前显示生成指示
-- **控成本控时长**：预置短 prompt，`max_tokens` 限制 ~120，DeepSeek 单次成本可忽略
+- **控成本控时长**：预置短 prompt，`max_tokens` 限制 ~120，单次成本可忽略
 - **验证口径**：真实调用跑通 ≥1 次 + 断网回退测试通过 + Key 零暴露
 
 ## 5. 目录结构
@@ -106,7 +105,7 @@ ST-PRE/
 | 1 | 内容稿 | `notes/content.md` | 用户审 |
 | 2 | 幻灯片（含 LIVE 开关） | `slides/` | `check --json` 干净 + design-taste-frontend 验收 + Chromium/Firefox/WebKit 三引擎 + chrome-devtools trace 60fps |
 | 3 | LIVE 代理 | `proxy/server.mjs` | 真实调用跑通 + 断网回退 + Key 零暴露 |
-| 4 | PDF 讲义 | `snapshot --at` 逐页合成（reveal 路线则打印导出） | 版式完整 |
+| 4 | PDF 讲义 | `snapshot --at` 逐页合成 | 版式完整 |
 | 5 | 伴学指南站 | `guide/`（上手清单/API 指引/角色卡下载/FAQ/二维码） | 走查通过 |
 | 6 | 部署套件 | `deploy/` | 本机跑通到"缺服务器"那步 |
 | 7 | 上线 | 主域=幻灯片回看+`/guide`+proxy | 手机扫码全链路 |
@@ -114,14 +113,14 @@ ST-PRE/
 
 ## 7. 工具链分工（按 AGENTS.md 路由）
 
-- **构建**：`web-design-engineer`（HTML 幻灯片）+ slideshow 契约；OpenDesign（可用时）做设计探索与样张；**design-taste-frontend** 统一验收（`inspect.mjs`/`lint.mjs` 兼验指南站）
+- **构建**：`web-design-engineer`（HTML 幻灯片）+ slideshow 契约；**design-taste-frontend** 统一验收（`inspect.mjs`/`lint.mjs` 兼验指南站）
 - **QA**：agent-browser（默认走查+上线验收，Chromium 系）→ firefox MCP（引擎兼容）→ safari-official（WebKit/观众 iPhone）→ chrome-devtools 仅 trace/CDP 性能分析
 - **素材**：本机 Docker 起真 ST 抓截图录屏（peekaboo.capture 直出 MP4）；chrome-devtools.screencast 录幻灯片动画兜底；ffmpeg 压缩；`gh` 拉 SillyTavern 官方仓库取自带角色卡（版权干净）
 - **图片生成**：`imagegen.txt` 通道（OpenAI 兼容 `POST {baseurl}/v1/images/generations`，model `gpt-image-2.5-sunburst`），prompt 模板由设计 tokens 约束风格；**逐张先给 prompt 确认再花钱**
 - **研究**：websearch / tavily（ST 最新特性、生态事实核查）
 - **提醒/知识**：openchamber_notify（长任务）；openchamber_knowledge（跨会话计划）
 - **部署/验收**：rsync+ssh；agent-browser 全链路自动化；二维码 `npx qrcode`
-- **技能安装**（阶段 0）：`npx skills add emilkowalski/skills --skill animation-performance -g`、`npx skills add ibelick/ui-skills --skill fixing-motion-performance -g`、`npx skills add pbakaus/impeccable --skill extract -g`
+- **已装技能**：animation-performance、fixing-motion-performance、impeccable/extract
 
 ## 8. 图片生成清单（5~8 张，逐张确认）
 
@@ -138,12 +137,12 @@ ST-PRE/
 
 | 阶段 | 内容 | 产出 | 依赖 |
 |---|---|---|---|
-| 0 开工 | `git init`+`.gitignore`、GitHub 私有仓库、装三项技能、缓存 slideshow 运行时 | 工程底座 | — |
+| 0 开工 ✅ | `git init`+`.gitignore`、GitHub 私有仓库、装三项技能 | 工程底座 | — |
 | 1 内容稿 | 21 页逐页文案+图示创意+备注 | `notes/content.md` | **用户审** |
 | 2a 视觉定调 | 2~3 个视觉方向样张（封面+解剖页）→ 用户选定 → tokens.css | 设计系统 | 与阶段 1 并行 |
-| 2b 实现 | slideshow spike→决策门→全量 21 页+活演示（模拟路径）+素材生产（本机 Docker ST 实拍：截图/官方卡/⑮页案例实录） | `slides/` 初版 | 1+2a |
+| 2b 实现 | slideshow spike 验证 → 全量 21 页+活演示（模拟路径）+素材生产（本机 Docker ST 实拍：截图/官方卡/⑮页案例实录） | `slides/` 初版 | 1+2a |
 | 2c 打磨 | 讲者备注、fragments 节奏、分支热点、三引擎 QA、trace、**关 Wi-Fi 干跑**、PDF | 幻灯片定稿 | 2b |
-| 2d LIVE | proxy 开发+接线+DeepSeek 真实调用验证+回退测试 | 交付物 3 | 2c（Key 已就位） |
+| 2d LIVE | proxy 开发+接线+DeepSeek 真实调用验证+回退测试 | 交付物 3 | 2c |
 | 3 配套 | 指南站 | 交付物 5 | 与 2d 并行 |
 | 4 部署 | 幻灯片+指南+proxy 上北京服务器、HTTPS、nginx | 交付物 7 | 用户确认服务器就绪 |
 | 5 体验站 | ST 实例部署、multi-user 建号、压测彩排 | 交付物 8 | 部署完成后随时 |
@@ -163,16 +162,16 @@ HTTPS：Let's Encrypt / acme.sh；nginx 反代 ST（WebSocket upgrade）
 
 | 风险 | 兜底 |
 |---|---|
-| slideshow 新框架现场翻车 | 2b 决策门可整体切 reveal；断网干跑提前暴露 |
+| slideshow 引擎风险 | 2b spike 提前验证；断网干跑提前暴露 |
 | 现场断网 | 幻灯片离线放映；LIVE 无感回退模拟；录屏兜底 |
-| DeepSeek 延迟/限流 | LIVE 预置短 prompt 限 max_tokens；免费档备用通道 |
+| DeepSeek 延迟/限流 | LIVE 预置短 prompt 限 max_tokens |
 | 观众 iPhone 错版 | safari-official 提前验 WebKit |
 | 分享日早于阶段 5 | 体验环节改为指南站引导自助安装，不取消 |
 | Key 泄漏 | 密钥文件 git 忽略 + 运行时加载 + proxy 端限流 |
 
 ## 12. 安全与密钥策略
 
-- `deepseek-key.txt`、`imagegen.txt` 一律 `.gitignore`，永不进仓库/不上服务器仓库
+- `deepseek-key.txt`、`imagegen.txt` 一律 `.gitignore`，永不进仓库
 - proxy 运行时从环境变量 `DEEPSEEK_KEY` 或本地文件读取；服务器上写入 systemd env 或 `.env`（同样不入库）
 - 图片中转 Key 同理，仅 `tools/` 脚本运行时读取
 
