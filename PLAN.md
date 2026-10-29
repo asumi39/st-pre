@@ -80,7 +80,7 @@ POST https://api.deepseek.com/chat/completions   Authorization: Bearer <KEY>
 
 - **双模**：每个活演示组件有 `sim` / `live` 两种数据源，同一渲染管线；全局开关（URL 参数 `?live=1` 或隐藏快捷键）
 - **回退触发**：首包 >6s 超时 / 网络错误 / SSE 中断 / 上游错误码——401（Key 错）、402（欠费）、429（限流）、500/503（服务端）→ 无感切回罐头剧本；proxy 返回首 token 前显示生成指示
-- **控成本控时长**：预置短 prompt，`max_tokens` 限制 120，Flash 档单次成本可忽略；usage 随流返回，proxy 记日志做成本观测
+- **控成本控时长**：预置短 prompt，`max_tokens` 限制 120。Flash 档官方定价（2026-10）：输出空闲 4 元/M、高峰 8 元/M，输入未命中 1~2 元/M——单次 LIVE 调用约 0.002 元；usage 随流返回，proxy 记日志做成本观测
 - **验证口径**：真实调用跑通 ≥1 次 + 断网回退测试通过 + 上游 401/429 错误注入各一次 + Key 零暴露
 
 ## 5. 目录结构
@@ -166,9 +166,15 @@ ST-PRE/
 tavern.<域名>            → slides 静态站（观众扫码回看）+ /guide/ 指南
 tavern.<域名>/live/      → proxy（反代，持有 Key，限流：简单 IP 计数）
 play.<域名>              → SillyTavern 实例（阶段 5；子域名不另需备案）
-                          enableUserAccounts、批量账号 u001~N、预置官方角色卡
+                          enableUserAccounts + enableDiscreetLogin
+                          批量建号 u001~N：users-admin HTTP 端点 + admin 会话脚本循环
+                          （handle 规则 = 小写字母/数字/短横线）
+                          预置角色卡：content scaffolding（/default/scaffold/index.json，
+                          type "character"，启动时自动复制进每个用户目录）
                           DeepSeek API 预配置（OpenAI 兼容自定义端点，model `deepseek-flash`，见 config.yaml.template。
-                          ⚠ ST 官方文档的 DeepSeek 条目仍写 `deepseek-chat`/`deepseek-reasoner`，已过时，配置以 DeepSeek 官方文档为准）
+                          ⚠ ST 官方文档的 DeepSeek 条目仍写 `deepseek-chat`/`deepseek-reasoner`，已过时，以 DeepSeek 官方文档为准）
+                          ⚠ ST 官方明示：多用户密码"非安全特性"、全部数据明文存储——部署手册
+                            安全清单必须写明：仅限社团可信范围、反代限流、定期备份、敏感内容不上
 HTTPS：Let's Encrypt / acme.sh；nginx 反代 ST（WebSocket upgrade）
 ```
 
@@ -212,6 +218,7 @@ HTTPS：Let's Encrypt / acme.sh；nginx 反代 ST（WebSocket upgrade）
 | imagegen 端点 | `POST /v1/images/generations`（OpenAI 兼容，JSON+Bearer）实测 200；`quality:"low"`、`size` 生效；返回 `b64_json`+`url` 双通道，edits 端点（multipart）仅 `url`；可用模型 gpt-image-2 / 2.5-flare / 2.5-sunburst；单张 ~35s | 关联会话实测（2026-10-29） |
 | ST 文档 DeepSeek 条目 | **过时**（仍写 `deepseek-chat`），配置时以 DeepSeek 官方文档为准 | ST docs 对比 |
 
-**遗留待核**（进对应阶段时处理）：
-- DeepSeek 具体价格数字（定价页抓取被重定向）→ 阶段 1 内容稿涉及价格话术前复核 platform.deepseek.com
-- ST multi-user 批量建号的脚本化路径 → 阶段 5 部署手册编写时验证
+| DeepSeek 定价 | flash：输入缓存命中 0.02/0.04 元/M、未命中 1/2 元/M、输出 4/8 元/M（空闲/高峰，高峰=工作日 9-12 与 14-18）；上下文 1M、输出上限 384K、支持视觉、并发 2500；⚠ v4-pro 自 2026-09-14 起请求路由至 Flash（官方淘汰中，勿选） | 官方定价页（2026-10-29） |
+| ST multi-user | enableUserAccounts/enableDiscreetLogin；建号 = users-admin 端点（admin 会话）；预置内容 = content scaffolding；官方明示密码非安全特性、数据明文存储 | ST docs Administration/multi-user + 代码库（2026-10-29） |
+
+**遗留待核**：无——三项均已核实（2026-10-29）。
