@@ -1,0 +1,127 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: radial-gradient(110% 80% at 50% -10%, #211711 0%, var(--bg) 60%);
+      color: var(--ink);
+    }
+    #s12-lib {
+      position: absolute;
+      left: 108px;
+      top: 260px;
+      width: 560px;
+      height: 560px;
+      border-radius: var(--r);
+      border: var(--card-border);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      padding: 30px 34px;
+    }
+    #s12-lib-title { font-family: var(--font-mono); font-size: var(--fs-micro); color: var(--muted); letter-spacing: 0.2em; }
+    .s12-entry {
+      margin-top: 18px;
+      border: 1px solid var(--line-soft);
+      border-radius: var(--r-sm);
+      padding: 16px 22px;
+      font-size: 26px;
+      line-height: 1.4;
+      color: var(--muted);
+    }
+    .s12-entry b { color: var(--ink-strong); font-weight: 600; }
+    .s12-entry .key {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 24px;
+      color: var(--muted);
+      border: 1px solid var(--line-soft);
+      border-radius: 8px;
+      padding: 1px 10px;
+      margin-left: 10px;
+    }
+    .s12-entry.hit {
+      border-color: rgba(232, 163, 76, 0.55);
+      background: rgba(232, 163, 76, 0.08);
+      color: var(--ink-strong);
+    }
+    .s12-entry.hit .key { color: var(--accent); border-color: rgba(232,163,76,0.45); }
+    #s12-e1, #s12-e2, #s12-e3 { opacity: 0; }
+
+    #s12-chat {
+      position: absolute;
+      right: 108px;
+      top: 260px;
+      width: 620px;
+    }
+    .s12-turn { font-size: 28px; line-height: 1.6; margin-bottom: 20px; opacity: 0; }
+    .s12-turn .who { font-family: var(--font-mono); font-size: 24px; color: var(--muted); display: block; margin-bottom: 4px; }
+    .s12-turn .kw { color: var(--accent); font-weight: 700; }
+    #s12-packet-mini {
+      margin-top: 8px;
+      border: 2px dashed rgba(232, 163, 76, 0.45);
+      border-radius: var(--r-sm);
+      padding: 18px 24px;
+      font-size: 25px;
+      color: var(--muted);
+      min-height: 74px;
+      opacity: 0;
+    }
+    #s12-packet-mini b { color: var(--accent); font-weight: 600; }
+    #s12-point {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 120px;
+      text-align: center;
+      font-size: 31px;
+      color: var(--muted);
+      opacity: 0;
+    }
+    #s12-point b { color: var(--accent); font-weight: 700; }
+  </style>
+
+  <div id="root" data-composition-id="lore" data-width="1920" data-height="1080" data-hold>
+    <div class="page-head">
+      <div class="eyebrow">第三幕 · 能做什么</div>
+      <h1 class="slide-title">世界书：会自己出现的设定</h1>
+    </div>
+
+    <div id="s12-lib">
+      <div id="s12-lib-title">世界书 · 比奇堡设定集（3 / 24 条）</div>
+      <div class="s12-entry" id="s12-e1"><b>蟹堡王</b><span class="key">关键词：蟹堡王</span><br />海绵宝宝工作的地方，招牌蟹黄堡秘方锁在办公室。</div>
+      <div class="s12-entry" id="s12-e2"><b>章鱼哥</b><span class="key">关键词：章鱼哥</span><br />收银员，厌倦一切，吹竖笛，讨厌两个邻居。</div>
+      <div class="s12-entry" id="s12-e3"><b>水母田</b><span class="key">关键词：水母</span><br />城外粉色水母成群，抓水母是周末运动。</div>
+    </div>
+
+    <div id="s12-chat">
+      <div class="s12-turn" id="s12-t1"><span class="who">你</span>我推门进<span class="kw">蟹堡王</span>，想找点吃的。</div>
+      <div class="s12-turn" id="s12-t2"><span class="who">店 · AI</span>柜台的章鱼哥把订单拍在台面上：「秘方不外卖，堂食等着。」</div>
+      <div id="s12-packet-mini">请求包本次注入：<b>「蟹堡王」条目</b>（其余设定沉睡）</div>
+    </div>
+
+    <div id="s12-point">设定太多塞不下？<b>平时睡觉，提到才加载</b>——记住这个动作，第 17 页给它一个学名。</div>
+
+    <div class="act-chip">第三幕 · 能做什么</div>
+    <div class="page-no">12 / 21</div>
+  </div>
+
+  <script>
+    (function () {
+      var tl = gsap.timeline({ paused: true });
+      /* fragments（绝对）：361.0 设定库+对话 · 362.0 命中高亮 · 363.0 注入请求包 · 364.0 底注 */
+      tl.fromTo("#s12-lib", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out", immediateRender: false }, 0.08);
+      tl.fromTo("#s12-e1", { opacity: 0, x: -14 }, { opacity: 1, x: 0, duration: 0.24, ease: "power2.out", immediateRender: false }, 0.5);
+      tl.fromTo("#s12-e2", { opacity: 0, x: -14 }, { opacity: 1, x: 0, duration: 0.24, ease: "power2.out", immediateRender: false }, 0.62);
+      tl.fromTo("#s12-e3", { opacity: 0, x: -14 }, { opacity: 1, x: 0, duration: 0.24, ease: "power2.out", immediateRender: false }, 0.74);
+      tl.fromTo("#s12-t1", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.26, ease: "power2.out", immediateRender: false }, 0.86);
+      tl.fromTo("#s12-t2", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.26, ease: "power2.out", immediateRender: false }, 0.98);
+
+      tl.to("#s12-e1", { borderColor: "rgba(232,163,76,0.55)", backgroundColor: "rgba(232,163,76,0.08)", color: "#f5ead6", duration: 0.34, ease: "power1.out", immediateRender: false }, 1.6);
+      tl.fromTo("#s12-packet-mini", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out", immediateRender: false }, 2.6);
+      tl.fromTo("#s12-point", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.34, ease: "power2.out", immediateRender: false }, 3.56);
+
+      window.__timelines["lore"] = tl;
+    })();
+  </script>
+</template>

@@ -1,0 +1,155 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: radial-gradient(120% 90% at 50% 108%, #2a1c10 0%, var(--bg) 58%);
+      color: var(--ink);
+    }
+    #s21-hero {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.4;
+    }
+    #s21-scrim {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(60% 55% at 50% 42%, rgba(22, 16, 10, 0.8) 0%, rgba(22, 16, 10, 0.35) 60%, transparent 100%),
+        linear-gradient(180deg, rgba(22, 16, 10, 0.6), transparent 35%, rgba(22, 16, 10, 0.8) 100%);
+    }
+    #s21-title {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 150px;
+      text-align: center;
+      font-family: var(--font-display);
+      font-size: 62px;
+      font-weight: 700;
+      color: var(--ink-strong);
+    }
+    #s21-chips {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 300px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 18px;
+      padding: 0 160px;
+    }
+    .s21-chip {
+      font-size: 28px;
+      color: var(--ink-strong);
+      border: 1px solid rgba(232, 163, 76, 0.45);
+      border-radius: 999px;
+      padding: 12px 30px;
+      background: rgba(232, 163, 76, 0.1);
+      opacity: 0;
+    }
+    #s21-qa {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 500px;
+      text-align: center;
+      font-family: var(--font-display);
+      font-size: 66px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.2em;
+      opacity: 0;
+    }
+    #s21-qr {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 640px;
+      display: flex;
+      justify-content: center;
+      gap: 120px;
+      opacity: 0;
+    }
+    .s21-qr-item { text-align: center; }
+    .s21-qr-item img {
+      width: 190px;
+      height: 190px;
+      border-radius: var(--r-sm);
+      border: 1px solid var(--line);
+      background: #fff;
+      padding: 10px;
+      display: block;
+      margin: 0 auto;
+    }
+    .s21-qr-item .t { font-size: 28px; color: var(--ink-strong); margin-top: 14px; }
+    .s21-qr-item .d { font-size: var(--fs-micro); color: var(--muted); margin-top: 4px; }
+    #s21-end {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 100px;
+      text-align: center;
+      font-size: 34px;
+      color: var(--muted);
+      opacity: 0;
+    }
+    #s21-end b { color: var(--accent); font-family: var(--font-display); font-weight: 700; }
+  </style>
+
+  <div id="root" data-composition-id="qa" data-width="1920" data-height="1080" data-hold>
+    <img id="s21-hero" src="assets/gen/divider-warm.png" alt="" data-layout-ignore />
+    <div id="s21-scrim" data-layout-ignore></div>
+
+    <div class="page-head" style="justify-content:center; right:0; left:0;">
+      <div class="eyebrow" style="letter-spacing:0.6em">从玩到学</div>
+    </div>
+
+    <div id="s21-title">今晚你已经理解了——</div>
+
+    <div id="s21-chips">
+      <span class="s21-chip" id="s21-k1">提示词就是一切</span>
+      <span class="s21-chip" id="s21-k2">上下文窗口</span>
+      <span class="s21-chip" id="s21-k3">结构化角色卡</span>
+      <span class="s21-chip" id="s21-k4">关键词触发 = RAG</span>
+      <span class="s21-chip" id="s21-k5">前后端分离</span>
+    </div>
+
+    <div id="s21-qa">Q &amp; A</div>
+
+    <div id="s21-qr">
+      <div class="s21-qr-item">
+        <img src="assets/qr/qr-guide.png" alt="指南站二维码" />
+        <div class="t">上手指南</div>
+        <div class="d">三条路 + 模型接入 + FAQ</div>
+      </div>
+      <div class="s21-qr-item">
+        <img src="assets/qr/qr-play.png" alt="体验站二维码" />
+        <div class="t">体验站</div>
+        <div class="d">扫码即聊 · 官方角色卡已备好</div>
+      </div>
+    </div>
+
+    <div id="s21-end">酒馆最好玩的地方，是你玩着玩着，<b>把 LLM 学了</b>。今晚，酒馆永远开张。</div>
+
+    <div class="page-no" style="right: 108px; bottom: 150px">21 / 21</div>
+  </div>
+
+  <script>
+    (function () {
+      var tl = gsap.timeline({ paused: true });
+      /* fragments（绝对）：691.0 知识点亮 · 692.0 Q&A + 二维码 · 693.0 结束语 */
+      tl.fromTo("#s21-title", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out", immediateRender: false }, 0.08);
+      tl.fromTo(["#s21-k1", "#s21-k2", "#s21-k3", "#s21-k4", "#s21-k5"], { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.26, stagger: 0.1, ease: "power2.out", immediateRender: false }, 0.56);
+      tl.fromTo("#s21-qa", { opacity: 0, letterSpacing: "0.6em" }, { opacity: 1, letterSpacing: "0.2em", duration: 0.44, ease: "power2.out", immediateRender: false }, 1.56);
+      tl.fromTo("#s21-qr", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.38, ease: "power2.out", immediateRender: false }, 1.86);
+      tl.fromTo("#s21-end", { opacity: 0 }, { opacity: 1, duration: 0.36, ease: "power1.out", immediateRender: false }, 2.56);
+      window.__timelines["qa"] = tl;
+    })();
+  </script>
+</template>

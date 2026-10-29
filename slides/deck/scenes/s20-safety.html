@@ -1,0 +1,97 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: radial-gradient(110% 80% at 50% -10%, #211711 0%, var(--bg) 60%);
+      color: var(--ink);
+    }
+    #s20-cards {
+      position: absolute;
+      left: 130px;
+      right: 130px;
+      top: 290px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+    .s20-card {
+      border: 1px solid rgba(192, 95, 51, 0.4);
+      border-radius: var(--r);
+      background: rgba(192, 95, 51, 0.07);
+      padding: 36px 38px;
+      min-height: 360px;
+      opacity: 0;
+    }
+    .s20-card .no {
+      font-family: var(--font-mono);
+      font-size: var(--fs-micro);
+      color: #d89a7e;
+      letter-spacing: 0.2em;
+    }
+    .s20-card .t { font-size: 33px; font-weight: 700; color: var(--ink-strong); margin-top: 16px; line-height: 1.3; }
+    .s20-card .d { font-size: 26px; line-height: 1.55; color: var(--ink); margin-top: 16px; }
+    .s20-card .d code {
+      font-family: var(--font-mono);
+      font-size: 25px;
+      color: #d89a7e;
+      background: rgba(0, 0, 0, 0.28);
+      border-radius: 6px;
+      padding: 1px 8px;
+    }
+    #s20-note {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 125px;
+      text-align: center;
+      font-size: 29px;
+      color: var(--muted);
+      opacity: 0;
+    }
+    #s20-note b { color: var(--ink-strong); }
+  </style>
+
+  <div id="root" data-composition-id="safety" data-width="1920" data-height="1080" data-hold>
+    <div class="page-head">
+      <div class="eyebrow">第五幕 · 上手</div>
+      <h1 class="slide-title">安全与避坑：三条纪律</h1>
+    </div>
+
+    <div id="s20-cards">
+      <div class="s20-card" id="s20-c1">
+        <div class="no">纪律 01 · KEY</div>
+        <div class="t">API Key = 钱包</div>
+        <div class="d">别提交到 <code>GitHub</code>，别发群里，别贴截图。泄漏 = 别人拿你的钱包刷 API。</div>
+      </div>
+      <div class="s20-card" id="s20-c2">
+        <div class="no">纪律 02 · 隐私</div>
+        <div class="t">云端 API 看得到你的全部对话</div>
+        <div class="d">发出去的字都会过别人服务器——隐私内容想清楚再发。本地模型 = 隐私最强档。</div>
+      </div>
+      <div class="s20-card" id="s20-c3">
+        <div class="no">纪律 03 · 分寸</div>
+        <div class="t">内容有护栏，底线要自己守</div>
+        <div class="d">违法有害内容别碰。社团体验站<b style="color:#d89a7e">有日志</b>——互联网没有真正 deleted。</div>
+      </div>
+    </div>
+
+    <div id="s20-note">不是免责套话，是<b>真实世界的使用纪律</b>。</div>
+
+    <div class="act-chip">第五幕 · 上手</div>
+    <div class="page-no">20 / 21</div>
+  </div>
+
+  <script>
+    (function () {
+      var tl = gsap.timeline({ paused: true });
+      /* fragments（绝对）：661.0 卡1 · 662.0 卡2 · 663.0 卡3 · 664.0 底注 */
+      tl.fromTo("#s20-c1", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out", immediateRender: false }, 0.56);
+      tl.fromTo("#s20-c2", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out", immediateRender: false }, 1.56);
+      tl.fromTo("#s20-c3", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out", immediateRender: false }, 2.56);
+      tl.fromTo("#s20-note", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power1.out", immediateRender: false }, 3.56);
+      window.__timelines["safety"] = tl;
+    })();
+  </script>
+</template>

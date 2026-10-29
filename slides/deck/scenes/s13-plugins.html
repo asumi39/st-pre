@@ -1,0 +1,74 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: radial-gradient(110% 80% at 50% -10%, #211711 0%, var(--bg) 60%);
+      color: var(--ink);
+    }
+    #s13-shelf {
+      position: absolute;
+      left: 130px;
+      right: 130px;
+      top: 270px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .s13-plug {
+      border: var(--card-border);
+      border-radius: var(--r);
+      background: var(--surface);
+      padding: 30px 34px;
+      height: 180px;
+      opacity: 0;
+    }
+    .s13-plug .ico { font-size: 40px; }
+    .s13-plug .t { font-size: 30px; font-weight: 700; color: var(--ink-strong); margin-top: 12px; }
+    .s13-plug .d { font-size: var(--fs-micro); color: var(--muted); margin-top: 8px; line-height: 1.4; }
+    #s13-point {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 120px;
+      text-align: center;
+      font-family: var(--font-display);
+      font-size: 38px;
+      color: var(--accent);
+      opacity: 0;
+    }
+  </style>
+
+  <div id="root" data-composition-id="plugins" data-width="1920" data-height="1080" data-hold>
+    <div class="page-head">
+      <div class="eyebrow">第三幕 · 能做什么</div>
+      <h1 class="slide-title">扩展生态：给酒馆装插件</h1>
+    </div>
+
+    <div id="s13-shelf">
+      <div class="s13-plug" id="s13-p1"><div class="ico">🔊</div><div class="t">TTS 语音</div><div class="d">角色开口说话，配音随卡切换</div></div>
+      <div class="s13-plug" id="s13-p2"><div class="ico">🎨</div><div class="t">AI 绘图</div><div class="d">聊天里直接生成场景与立绘</div></div>
+      <div class="s13-plug" id="s13-p3"><div class="ico">🌐</div><div class="t">自动翻译</div><div class="d">外语角色实时翻成中文</div></div>
+      <div class="s13-plug" id="s13-p4"><div class="ico">📝</div><div class="t">聊天总结</div><div class="d">旧对话压缩成摘要塞回窗口</div></div>
+      <div class="s13-plug" id="s13-p5"><div class="ico">🪄</div><div class="t">正则渲染</div><div class="d">输出变成状态栏 / 属性面板 / 游戏 UI</div></div>
+      <div class="s13-plug" id="s13-p6"><div class="ico">⚙️</div><div class="t">用户脚本</div><div class="d">自己写 JS 改造每一个环节</div></div>
+    </div>
+
+    <div id="s13-point">所有插件都在同一件事上加料：改写「发出去的字」，或美化「收回来的字」。</div>
+
+    <div class="act-chip">第三幕 · 能做什么</div>
+    <div class="page-no">13 / 21</div>
+  </div>
+
+  <script>
+    (function () {
+      var tl = gsap.timeline({ paused: true });
+      /* fragments（绝对）：391.0 上排 · 392.0 下排 · 393.0 底注 */
+      tl.fromTo(["#s13-p1", "#s13-p2", "#s13-p3"], { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.26, stagger: 0.1, ease: "power2.out", immediateRender: false }, 0.56);
+      tl.fromTo(["#s13-p4", "#s13-p5", "#s13-p6"], { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.26, stagger: 0.1, ease: "power2.out", immediateRender: false }, 1.56);
+      tl.fromTo("#s13-point", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.36, ease: "power2.out", immediateRender: false }, 2.56);
+      window.__timelines["plugins"] = tl;
+    })();
+  </script>
+</template>

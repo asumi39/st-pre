@@ -1,0 +1,153 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: radial-gradient(110% 80% at 50% -10%, #211711 0%, var(--bg) 60%);
+      color: var(--ink);
+    }
+    /* -- 聊天窗口：Hook 对话回放 -- */
+    #hook-chat {
+      position: absolute;
+      left: 50%;
+      top: 200px;
+      width: 900px;
+      height: 660px;
+      transform: translateX(-50%);
+      background: var(--surface);
+      border: var(--card-border);
+      border-radius: var(--r);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    #hook-head {
+      height: 76px;
+      display: flex;
+      align-items: center;
+      gap: var(--s1);
+      padding: 0 var(--s2);
+      border-bottom: 1px solid var(--line-soft);
+    }
+    #hook-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #5a2d18, #33200f);
+      color: #ffd9a0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 700;
+    }
+    #hook-name { font-size: 28px; font-weight: 600; color: var(--ink-strong); }
+    #hook-sub { font-size: var(--fs-micro); color: var(--muted); }
+    #hook-live-chip {
+      margin-left: auto;
+      font-family: var(--font-mono);
+      font-size: var(--fs-micro);
+      color: var(--muted);
+      border: 1px solid var(--line-soft);
+      border-radius: 999px;
+      padding: 4px 14px;
+    }
+    #hook-msgs {
+      flex: 1;
+      padding: var(--s2);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      gap: 18px;
+    }
+    .hook-msg {
+      max-width: 76%;
+      font-size: 29px;
+      line-height: 1.55;
+      padding: 14px 22px;
+      border-radius: 18px;
+    }
+    .hook-user {
+      align-self: flex-end;
+      background: rgba(232, 163, 76, 0.16);
+      border: 1px solid rgba(232, 163, 76, 0.3);
+      color: var(--ink-strong);
+      border-radius: 18px 18px 4px 18px;
+    }
+    .hook-ai {
+      align-self: flex-start;
+      background: rgba(245, 234, 214, 0.05);
+      border: 1px solid var(--line-soft);
+      color: var(--ink);
+      border-radius: 18px 18px 18px 4px;
+    }
+    .hook-em { color: var(--muted); font-style: italic; }
+    /* 回放中出现顺序：CSS 全部隐藏，时间线逐条点亮（seek 安全） */
+    #hook-m1, #hook-m2, #hook-m3, #hook-m4, #hook-m5 { opacity: 0; }
+
+    #hook-question {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 100px;
+      text-align: center;
+      font-family: var(--font-display);
+      font-size: 40px;
+      color: var(--accent);
+      letter-spacing: 0.04em;
+      opacity: 0;
+    }
+  </style>
+
+  <div id="root" data-composition-id="hook" data-width="1920" data-height="1080" data-hold>
+    <div class="page-head">
+      <div class="eyebrow">序幕 · 先看再懂</div>
+      <h1 class="slide-title">一场对话</h1>
+    </div>
+
+    <section id="hook-chat">
+      <div id="hook-head">
+        <div id="hook-avatar">夜</div>
+        <div>
+          <div id="hook-name">半夜的店主</div>
+          <div id="hook-sub">深夜酒馆 · 打烊前</div>
+        </div>
+        <div id="hook-live-chip">回放 · SIM</div>
+      </div>
+      <div id="hook-msgs">
+        <div class="hook-msg hook-user" id="hook-m1">这么晚还开着？</div>
+        <div class="hook-msg hook-ai" id="hook-m2"><span class="hook-em">（擦着杯子，头也不抬）</span>深夜来的，都不是为了喝酒。</div>
+        <div class="hook-msg hook-user" id="hook-m3">那是为了什么？</div>
+        <div class="hook-msg hook-ai" id="hook-m4"><span class="hook-em">（给你倒了一杯温水）</span>为了有人听他们说话。坐吧，打烊前这杯不要钱。</div>
+        <div class="hook-msg hook-user" id="hook-m5">……你好像知道我今天过得不好。</div>
+      </div>
+    </section>
+
+    <div id="hook-question">刚才这段对话——是谁在「扮演」？它读过角色设定吗？</div>
+
+    <div class="act-chip">序幕 · 先看再懂</div>
+    <div class="page-no">02 / 21</div>
+  </div>
+
+  <script>
+    (function () {
+      var tl = gsap.timeline({ paused: true });
+
+      /* fragments（绝对时间）：31 逐条点亮对话（stagger 在窗口内完成）
+         35 抛出问题 */
+      tl.fromTo("#hook-chat", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.42, ease: "power2.out", immediateRender: false }, 0.08);
+
+      tl.fromTo("#hook-m1", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out", immediateRender: false }, 0.62);
+      tl.fromTo("#hook-m2", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out", immediateRender: false }, 0.94);
+      tl.fromTo("#hook-m3", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out", immediateRender: false }, 1.26);
+      tl.fromTo("#hook-m4", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out", immediateRender: false }, 1.58);
+      tl.fromTo("#hook-m5", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out", immediateRender: false }, 31.9);
+
+      tl.fromTo("#hook-question", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.42, ease: "power2.out", immediateRender: false }, 5.06);
+
+      window.__timelines["hook"] = tl;
+    })();
+  </script>
+</template>

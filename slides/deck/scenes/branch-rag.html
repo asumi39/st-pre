@@ -1,0 +1,88 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: radial-gradient(110% 80% at 50% -10%, #211711 0%, var(--bg) 60%);
+      color: var(--ink);
+    }
+    #br-rag-panel {
+      position: absolute;
+      left: 130px;
+      top: 250px;
+      width: 900px;
+      height: 620px;
+      background: rgba(0, 0, 0, 0.32);
+      border: var(--card-border);
+      border-radius: var(--r);
+      padding: 40px 48px;
+      font-size: 27px;
+      line-height: 1.7;
+      color: var(--ink);
+    }
+    #br-rag-panel .k { color: var(--accent); font-family: var(--font-mono); font-size: 26px; }
+    #br-rag-panel .c { color: var(--muted); font-style: italic; }
+    #br-rag-side {
+      position: absolute;
+      right: 130px;
+      top: 250px;
+      width: 620px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+    .br-rag-note {
+      border: var(--card-border);
+      border-radius: var(--r-sm);
+      background: var(--surface);
+      padding: 24px 30px;
+      font-size: 26px;
+      line-height: 1.55;
+      color: var(--ink);
+    }
+    .br-rag-note b { color: var(--accent); font-weight: 700; }
+    .br-back {
+      position: absolute;
+      right: 108px;
+      bottom: 150px;
+      font-size: var(--fs-micro);
+      color: var(--muted);
+      letter-spacing: 0.2em;
+    }
+  </style>
+
+  <div id="root" data-composition-id="branch-rag" data-width="1920" data-height="1080" data-hold>
+    <div class="page-head">
+      <div class="eyebrow">深挖 · Q&amp;A 弹药</div>
+      <h1 class="slide-title">世界书触发机制的细节</h1>
+    </div>
+
+    <div id="br-rag-panel">一条世界书条目的真实结构<span class="c">（简化）</span>：
+
+  <span class="k">key</span>       <span class="c">—— 主关键词：「蟹堡王」</span>
+  <span class="k">keysecondary</span> <span class="c">—— 次关键词：「汉堡店」（提高命中率）</span>
+  <span class="k">content</span>    <span class="c">—— 命中后注入的正文字段</span>
+  <span class="k">depth</span>      <span class="c">—— 注入到请求包的哪个位置</span>
+  <span class="k">order</span>      <span class="c">—— 多条同时命中时的排序权重</span>
+  <span class="k">probability</span>  <span class="c">—— 命中后按概率注入（控制 token 花费）</span>
+  <span class="k">scan_depth</span>   <span class="c">—— 往回扫描最近几条消息找关键词</span></div>
+
+    <div id="br-rag-side">
+      <div class="br-rag-note"><b>每轮都全库扫描吗？</b>只扫描最近 <b>scan_depth</b> 条消息——不是全量搜索，成本可控。</div>
+      <div class="br-rag-note"><b>关键词是唯一方式吗？</b>进阶玩法支持向量语义触发（第 18 页的补丁 2）——按意思命中，不怕换说法。</div>
+      <div class="br-rag-note"><b>工业界的 RAG 差在哪？</b>规模与召回算法，思想一模一样：检索 → 注入 → 生成。</div>
+    </div>
+
+    <div class="br-back">按 ← 返回上一页</div>
+  </div>
+
+  <script>
+    (function () {
+      var tl = gsap.timeline({ paused: true });
+      tl.fromTo("#br-rag-panel", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.42, ease: "power2.out", immediateRender: false }, 0.08);
+      tl.fromTo(".br-rag-note", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.34, stagger: 0.1, ease: "power2.out", immediateRender: false }, 0.24);
+      window.__timelines["branch-rag"] = tl;
+    })();
+  </script>
+</template>

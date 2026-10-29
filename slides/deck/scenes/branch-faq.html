@@ -1,0 +1,74 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: radial-gradient(110% 80% at 50% -10%, #211711 0%, var(--bg) 60%);
+      color: var(--ink);
+    }
+    #br-faq-grid {
+      position: absolute;
+      left: 130px;
+      right: 130px;
+      top: 270px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 28px;
+    }
+    .br-faq {
+      border: var(--card-border);
+      border-radius: var(--r);
+      background: var(--surface);
+      padding: 34px 40px;
+      min-height: 250px;
+    }
+    .br-faq .q { font-size: 32px; font-weight: 700; color: var(--accent); }
+    .br-faq .a { font-size: 28px; line-height: 1.6; color: var(--ink); margin-top: 18px; }
+    .br-faq .a b { color: var(--ink-strong); }
+    .br-back {
+      position: absolute;
+      right: 108px;
+      bottom: 150px;
+      font-size: var(--fs-micro);
+      color: var(--muted);
+      letter-spacing: 0.2em;
+    }
+  </style>
+
+  <div id="root" data-composition-id="branch-faq" data-width="1920" data-height="1080" data-hold>
+    <div class="page-head">
+      <div class="eyebrow">深挖 · Q&amp;A 弹药</div>
+      <h1 class="slide-title">三个最常被问到的问题</h1>
+    </div>
+
+    <div id="br-faq-grid">
+      <div class="br-faq">
+        <div class="q">手机能玩吗？</div>
+        <div class="a">能。电脑上跑酒馆，手机浏览器直接访问同一局域网地址——界面就是<b>竖屏聊天 App</b> 的样子（第 14 页中间那张截图）。也有 Termux 全手机方案，进阶折腾。</div>
+      </div>
+      <div class="br-faq">
+        <div class="q">要花钱吗？</div>
+        <div class="a">软件本身<b>永久免费开源</b>。大脑：AI Horde / Pollinations 免费开箱即用；想要质量，DeepSeek Flash 档一次对话<b>不到一分钱</b>；本地模型 = 电费。</div>
+      </div>
+      <div class="br-faq">
+        <div class="q">和 Character.AI 什么区别？</div>
+        <div class="a">C.AI 是<b>捆绑套餐</b>：模型、界面、数据都在别人服务器。酒馆只拆出「界面」这一层——大脑随便换、数据在你手里、提示词全透明可改。</div>
+      </div>
+      <div class="br-faq">
+        <div class="q">自己不会写提示词怎么办？</div>
+        <div class="a">社区百万张现成角色卡，<b>导入即玩</b>（V2/V3 格式互通）。玩多了自然会看懂卡里的门道——从改一张卡开始，比从零写快得多。</div>
+      </div>
+    </div>
+
+    <div class="br-back">按 ← 返回上一页</div>
+  </div>
+
+  <script>
+    (function () {
+      var tl = gsap.timeline({ paused: true });
+      tl.fromTo(".br-faq", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.3, stagger: 0.08, ease: "power2.out", immediateRender: false }, 0.08);
+      window.__timelines["branch-faq"] = tl;
+    })();
+  </script>
+</template>

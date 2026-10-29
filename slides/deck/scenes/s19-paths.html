@@ -1,0 +1,103 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: radial-gradient(110% 80% at 50% -10%, #211711 0%, var(--bg) 60%);
+      color: var(--ink);
+    }
+    #s19-cards {
+      position: absolute;
+      left: 130px;
+      right: 130px;
+      top: 280px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+    .s19-card {
+      border: var(--card-border);
+      border-radius: var(--r);
+      background: var(--surface);
+      padding: 36px 38px;
+      min-height: 330px;
+      opacity: 0;
+    }
+    .s19-card .lvl {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: var(--fs-micro);
+      color: var(--accent);
+      border: 1px solid rgba(232, 163, 76, 0.4);
+      border-radius: 999px;
+      padding: 4px 16px;
+      letter-spacing: 0.16em;
+    }
+    .s19-card .t { font-size: 34px; font-weight: 700; color: var(--ink-strong); margin-top: 18px; }
+    .s19-card .d { font-size: 26px; line-height: 1.55; color: var(--ink); margin-top: 14px; }
+    .s19-card .d code {
+      font-family: var(--font-mono);
+      font-size: 25px;
+      color: var(--accent);
+      background: rgba(0, 0, 0, 0.28);
+      border-radius: 6px;
+      padding: 1px 8px;
+    }
+    #s19-model {
+      position: absolute;
+      left: 130px;
+      right: 130px;
+      bottom: 120px;
+      border-radius: var(--r);
+      border: 1px dashed rgba(232, 163, 76, 0.45);
+      background: rgba(232, 163, 76, 0.06);
+      padding: 22px 34px;
+      font-size: 28px;
+      color: var(--ink);
+      text-align: center;
+      opacity: 0;
+    }
+    #s19-model b { color: var(--accent); font-weight: 700; }
+  </style>
+
+  <div id="root" data-composition-id="paths" data-width="1920" data-height="1080" data-hold>
+    <div class="page-head">
+      <div class="eyebrow">第五幕 · 上手</div>
+      <h1 class="slide-title">上手路径：三条路</h1>
+    </div>
+
+    <div id="s19-cards">
+      <div class="s19-card" id="s19-c1">
+        <span class="lvl">最快 · 10 分钟</span>
+        <div class="t">一键整合包</div>
+        <div class="d">下载 → 解压 → 双击。零命令行，适合先玩起来。</div>
+      </div>
+      <div class="s19-card" id="s19-c2">
+        <span class="lvl">正统 · 5 分钟</span>
+        <div class="t">git clone + Node</div>
+        <div class="d"><code>git clone</code> → <code>npm i</code> → <code>node server.js</code>。更新一行命令，社区推荐姿势。</div>
+      </div>
+      <div class="s19-card" id="s19-c3">
+        <span class="lvl">极客 · Docker</span>
+        <div class="t">自托管</div>
+        <div class="d">一条 <code>docker run</code> 常驻——我们体验站的部署方式，多用户共用。</div>
+      </div>
+    </div>
+
+    <div id="s19-model">接模型：填一个 <b>API 地址 + Key</b>（DeepSeek 注册即得；或先用免费的 AI Horde）。指南站二维码在最后一页，卡住了社团群里有我们。</div>
+
+    <div class="act-chip">第五幕 · 上手</div>
+    <div class="page-no">19 / 21</div>
+  </div>
+
+  <script>
+    (function () {
+      var tl = gsap.timeline({ paused: true });
+      /* fragments（绝对）：631.0 三卡 · 632.5 模型接入条 */
+      tl.fromTo(["#s19-c1", "#s19-c2", "#s19-c3"], { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.3, stagger: 0.12, ease: "power2.out", immediateRender: false }, 0.56);
+      tl.fromTo("#s19-model", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.36, ease: "power2.out", immediateRender: false }, 2.06);
+      window.__timelines["paths"] = tl;
+    })();
+  </script>
+</template>

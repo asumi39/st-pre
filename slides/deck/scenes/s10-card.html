@@ -1,0 +1,131 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: radial-gradient(110% 80% at 50% -10%, #211711 0%, var(--bg) 60%);
+      color: var(--ink);
+    }
+    #s10-card {
+      position: absolute;
+      left: 170px;
+      top: 270px;
+      width: 430px;
+      height: 560px;
+      border-radius: var(--r);
+      border: 1px solid rgba(232, 163, 76, 0.4);
+      background: var(--surface-strong);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    #s10-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    #s10-card-name {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 18px 24px;
+      background: linear-gradient(180deg, transparent, rgba(22, 16, 10, 0.92));
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--ink-strong);
+    }
+    #s10-card-file {
+      position: absolute;
+      left: 170px;
+      top: 845px;
+      width: 430px;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: var(--fs-micro);
+      color: var(--muted);
+    }
+
+    #s10-fields {
+      position: absolute;
+      left: 760px;
+      right: 130px;
+      top: 262px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .s10-field {
+      border: var(--card-border);
+      border-radius: var(--r-sm);
+      background: var(--surface);
+      padding: 18px 26px;
+      display: flex;
+      align-items: baseline;
+      gap: 20px;
+      opacity: 0;
+    }
+    .s10-field .k {
+      font-family: var(--font-mono);
+      font-size: 26px;
+      color: var(--accent);
+      width: 220px;
+      flex: none;
+    }
+    .s10-field .v { font-size: 26px; color: var(--ink); line-height: 1.4; }
+    #s10-take {
+      position: absolute;
+      left: 760px;
+      right: 130px;
+      bottom: 140px;
+      font-size: 30px;
+      line-height: 1.5;
+      color: var(--muted);
+      opacity: 0;
+    }
+    #s10-take b { color: var(--accent); font-weight: 700; }
+  </style>
+
+  <div id="root" data-composition-id="card" data-width="1920" data-height="1080" data-hold>
+    <div class="page-head">
+      <div class="eyebrow">第三幕 · 能做什么</div>
+      <h1 class="slide-title">角色卡：一张 PNG 的魔法</h1>
+    </div>
+
+    <div id="s10-card">
+      <img src="assets/gen/demo-card.png" alt="教学演示卡：酒馆店主" />
+      <div id="s10-card-name">半夜的店主</div>
+    </div>
+    <div id="s10-card-file">owner_midnight.png · 图片是皮，数据藏在里面</div>
+
+    <div id="s10-fields">
+      <div class="s10-field" id="s10-f1"><span class="k">name</span><span class="v">半夜的店主</span></div>
+      <div class="s10-field" id="s10-f2"><span class="k">description</span><span class="v">深夜酒馆的店主，慵懒毒舌但心软……</span></div>
+      <div class="s10-field" id="s10-f3"><span class="k">personality</span><span class="v">外冷内热 · 记得每位常客的口味</span></div>
+      <div class="s10-field" id="s10-f4"><span class="k">scenario</span><span class="v">打烊前最后一杯酒的时间</span></div>
+      <div class="s10-field" id="s10-f5"><span class="k">first_mes</span><span class="v">「欢迎光临。想喝点什么？」</span></div>
+      <div class="s10-field" id="s10-f6"><span class="k">mes_example</span><span class="v">&lt;START&gt; 示例对话若干轮……</span></div>
+    </div>
+
+    <div id="s10-take">拆开看：每个字段都是<b>提示词模板的一个槽位</b>。V2/V3 规范互通——社区百万张卡，导入即玩。</div>
+
+    <div class="act-chip">第三幕 · 能做什么</div>
+    <div class="page-no">10 / 21</div>
+  </div>
+
+  <script>
+    (function () {
+      var tl = gsap.timeline({ paused: true });
+      /* fragments（绝对）：286.0 卡亮 · 287.0 字段×3 · 288.0 字段×3 · 289.0 结论 */
+      tl.fromTo("#s10-card", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.36, ease: "power2.out", immediateRender: false }, 0.56);
+      tl.fromTo("#s10-card-file", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power1.out", immediateRender: false }, 0.7);
+
+      tl.fromTo(["#s10-f1", "#s10-f2", "#s10-f3"], { opacity: 0, x: 20 }, { opacity: 1, x: 0, duration: 0.24, stagger: 0.1, ease: "power2.out", immediateRender: false }, 1.6);
+      tl.fromTo(["#s10-f4", "#s10-f5", "#s10-f6"], { opacity: 0, x: 20 }, { opacity: 1, x: 0, duration: 0.24, stagger: 0.1, ease: "power2.out", immediateRender: false }, 2.6);
+      tl.fromTo("#s10-take", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.36, ease: "power2.out", immediateRender: false }, 3.56);
+
+      window.__timelines["card"] = tl;
+    })();
+  </script>
+</template>

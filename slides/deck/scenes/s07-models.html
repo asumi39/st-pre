@@ -1,0 +1,100 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: radial-gradient(110% 80% at 50% -10%, #211711 0%, var(--bg) 60%);
+      color: var(--ink);
+    }
+    .s07-row {
+      position: absolute;
+      left: 108px;
+      right: 108px;
+      height: 170px;
+      border-radius: var(--r);
+      border: var(--card-border);
+      background: var(--surface);
+      padding: 30px 40px;
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      opacity: 0;
+    }
+    .s07-row.hot { border-color: rgba(232, 163, 76, 0.4); background: rgba(232, 163, 76, 0.05); }
+    #s07-r1 { top: 268px; }
+    #s07-r2 { top: 462px; }
+    #s07-r3 { top: 656px; }
+    .s07-tier {
+      width: 300px;
+      flex: none;
+    }
+    .s07-tier .t { font-size: 34px; font-weight: 700; color: var(--ink-strong); }
+    .s07-tier .d { font-size: 28px; color: var(--muted); margin-top: 8px; line-height: 1.35; }
+    .s07-chips { display: flex; flex-wrap: wrap; gap: 14px; }
+    .s07-chip {
+      font-size: 26px;
+      color: var(--ink);
+      border: 1px solid var(--line-soft);
+      border-radius: 10px;
+      padding: 8px 20px;
+      background: rgba(0, 0, 0, 0.22);
+      white-space: nowrap;
+    }
+    .s07-chip.hot { color: var(--accent); border-color: rgba(232,163,76,0.4); }
+    #s07-note {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 120px;
+      text-align: center;
+      font-size: 32px;
+      color: var(--muted);
+      opacity: 0;
+    }
+    #s07-note b { color: var(--accent); font-weight: 700; }
+  </style>
+
+  <div id="root" data-composition-id="models" data-width="1920" data-height="1080" data-hold>
+    <div class="page-head">
+      <div class="eyebrow">第二幕 · ST 是什么</div>
+      <h1 class="slide-title">万能插头：能接的模型谱系</h1>
+    </div>
+
+    <div class="s07-row" id="s07-r1">
+      <div class="s07-tier"><div class="t">云端 API</div><div class="d">质量最好 · 按 token 计费 · 要联网</div></div>
+      <div class="s07-chips">
+        <span class="s07-chip hot">DeepSeek</span><span class="s07-chip hot">GLM</span><span class="s07-chip">Qwen</span><span class="s07-chip">Claude</span><span class="s07-chip">Gemini</span><span class="s07-chip">OpenRouter…</span>
+      </div>
+    </div>
+    <div class="s07-row" id="s07-r2">
+      <div class="s07-tier"><div class="t">本地模型</div><div class="d">断网能玩 · 笔记本跑小模型 · 隐私最强</div></div>
+      <div class="s07-chips">
+        <span class="s07-chip">KoboldCpp</span><span class="s07-chip">llama.cpp</span><span class="s07-chip">Ollama</span>
+      </div>
+    </div>
+    <div class="s07-row" id="s07-r3">
+      <div class="s07-tier"><div class="t">完全免费</div><div class="d">零成本开箱即用 · 排队共享算力</div></div>
+      <div class="s07-chips">
+        <span class="s07-chip hot">AI Horde</span><span class="s07-chip hot">Pollinations</span>
+      </div>
+    </div>
+
+    <div id="s07-note">换模型 = <b>改一个接口地址</b>——界面、角色卡、聊天记录全部不动。免费档就能玩全部功能。</div>
+
+    <div class="act-chip">第二幕 · ST 是什么</div>
+    <div class="page-no">07 / 21</div>
+  </div>
+
+  <script>
+    (function () {
+      var tl = gsap.timeline({ paused: true });
+      /* fragments（绝对）：196.5 / 197.5 / 198.5 三行逐个亮 · 199.5 底注 */
+      tl.fromTo("#s07-r1", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.36, ease: "power2.out", immediateRender: false }, 1.06);
+      tl.fromTo("#s07-r2", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.36, ease: "power2.out", immediateRender: false }, 2.06);
+      tl.fromTo("#s07-r3", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.36, ease: "power2.out", immediateRender: false }, 3.06);
+      tl.fromTo("#s07-note", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.36, ease: "power2.out", immediateRender: false }, 4.06);
+      window.__timelines["models"] = tl;
+    })();
+  </script>
+</template>

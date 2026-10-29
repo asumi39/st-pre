@@ -1,0 +1,182 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: radial-gradient(110% 80% at 50% -10%, #211711 0%, var(--bg) 60%);
+      color: var(--ink);
+    }
+    /* 左：前端面板 */
+    #s06-front, #s06-back {
+      position: absolute;
+      top: 300px;
+      width: 560px;
+      height: 480px;
+      border-radius: var(--r);
+      border: var(--card-border);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      padding: 36px;
+    }
+    #s06-front { left: 150px; }
+    #s06-back { right: 150px; }
+    .s06-panel-title { font-size: 34px; font-weight: 700; color: var(--ink-strong); }
+    .s06-panel-sub { font-size: var(--fs-micro); color: var(--muted); margin-top: 8px; line-height: 1.45; }
+    #s06-ui {
+      margin-top: 26px;
+      height: 270px;
+      border-radius: var(--r-sm);
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--line-soft);
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      overflow: hidden;
+    }
+    .s06-bubble { max-width: 78%; font-size: 23px; line-height: 1.45; padding: 10px 16px; border-radius: 12px; }
+    .s06-bubble.u { align-self: flex-end; background: rgba(232, 163, 76, 0.16); border: 1px solid rgba(232,163,76,0.3); color: var(--ink-strong); }
+    .s06-bubble.a { align-self: flex-start; background: rgba(245,234,214,0.06); border: 1px solid var(--line-soft); }
+    #s06-brains { margin-top: 26px; display: flex; flex-direction: column; gap: 14px; }
+    .s06-brain {
+      font-size: 27px;
+      border: 1px solid var(--line-soft);
+      border-radius: var(--r-sm);
+      padding: 16px 22px;
+      background: rgba(0, 0, 0, 0.22);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .s06-brain .chip {
+      font-family: var(--font-mono);
+      font-size: 20px;
+      color: var(--muted);
+      border: 1px solid var(--line-soft);
+      border-radius: 8px;
+      padding: 2px 10px;
+    }
+    .s06-brain.on { border-color: rgba(232, 163, 76, 0.5); background: rgba(232, 163, 76, 0.08); }
+    .s06-brain.on .chip { color: var(--accent); border-color: rgba(232,163,76,0.4); }
+    #s06-brain-b { opacity: 0; }
+
+    /* 中线 */
+    #s06-wire {
+      position: absolute;
+      left: 760px;
+      right: 760px;
+      top: 505px;
+      height: 2px;
+      background: var(--line-soft);
+    }
+    #s06-packet {
+      position: absolute;
+      left: 700px;
+      top: 448px;
+      width: 200px;
+      padding: 16px 20px;
+      border-radius: 14px;
+      border: 1px solid rgba(232, 163, 76, 0.55);
+      background: rgba(232, 163, 76, 0.12);
+      font-size: 24px;
+      color: var(--ink-strong);
+      text-align: center;
+      z-index: 4;
+      opacity: 0;
+    }
+    #s06-packet small { display: block; font-size: 24px; color: var(--muted); margin-top: 4px; }
+    #s06-reply {
+      position: absolute;
+      left: 760px;
+      right: 760px;
+      top: 545px;
+      height: 4px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent-2), var(--accent));
+      transform-origin: right;
+      transform: scaleX(0);
+    }
+    #s06-note {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 388px;
+      text-align: center;
+      font-size: 26px;
+      color: var(--muted);
+      opacity: 0;
+    }
+    #s06-note2 {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 130px;
+      text-align: center;
+      font-family: var(--font-display);
+      font-size: 38px;
+      color: var(--accent);
+      opacity: 0;
+    }
+  </style>
+
+  <div id="root" data-composition-id="arch" data-width="1920" data-height="1080" data-hold>
+    <div class="page-head">
+      <div class="eyebrow">第二幕 · ST 是什么</div>
+      <h1 class="slide-title">前端与后端分离：界面 ≠ 智能</h1>
+    </div>
+
+    <div id="s06-note">你按下发送 → 你的<b style="color:var(--accent)">全部上下文</b>打包发往大脑 → 回复流式回来</div>
+
+    <section id="s06-front">
+      <div class="s06-panel-title">前端 · 你看到的酒馆</div>
+      <div class="s06-panel-sub">界面、角色卡、聊天记录、插件——全在你自己的设备上</div>
+      <div id="s06-ui">
+        <div class="s06-bubble u">这么晚还开着？</div>
+        <div class="s06-bubble a">深夜来的，都不是为了喝酒。</div>
+        <div class="s06-bubble u" id="s06-send-b">那是为了什么？</div>
+      </div>
+    </section>
+
+    <section id="s06-back">
+      <div class="s06-panel-title">后端 · 任意一个「大脑」</div>
+      <div class="s06-panel-sub">它只负责接龙。换大脑 = 改一个接口地址</div>
+      <div id="s06-brains">
+        <div class="s06-brain on" id="s06-brain-a">DeepSeek <span class="chip">api.deepseek.com</span></div>
+        <div class="s06-brain" id="s06-brain-b">本地 Ollama <span class="chip">localhost:11434</span></div>
+        <div class="s06-brain">AI Horde <span class="chip">free · 众包</span></div>
+      </div>
+    </section>
+
+    <div id="s06-wire" data-layout-ignore></div>
+    <div id="s06-reply" data-layout-ignore></div>
+    <div id="s06-packet">📦 全部上下文<small>角色卡+设定+历史</small></div>
+
+    <div id="s06-note2">ChatGPT 是捆绑套餐；酒馆把界面拆出来单卖——大脑随你换。</div>
+
+    <div class="act-chip">第二幕 · ST 是什么</div>
+    <div class="page-no">06 / 21</div>
+  </div>
+
+  <script>
+    (function () {
+      var tl = gsap.timeline({ paused: true });
+      /* fragments（绝对）：166.5 请求包飞向大脑 · 167.5 回复流回 · 168.5 换大脑演示 */
+      tl.fromTo("#s06-front", { opacity: 0, x: -26 }, { opacity: 1, x: 0, duration: 0.42, ease: "power2.out", immediateRender: false }, 0.08);
+      tl.fromTo("#s06-back", { opacity: 0, x: 26 }, { opacity: 1, x: 0, duration: 0.42, ease: "power2.out", immediateRender: false }, 0.16);
+      tl.fromTo("#s06-wire", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power1.out", immediateRender: false }, 0.3);
+
+      tl.fromTo("#s06-note", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power1.out", immediateRender: false }, 1.06);
+      tl.fromTo("#s06-packet", { opacity: 0, x: 0 }, { opacity: 1, x: 760, duration: 0.42, ease: "power3.inOut", immediateRender: false }, 1.06);
+      tl.fromTo("#s06-reply", { scaleX: 0 }, { scaleX: 1, duration: 0.4, ease: "power2.out", immediateRender: false }, 2.06);
+
+      tl.fromTo("#s06-brain-a", { opacity: 1 }, { opacity: 0.45, duration: 0.3, ease: "power1.out", immediateRender: false }, 3.06);
+      tl.fromTo("#s06-brain-b", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out", immediateRender: false }, 3.2);
+      tl.to("#s06-brain-b", { borderColor: "rgba(232,163,76,0.5)", backgroundColor: "rgba(232,163,76,0.08)", duration: 0.3, ease: "power1.out", immediateRender: false }, 3.3);
+
+      tl.fromTo("#s06-note2", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.42, ease: "power2.out", immediateRender: false }, 3.06);
+
+      window.__timelines["arch"] = tl;
+    })();
+  </script>
+</template>

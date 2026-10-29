@@ -1,0 +1,104 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: radial-gradient(110% 80% at 50% -10%, #211711 0%, var(--bg) 60%);
+      color: var(--ink);
+    }
+    #s18-echo {
+      position: absolute;
+      left: 108px;
+      right: 108px;
+      top: 244px;
+      font-size: 34px;
+      color: var(--muted);
+    }
+    #s18-echo b { color: var(--accent); font-weight: 700; }
+    .s18-path {
+      position: absolute;
+      top: 350px;
+      width: 760px;
+      border-radius: var(--r);
+      border: var(--card-border);
+      background: var(--surface);
+      padding: 36px 42px;
+      min-height: 380px;
+      opacity: 0;
+    }
+    #s18-p1 { left: 130px; }
+    #s18-p2 { right: 130px; }
+    .s18-path .n { font-family: var(--font-mono); font-size: var(--fs-micro); color: var(--accent); letter-spacing: 0.18em; }
+    .s18-path .t { font-size: 38px; font-weight: 700; color: var(--ink-strong); margin-top: 12px; }
+    .s18-path .d { font-size: 27px; line-height: 1.55; color: var(--ink); margin-top: 18px; }
+    .s18-demo {
+      margin-top: 24px;
+      border: 1px solid var(--line-soft);
+      border-radius: var(--r-sm);
+      padding: 20px 26px;
+      font-size: 26px;
+      line-height: 1.5;
+      color: var(--muted);
+      background: rgba(0, 0, 0, 0.22);
+    }
+    .s18-demo .before { color: #d89a7e; }
+    .s18-demo .after { color: var(--accent); }
+    #s18-punch {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 120px;
+      text-align: center;
+      font-size: 30px;
+      color: var(--muted);
+      opacity: 0;
+    }
+    #s18-punch b { color: var(--ink-strong); }
+  </style>
+
+  <div id="root" data-composition-id="memory" data-width="1920" data-height="1080" data-hold>
+    <div class="page-head">
+      <div class="eyebrow">第四幕 · 解剖一次对话</div>
+      <h1 class="slide-title">记忆的代价：总结与向量</h1>
+    </div>
+
+    <div id="s18-echo">还记得第 4 页吗——窗口满了。民间最朴素的「长期记忆」补丁，有两条路：</div>
+
+    <div class="s18-path" id="s18-p1">
+      <div class="n">PATCH 1 · SUMMARIZE</div>
+      <div class="t">总结：旧对话压成一段摘要</div>
+      <div class="d">早期对话整段压缩成一小段记忆塞回窗口——牺牲细节，保住连贯。</div>
+      <div class="s18-demo">
+        <div class="before">36 轮对话 · 约 9,000 字 → 挤爆窗口</div>
+        <div class="after">压缩后：「两人相识于酒馆，你欠店主一杯酒的债，正在打烊前偿还……」（120 字）</div>
+      </div>
+    </div>
+
+    <div class="s18-path" id="s18-p2">
+      <div class="n">PATCH 2 · EMBEDDINGS</div>
+      <div class="t">向量检索：按语义找回旧片段</div>
+      <div class="d">把旧消息变成向量；说到相关话题时，最相似的片段自动回窗——像世界书，但按<b style="color:var(--accent)">意思</b>触发。</div>
+      <div class="s18-demo">
+        <div class="after">你说「那杯酒的债」→ 自动找回 30 轮前的赊账对话</div>
+      </div>
+    </div>
+
+    <div id="s18-punch">原理你们已经全懂了——剩下只是工程化的名字。</div>
+
+    <div class="act-chip">第四幕 · 解剖一次对话</div>
+    <div class="page-no">18 / 21</div>
+  </div>
+
+  <script>
+    (function () {
+      var tl = gsap.timeline({ paused: true });
+      /* fragments（绝对）：601.0 回扣句+补丁1 · 602.0 补丁2 · 603.0 底注 */
+      tl.fromTo("#s18-echo", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power1.out", immediateRender: false }, 0.56);
+      tl.fromTo("#s18-p1", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.36, ease: "power2.out", immediateRender: false }, 0.66);
+      tl.fromTo("#s18-p2", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.36, ease: "power2.out", immediateRender: false }, 1.66);
+      tl.fromTo("#s18-punch", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.32, ease: "power2.out", immediateRender: false }, 2.66);
+      window.__timelines["memory"] = tl;
+    })();
+  </script>
+</template>

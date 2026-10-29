@@ -1,0 +1,247 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: radial-gradient(110% 80% at 50% -10%, #211711 0%, var(--bg) 60%);
+      color: var(--ink);
+    }
+    #s04-def {
+      position: absolute;
+      left: 108px;
+      right: 108px;
+      top: 236px;
+      font-size: 38px;
+      line-height: 1.5;
+      color: var(--ink);
+    }
+    #s04-def b { color: var(--accent); font-weight: 700; }
+
+    /* 模拟器舞台 */
+    #s04-stage {
+      position: absolute;
+      left: 108px;
+      right: 108px;
+      top: 380px;
+      height: 330px;
+      background: var(--surface);
+      border: var(--card-border);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    #s04-window-frame {
+      position: absolute;
+      left: 50%;
+      top: 26px;
+      width: 640px;
+      height: 200px;
+      transform: translateX(-50%);
+      border: 2px solid rgba(232, 163, 76, 0.55);
+      border-radius: var(--r-sm);
+      pointer-events: none;
+      z-index: 3;
+    }
+    #s04-window-label {
+      position: absolute;
+      left: 50%;
+      top: -2px;
+      transform: translate(-50%, -100%);
+      font-family: var(--font-mono);
+      font-size: var(--fs-micro);
+      color: var(--accent);
+      letter-spacing: 0.22em;
+      background: var(--bg);
+      padding: 2px 14px;
+      border-radius: 8px 8px 0 0;
+    }
+    #s04-track {
+      position: absolute;
+      left: 0;
+      top: 52px;
+      display: flex;
+      gap: 16px;
+      padding: 0 24px;
+      will-change: transform;
+    }
+    .s04-msg {
+      flex: none;
+      width: 150px;
+      height: 140px;
+      border-radius: 14px;
+      background: rgba(245, 234, 214, 0.07);
+      border: 1px solid var(--line-soft);
+      padding: 14px;
+      font-size: var(--fs-micro);
+      line-height: 1.35;
+      color: var(--ink);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .s04-msg .who {
+      font-family: var(--font-mono);
+      font-size: 24px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
+    .s04-msg.user { border-color: rgba(232, 163, 76, 0.35); }
+    .s04-msg.user .who { color: var(--accent); }
+
+    /* 滑块 */
+    #s04-ctrl {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 760px;
+      width: 1100px;
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+    #s04-slider {
+      flex: 1;
+      appearance: none;
+      -webkit-appearance: none;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(245, 234, 214, 0.14);
+      outline: none;
+    }
+    #s04-slider::-webkit-slider-thumb {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 3px solid var(--bg);
+      box-shadow: 0 0 0 2px rgba(232, 163, 76, 0.4);
+      cursor: grab;
+    }
+    #s04-slider::-moz-range-thumb {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 3px solid var(--bg);
+      cursor: grab;
+    }
+    #s04-count {
+      font-family: var(--font-mono);
+      font-size: 26px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    #s04-count b { color: var(--accent); font-weight: 700; }
+
+    /* 结论 caption：挤出发生时出现 */
+    #s04-caption {
+      position: absolute;
+      left: 108px;
+      right: 108px;
+      bottom: 130px;
+      text-align: center;
+      font-family: var(--font-display);
+      font-size: 37px;
+      color: var(--accent);
+      opacity: 0;
+    }
+  </style>
+
+  <div id="root" data-composition-id="context" data-width="1920" data-height="1080" data-hold>
+    <div class="page-head">
+      <div class="eyebrow">第一幕 · LLM 背景</div>
+      <h1 class="slide-title">它没有记忆：上下文窗口</h1>
+    </div>
+
+    <div id="s04-def">每一轮对话，<b>全部历史都要重新发一遍</b>。窗口只有固定大小——装不下时，最早的记忆被挤出。</div>
+
+    <div id="s04-stage">
+      <div id="s04-window-frame"><div id="s04-window-label">上下文窗口 · 固定大小</div></div>
+      <div id="s04-track"></div>
+    </div>
+
+    <div id="s04-ctrl">
+      <span style="font-size: 30px; color: var(--muted)">聊得更多 →</span>
+      <input id="s04-slider" type="range" min="0" max="100" value="0" step="1" />
+      <span id="s04-count">窗口内 <b>5</b> 条 · 挤出 <b>0</b> 条</span>
+    </div>
+
+    <div id="s04-caption">它「忘了」——不是故障，是那些字已经不在这次请求里了。</div>
+
+    <div class="act-chip">第一幕 · LLM 背景</div>
+    <div class="page-no">04 / 21</div>
+  </div>
+
+  <script>
+    (function () {
+      var tl = gsap.timeline({ paused: true });
+      tl.fromTo("#s04-def", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.42, ease: "power2.out", immediateRender: false }, 0.08);
+      tl.fromTo("#s04-stage", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.42, ease: "power2.out", immediateRender: false }, 0.2);
+      tl.fromTo("#s04-ctrl", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.out", immediateRender: false }, 0.35);
+      window.__timelines["context"] = tl;
+
+      /* -- 交互模拟器：滑块驱动（事件驱动，非时钟；不与引擎时间线争抢）-- */
+      var MESSAGES = [
+        ["user", "今晚去哪吃？"], ["ai", "校门口那家麻辣烫？"], ["user", "昨天不是说过不吃辣"],
+        ["ai", "那就隔壁粥铺"], ["user", "你记性真差"], ["ai", "我一直记着你说过的"],
+        ["user", "今晚有雨吗"], ["ai", "带伞的话去哪都行"], ["user", "敷衍"],
+        ["ai", "认真点：粥铺，六点半"], ["user", "行，就这样"], ["ai", "到时候见"],
+      ];
+      var CAPACITY = 5;
+      var stage = document.getElementById("s04-stage");
+      var frame = document.getElementById("s04-window-frame");
+      var track = document.getElementById("s04-track");
+      var slider = document.getElementById("s04-slider");
+      var count = document.getElementById("s04-count");
+      var caption = document.getElementById("s04-caption");
+      var pills = [];
+
+      MESSAGES.forEach(function (m, i) {
+        var d = document.createElement("div");
+        d.className = "s04-msg " + m[0];
+        d.innerHTML = '<div class="who">' + (m[0] === "user" ? "你 · M" + (i + 1) : "店 · M" + (i + 1)) + "</div><div>" + m[1] + "</div>";
+        track.appendChild(d);
+        pills.push(d);
+      });
+
+      var frameBox = null;
+      function apply() {
+        var v = Number(slider.value) / 100;
+        var overflow = Math.round(v * (MESSAGES.length - CAPACITY));
+        var visible = MESSAGES.length - overflow;
+        if (!frameBox) frameBox = frame.getBoundingClientRect();
+        var stageBox = stage.getBoundingClientRect();
+        var left = frameBox.left - stageBox.left;
+        var right = frameBox.right - stageBox.left;
+
+        var pillW = 150 + 16;
+        var contentW = MESSAGES.length * pillW - 16;
+        var shiftMax = Math.max(0, contentW - (right - left) + 48);
+        var shift = -v * shiftMax;
+        track.style.transform = "translateX(" + shift + "px)";
+
+        var squeezed = 0;
+        pills.forEach(function (p, i) {
+          var inWindow = i >= overflow && i < MESSAGES.length;
+          var beyondWindowRight = i < overflow;
+          var frac;
+          if (beyondWindowRight) frac = 0.16;
+          else if (inWindow) frac = 1;
+          else frac = 0.16;
+          p.style.opacity = String(frac);
+          p.style.filter = inWindow ? "none" : "grayscale(0.9)";
+          p.style.transform = inWindow ? "none" : "scale(0.94)";
+          if (beyondWindowRight) squeezed++;
+        });
+        var inCount = Math.min(CAPACITY, visible);
+        count.innerHTML = "窗口内 <b>" + inCount + "</b> 条 · 挤出 <b>" + squeezed + "</b> 条";
+        caption.style.opacity = squeezed > 0 ? "1" : "0";
+      }
+      slider.addEventListener("input", apply);
+      apply();
+    })();
+  </script>
+</template>

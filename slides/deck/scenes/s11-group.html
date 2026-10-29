@@ -1,0 +1,120 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: radial-gradient(110% 80% at 50% -10%, #211711 0%, var(--bg) 60%);
+      color: var(--ink);
+    }
+    #s11-room {
+      position: absolute;
+      left: 50%;
+      top: 236px;
+      width: 1100px;
+      height: 660px;
+      transform: translateX(-50%);
+      border-radius: var(--r);
+      border: var(--card-border);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      padding: 34px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    #s11-room-title {
+      font-size: var(--fs-micro);
+      font-family: var(--font-mono);
+      color: var(--muted);
+      letter-spacing: 0.2em;
+    }
+    .s11-line { display: flex; gap: 16px; align-items: flex-start; opacity: 0; }
+    .s11-ava {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      flex: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 700;
+      color: #ffd9a0;
+      background: linear-gradient(135deg, #5a2d18, #33200f);
+    }
+    .s11-line[data-who="店长"] .s11-ava { background: linear-gradient(135deg, #5a2d18, #33200f); }
+    .s11-line[data-who="吟游诗人"] .s11-ava { background: linear-gradient(135deg, #3d4a2a, #22300f); color: #d8e8b0; }
+    .s11-line[data-who="你"] { flex-direction: row-reverse; }
+    .s11-line[data-who="你"] .s11-ava { background: rgba(232, 163, 76, 0.25); color: var(--ink-strong); }
+    .s11-bubble {
+      max-width: 72%;
+      font-size: 27px;
+      line-height: 1.5;
+      padding: 13px 20px;
+      border-radius: 16px;
+      background: rgba(245, 234, 214, 0.05);
+      border: 1px solid var(--line-soft);
+    }
+    .s11-line[data-who="你"] .s11-bubble {
+      background: rgba(232, 163, 76, 0.16);
+      border-color: rgba(232, 163, 76, 0.3);
+      color: var(--ink-strong);
+    }
+    .s11-name { font-family: var(--font-mono); font-size: 24px; color: var(--muted); margin-bottom: 6px; }
+    #s11-point {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 130px;
+      text-align: center;
+      font-size: 32px;
+      color: var(--muted);
+      opacity: 0;
+    }
+    #s11-point b { color: var(--accent); font-weight: 700; }
+  </style>
+
+  <div id="root" data-composition-id="group" data-width="1920" data-height="1080" data-hold>
+    <div class="page-head">
+      <div class="eyebrow">第三幕 · 能做什么</div>
+      <h1 class="slide-title">群聊：让角色同台</h1>
+    </div>
+
+    <div id="s11-room">
+      <div id="s11-room-title">群聊 · 深夜酒馆房间 · 3 位成员</div>
+      <div class="s11-line" data-who="你" id="s11-l1">
+        <div class="s11-ava">你</div>
+        <div><div class="s11-name">你 · @吟游诗人</div><div class="s11-bubble">给我们讲讲这家店的来历？</div></div>
+      </div>
+      <div class="s11-line" data-who="吟游诗人" id="s11-l2">
+        <div class="s11-ava">诗</div>
+        <div><div class="s11-name">吟游诗人</div><div class="s11-bubble">三十年前，一位旅人在风雪里敲错了门——敲开的不是客栈，是这间酒馆。</div></div>
+      </div>
+      <div class="s11-line" data-who="店长" id="s11-l3">
+        <div class="s11-ava">夜</div>
+        <div><div class="s11-name">半夜的店主</div><div class="s11-bubble">（擦杯子的手停了一下）……他的版本比我好听。实际只是我懒得装门牌。</div></div>
+      </div>
+      <div class="s11-line" data-who="你" id="s11-l4">
+        <div class="s11-ava">你</div>
+        <div><div class="s11-name">你 · @店长</div><div class="s11-bubble">承认吧，你也很喜欢这个故事。</div></div>
+      </div>
+    </div>
+
+    <div id="s11-point">还是接龙——只是提示词里写了「<b>你现在扮演房间里的所有人</b>」。@谁，谁接话。</div>
+
+    <div class="act-chip">第三幕 · 能做什么</div>
+    <div class="page-no">11 / 21</div>
+  </div>
+
+  <script>
+    (function () {
+      var tl = gsap.timeline({ paused: true });
+      /* fragments（绝对）：331.5 对话四条 · 333.5 底注 */
+      tl.fromTo("#s11-room", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.42, ease: "power2.out", immediateRender: false }, 0.08);
+      tl.fromTo(["#s11-l1", "#s11-l2", "#s11-l3", "#s11-l4"], { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.26, stagger: 0.14, ease: "power2.out", immediateRender: false }, 1.1);
+      tl.fromTo("#s11-point", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.36, ease: "power2.out", immediateRender: false }, 3.06);
+      window.__timelines["group"] = tl;
+    })();
+  </script>
+</template>

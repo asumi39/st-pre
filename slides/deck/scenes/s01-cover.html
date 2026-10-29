@@ -7,6 +7,22 @@
       background: radial-gradient(120% 90% at 50% 108%, #2a1c10 0%, var(--bg) 58%);
       color: var(--ink);
     }
+    /* 主视觉：imagegen #1「烛光酒馆」—— 中央留黑给排版，vignette 压四周 */
+    #cover-hero {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.62;
+    }
+    #cover-scrim {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(52% 46% at 50% 44%, rgba(22, 16, 10, 0.72) 0%, rgba(22, 16, 10, 0.28) 58%, transparent 100%),
+        linear-gradient(180deg, rgba(22, 16, 10, 0.55), transparent 30%, transparent 62%, rgba(22, 16, 10, 0.72) 100%);
+    }
     /* 木纹暗纹理：极低对比横向纹路，只给质感不给注意力 */
     #cover-grain {
       position: absolute;
@@ -122,6 +138,8 @@
   </style>
 
   <div data-hf-id="hf-scbp" id="root" data-composition-id="cover" data-width="1920" data-height="1080" data-hold>
+    <img id="cover-hero" src="assets/gen/cover-hero.png" alt="" data-layout-ignore />
+    <div id="cover-scrim" data-layout-ignore></div>
     <div data-hf-id="hf-31nk" id="cover-glow"></div>
     <div data-hf-id="hf-5wm7" id="cover-grain" data-layout-ignore></div>
     <div data-hf-id="hf-g1pc" id="cover-vignette" data-layout-ignore></div>

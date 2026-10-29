@@ -1,0 +1,85 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: radial-gradient(110% 80% at 50% -10%, #211711 0%, var(--bg) 60%);
+      color: var(--ink);
+    }
+    .s09-col {
+      position: absolute;
+      top: 270px;
+      width: 760px;
+      border-radius: var(--r);
+      padding: 40px 44px;
+    }
+    #s09-yes { left: 130px; background: rgba(232, 163, 76, 0.05); border: 1px solid rgba(232, 163, 76, 0.4); }
+    #s09-no { right: 130px; background: rgba(192, 95, 51, 0.06); border: 1px solid rgba(192, 95, 51, 0.3); }
+    .s09-head { font-size: 36px; font-weight: 700; }
+    #s09-yes .s09-head { color: var(--accent); }
+    #s09-no .s09-head { color: #d89a7e; }
+    .s09-item { font-size: 29px; line-height: 1.55; color: var(--ink); margin-top: 22px; }
+    .s09-item b { color: var(--ink-strong); }
+    #s09-alt {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 130px;
+      text-align: center;
+      font-size: 30px;
+      color: var(--muted);
+      opacity: 0;
+    }
+    #s09-alt b { color: var(--ink-strong); }
+    #s09-punch {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 210px;
+      text-align: center;
+      font-family: var(--font-display);
+      font-size: 42px;
+      color: var(--accent);
+      opacity: 0;
+    }
+  </style>
+
+  <div id="root" data-composition-id="fit" data-width="1920" data-height="1080" data-hold>
+    <div class="page-head">
+      <div class="eyebrow">第二幕 · ST 是什么</div>
+      <h1 class="slide-title">诚实的定位：它适合谁</h1>
+    </div>
+
+    <div class="s09-col" id="s09-yes">
+      <div class="s09-head">✓ 适合你，如果——</div>
+      <div class="s09-item">想<b>掌控每个细节</b>：提示词、参数、界面都要自己说了算</div>
+      <div class="s09-item">想<b>真的看懂 LLM</b>：今晚这种解剖，只有开源工具给你看</div>
+      <div class="s09-item">是<b>创作者</b>：跑团 GM、语言陪练、小说共创</div>
+    </div>
+    <div class="s09-col" id="s09-no">
+      <div class="s09-head">✗ 先别折腾，如果——</div>
+      <div class="s09-item">只想<b>开箱即用</b>：装环境、读文档对你来说 是痛苦而非乐趣</div>
+      <div class="s09-item">只想要一个<b>官方 App</b> 的稳定体验</div>
+      <div class="s09-item">（更轻的替代：RisuAI 等，也能玩角色卡）</div>
+    </div>
+
+    <div id="s09-punch">门槛，就是今晚要拆掉的东西。</div>
+    <div id="s09-alt">诚实曲线就是信任曲线——所以先说清楚谁该绕行。</div>
+
+    <div class="act-chip">第二幕 · ST 是什么</div>
+    <div class="page-no">09 / 21</div>
+  </div>
+
+  <script>
+    (function () {
+      var tl = gsap.timeline({ paused: true });
+      /* fragments（绝对）：256.5 两栏 · 257.5 金句+alt */
+      tl.fromTo("#s09-yes", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.36, ease: "power2.out", immediateRender: false }, 1.06);
+      tl.fromTo("#s09-no", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.36, ease: "power2.out", immediateRender: false }, 1.14);
+      tl.fromTo("#s09-punch", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.36, ease: "power2.out", immediateRender: false }, 2.06);
+      tl.fromTo("#s09-alt", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power1.out", immediateRender: false }, 2.2);
+      window.__timelines["fit"] = tl;
+    })();
+  </script>
+</template>

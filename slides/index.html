@@ -63,118 +63,196 @@
   <body>
     <!--
       ISLAND 主本。独立放映入口 deck.html 内有一份副本，两处必须保持同步！
-      （<hyperframes-slideshow> 从自身 innerHTML 读清单，而非从 composition 读。）
+      改 slides/fragments/hotspots/notes 时两处都要改；且 present 服务器在启动时
+      静态读取本文件——改完 island 要重启 present。
       fragments = 绝对时间（与 data-start 同一时钟）；分支场景只出现在 slideSequences。
     -->
     <script type="application/hyperframes-slideshow+json">
       {
         "slides": [
-          {
-            "sceneId": "cover",
-            "notes": "开场白：今晚不讲 PPT，讲一个能玩的东西。有人听过『酒馆』吗？举手看看。今晚结束你会看懂 AI 角色扮演的全部原理，还能自己搭一个。→ 先别解释，直接看。"
-          },
-          {
-            "sceneId": "anatomy",
-            "fragments": [46.5, 47.5, 48.5, 49.5, 50.5, 51.5, 53],
+          { "sceneId": "cover",
+            "notes": "开场白：今晚不讲 PPT，讲一个能玩的东西。有人听过『酒馆』吗？举手看看。今晚结束你会看懂 AI 角色扮演的全部原理，还能自己搭一个。→ 先别解释，直接看。" },
+          { "sceneId": "hook",
+            "fragments": [31, 35],
+            "notes": "放完提问：这段对话是谁在『扮演』？它真的记得自己是谁吗？它读过角色设定吗？停两拍。→ 要懂酒馆，得先懂它后面那颗大脑。" },
+          { "sceneId": "llm",
+            "fragments": [62, 63.5],
+            "notes": "『文字接龙』类比贯穿全场。没有神秘的灵魂，只有概率——每个字都是一个一个猜出来的。它不知道自己是谁，除非你告诉它。→ 接龙机器有个天生的毛病——记性差。" },
+          { "sceneId": "context",
+            "notes": "拖滑块演示：失忆不是故障，是物理限制——每次请求都要把历史全部重发。窗口=模型一次能看见的字数上限。记住这页：世界书、总结、向量全是在这上面打补丁。→ 大脑有毛病，就需要懂它的管家——酒馆登场。" },
+          { "sceneId": "origin",
+            "fragments": [136.5, 137.5],
+            "notes": "『Silly』是自嘲——给爱折腾的人准备的瑞士军刀。B 站叫它酒馆，今晚我们也这么叫。活了三年还在周更，社区就是它的命。→ 它凭什么能接这么多大脑？架构上就把界面和大脑拆开了。" },
+          { "sceneId": "arch",
+            "fragments": [166.5, 167.5, 168.5],
+            "notes": "全场最重要的一页。ChatGPT 是捆绑套餐：界面和大脑焊死。酒馆把界面拆出来单卖——大脑随你换，改一个接口地址就行。LIVE 打开时此图与真实请求同步点亮。→ 拆开之后，大脑货架上有什么？" },
+          { "sceneId": "models",
+            "fragments": [196.5, 197.5, 198.5, 199.5],
+            "notes": "免费档就能玩全部功能；想要质量，DeepSeek Flash 一次对话不到一分钱；本地模型断网也能玩。→ 大脑在别人服务器上，那我的数据呢？" },
+          { "sceneId": "data",
+            "fragments": [226.5, 227.5, 228.5],
+            "notes": "数据不绑架人：想搬走随时打包带走。这也是它适合当社团基础设施的原因。→ 好处说完，该说大实话了。" },
+          { "sceneId": "fit",
+            "fragments": [256.5, 257.5],
+            "notes": "诚实曲线是信任曲线：它有安装门槛、有学习曲线——门槛本身就是今晚要拆掉的东西。只想轻量聊天：RisuAI 等更轻的选择。→ 那它到底能玩出什么花？第三幕。" },
+          { "sceneId": "card",
+            "fragments": [286, 287, 288, 289],
             "hotspots": [
-              {
-                "id": "h-card-json",
-                "label": "拆开看：真实 V2 卡长什么样",
-                "target": "branch-card",
-                "region": { "x": 63, "y": 22, "w": 15, "h": 13 }
-              }
+              { "id": "h-card-json2", "label": "拆开看：真实 V2 卡长什么样", "target": "branch-card", "region": { "x": 8, "y": 25, "w": 23, "h": 53 } }
             ],
-            "notes": "全场核心页。前面 15 页都是为了让你看懂这几秒的动画：人设、设定、记忆、参数——没有魔法，全部是这包里的字。LIVE 开关打开时旁边同步亮起真实请求计时。→ 这个按需装字的动作，工业界有个名字（下一页 RAG）。Q&A 弹药：点『角色卡』块可深挖真实卡结构。"
-          }
+            "notes": "角色扮演的秘密=一张填好模板的表。PNG 里藏结构化 JSON——图片是皮数据是魂。V2/V3 规范互通，别人的卡直接导入就能玩。热点可深挖真实卡结构。→ 一个角色是独角戏，一群角色呢？" },
+          { "sceneId": "group",
+            "fragments": [331.5, 333.5],
+            "notes": "一个模型演一台戏。原理没变——还是接龙，只是提示词里写了『你现在扮演房间所有人』。→ 设定太多记不住？下一页是酒馆最聪明的设计。" },
+          { "sceneId": "lore",
+            "fragments": [361, 362, 363, 364],
+            "hotspots": [
+              { "id": "h-rag-deep", "label": "触发机制的细节（key/概率/扫描深度）", "target": "branch-rag", "region": { "x": 55, "y": 47, "w": 38, "h": 18 } }
+            ],
+            "notes": "设定太多塞不下怎么办？酒馆的办法：平时睡觉，提到才加载。记住这个动作，第 17 页给它一个学名。热点可深挖触发机制细节。→ 光有设定不够，插件货架同样夸张。" },
+          { "sceneId": "plugins",
+            "fragments": [391, 392, 393],
+            "notes": "重点不是功能多：所有插件都在同一件事上加料——改写『发出去的文字』，或美化『收回来的文字』。一切皆是提示词的加工。→ 插件还能把界面整个换掉。" },
+          { "sceneId": "ui",
+            "notes": "走马观花：体验站/装好后大家自己摸。界面是前端→皮肤随便换，大脑不受影响（回扣第 6 页）。→ 说了这么多，直接看三段真家伙。" },
+          { "sceneId": "play",
+            "notes": "三段实录各 ~40s，点击选项卡切换。『这些不是宣传图，是我们自己录的。』你们每个人今晚之后都能搭出一样的。→ 看懂了是什么和能干什么，现在拆开看为什么。" },
+          { "sceneId": "anatomy",
+            "fragments": [496.5, 497.5, 498.5, 499.5, 500.5, 501.5, 503],
+            "hotspots": [
+              { "id": "h-card-json", "label": "拆开看：真实 V2 卡长什么样", "target": "branch-card", "region": { "x": 71, "y": 21, "w": 24, "h": 14 } }
+            ],
+            "notes": "全场核心页。前面 15 页都是为了让你看懂这几秒的动画：人设、设定、记忆、参数——没有魔法，全部是这包里的字。→ 这个按需装字的动作，工业界有个名字（下一页 RAG）。热点可深挖卡结构。" },
+          { "sceneId": "rag",
+            "fragments": [571, 572, 573],
+            "notes": "你在酒馆里玩懂的这个机制，就是工业界 RAG 的最小模型。简历上可以写：理解检索增强生成——别笑，是真的。→ RAG 解决设定装不下，那聊天太久装不下呢？" },
+          { "sceneId": "memory",
+            "fragments": [601, 602, 603],
+            "notes": "回扣第 4 页物理限制。总结与向量记忆扩展=民间最朴素的长期记忆方案。原理你们已经全懂了。→ 原理拆完了，剩下的问题是：你怎么上手？" },
+          { "sceneId": "paths",
+            "fragments": [631, 632.5],
+            "notes": "指南站二维码在最后一页，照着做 10 分钟搞定。卡住了社团群里有我们。→ 上手脚之前，三条纪律。" },
+          { "sceneId": "safety",
+            "fragments": [661, 662, 663, 664],
+            "notes": "不是免责套话，是真实世界的使用纪律。体验站会记日志——互联网没有真正 deleted。Key 泄漏=别人拿你的钱包刷 API。→ 最后，回到今晚的起点。" },
+          { "sceneId": "qa",
+            "fragments": [691, 692, 693],
+            "hotspots": [
+              { "id": "h-faq", "label": "常见问题：手机？花钱？和 C.AI 的区别？", "target": "branch-faq", "region": { "x": 33, "y": 44, "w": 34, "h": 14 } }
+            ],
+            "notes": "结束语：酒馆最好玩的地方不是它多能玩，而是你玩着玩着把 LLM 学了。今晚，酒馆永远开张。Q&A 按提问跳热点：手机？花钱？和 Character.AI 区别？留在屏幕上直到散场（二维码可扫）。" }
         ],
         "slideSequences": [
-          {
-            "id": "branch-card",
-            "label": "卡结构深挖",
-            "slides": [
-              {
-                "sceneId": "branch-card",
-                "notes": "Q&A 弹药：PNG 里藏着结构化 JSON，图片是皮数据是魂。社区百万张卡流通格式统一（V2/V3 互通），别人的卡直接导入就能玩。"
-              }
-            ]
-          }
+          { "id": "branch-rag", "label": "触发机制深挖",
+            "slides": [{ "sceneId": "branch-rag", "notes": "Q&A 弹药：key/次关键词/depth/order/probability/scan_depth——每轮只扫最近几条消息，成本可控；进阶可换向量语义触发。" }] },
+          { "id": "branch-card", "label": "卡结构深挖",
+            "slides": [{ "sceneId": "branch-card", "notes": "Q&A 弹药：PNG 里藏着结构化 JSON，图片是皮数据是魂。V2/V3 互通，别人的卡直接导入就能玩。" }] },
+          { "id": "branch-faq", "label": "常见问题",
+            "slides": [{ "sceneId": "branch-faq", "notes": "手机能玩/要花钱/和 Character.AI 的区别/不会写提示词——四张答案卡，按提问跳。" }] }
         ]
       }
     </script>
 
     <!--
-      场景宿主：每个 host 与其场景文件、时间线 key 同 id。
-      分支场景（branch-card）也占时间线槽位，但不出现在主 slides 数组。
-      data-composition-src 相对【项目根】解析。
+      场景宿主：host id = composition id = 时间线 key；data-composition-src 相对【项目根】。
+      分支场景占时间线槽位但不在主 slides 数组。总时长 825s。
     -->
-    <div data-hf-id="hf-ffgg"
+    <div
       id="root"
       data-composition-id="root"
       data-start="0"
-      data-duration="135"
+      data-duration="825"
       data-width="1920"
       data-height="1080"
     >
-      <div data-hf-id="hf-twqn"
-        id="cover"
-        class="clip"
-        data-composition-id="cover"
-        data-composition-src="deck/scenes/s01-cover.html"
-        data-start="0"
-        data-duration="45"
-        data-width="1920"
-        data-height="1080"
-      ></div>
-
-      <div data-hf-id="hf-lg51"
-        id="anatomy"
-        class="clip"
-        data-composition-id="anatomy"
-        data-composition-src="deck/scenes/s16-anatomy.html"
-        data-start="45"
-        data-duration="60"
-        data-width="1920"
-        data-height="1080"
-      ></div>
-
-      <div data-hf-id="hf-6wcl"
-        id="branch-card"
-        class="clip"
-        data-composition-id="branch-card"
-        data-composition-src="deck/scenes/branch-card-json.html"
-        data-start="105"
-        data-duration="30"
-        data-width="1920"
-        data-height="1080"
-      ></div>
+      <div id="cover" class="clip" data-composition-id="cover" data-composition-src="deck/scenes/s01-cover.html" data-start="0" data-duration="30" data-width="1920" data-height="1080"></div>
+      <div id="hook" class="clip" data-composition-id="hook" data-composition-src="deck/scenes/s02-hook.html" data-start="30" data-duration="30" data-width="1920" data-height="1080"></div>
+      <div id="llm" class="clip" data-composition-id="llm" data-composition-src="deck/scenes/s03-llm.html" data-start="60" data-duration="30" data-width="1920" data-height="1080"></div>
+      <div id="context" class="clip" data-composition-id="context" data-composition-src="deck/scenes/s04-context.html" data-start="90" data-duration="45" data-width="1920" data-height="1080"></div>
+      <div id="origin" class="clip" data-composition-id="origin" data-composition-src="deck/scenes/s05-origin.html" data-start="135" data-duration="30" data-width="1920" data-height="1080"></div>
+      <div id="arch" class="clip" data-composition-id="arch" data-composition-src="deck/scenes/s06-arch.html" data-start="165" data-duration="30" data-width="1920" data-height="1080"></div>
+      <div id="models" class="clip" data-composition-id="models" data-composition-src="deck/scenes/s07-models.html" data-start="195" data-duration="30" data-width="1920" data-height="1080"></div>
+      <div id="data" class="clip" data-composition-id="data" data-composition-src="deck/scenes/s08-data.html" data-start="225" data-duration="30" data-width="1920" data-height="1080"></div>
+      <div id="fit" class="clip" data-composition-id="fit" data-composition-src="deck/scenes/s09-fit.html" data-start="255" data-duration="30" data-width="1920" data-height="1080"></div>
+      <div id="card" class="clip" data-composition-id="card" data-composition-src="deck/scenes/s10-card.html" data-start="285" data-duration="45" data-width="1920" data-height="1080"></div>
+      <div id="group" class="clip" data-composition-id="group" data-composition-src="deck/scenes/s11-group.html" data-start="330" data-duration="30" data-width="1920" data-height="1080"></div>
+      <div id="lore" class="clip" data-composition-id="lore" data-composition-src="deck/scenes/s12-lore.html" data-start="360" data-duration="30" data-width="1920" data-height="1080"></div>
+      <div id="plugins" class="clip" data-composition-id="plugins" data-composition-src="deck/scenes/s13-plugins.html" data-start="390" data-duration="30" data-width="1920" data-height="1080"></div>
+      <div id="ui" class="clip" data-composition-id="ui" data-composition-src="deck/scenes/s14-ui.html" data-start="420" data-duration="30" data-width="1920" data-height="1080"></div>
+      <div id="play" class="clip" data-composition-id="play" data-composition-src="deck/scenes/s15-play.html" data-start="450" data-duration="45" data-width="1920" data-height="1080"></div>
+      <div id="anatomy" class="clip" data-composition-id="anatomy" data-composition-src="deck/scenes/s16-anatomy.html" data-start="495" data-duration="75" data-width="1920" data-height="1080"></div>
+      <div id="rag" class="clip" data-composition-id="rag" data-composition-src="deck/scenes/s17-rag.html" data-start="570" data-duration="30" data-width="1920" data-height="1080"></div>
+      <div id="memory" class="clip" data-composition-id="memory" data-composition-src="deck/scenes/s18-memory.html" data-start="600" data-duration="30" data-width="1920" data-height="1080"></div>
+      <div id="paths" class="clip" data-composition-id="paths" data-composition-src="deck/scenes/s19-paths.html" data-start="630" data-duration="30" data-width="1920" data-height="1080"></div>
+      <div id="safety" class="clip" data-composition-id="safety" data-composition-src="deck/scenes/s20-safety.html" data-start="660" data-duration="30" data-width="1920" data-height="1080"></div>
+      <div id="qa" class="clip" data-composition-id="qa" data-composition-src="deck/scenes/s21-qa.html" data-start="690" data-duration="45" data-width="1920" data-height="1080"></div>
+      <div id="branch-rag" class="clip" data-composition-id="branch-rag" data-composition-src="deck/scenes/branch-rag.html" data-start="735" data-duration="30" data-width="1920" data-height="1080"></div>
+      <div id="branch-card" class="clip" data-composition-id="branch-card" data-composition-src="deck/scenes/branch-card-json.html" data-start="765" data-duration="30" data-width="1920" data-height="1080"></div>
+      <div id="branch-faq" class="clip" data-composition-id="branch-faq" data-composition-src="deck/scenes/branch-faq.html" data-start="795" data-duration="30" data-width="1920" data-height="1080"></div>
     </div>
 
     <script>
       gsap.registerPlugin(SplitText, DrawSVGPlugin);
 
       window.__timelines = window.__timelines || {};
-      // 根时间线：只负责铺满 seek 范围（standalone 模式约定 key 为 "root"）；
-      // 场景时间线由引擎自行驱动，绝不 add 进根。
+      // 根时间线：只铺满 seek 范围（standalone 约定 key "root"）；场景时间线由引擎驱动
       var rootTl = gsap.timeline({ paused: true });
-      rootTl.to({}, { duration: 135 });
+      rootTl.to({}, { duration: 825 });
       window.__timelines["root"] = rootTl;
+
+      /* -- LIVE 双模开关（2d 接线入口）--
+         ?live=1 / Shift+L 切换；存 localStorage 使 wrapper 与 iframe 共享。 */
+      (function () {
+        var params = new URLSearchParams((parent !== window ? document.referrer : location.href));
+        function sync() {
+          try {
+            var flag = localStorage.getItem("st-pre-live") === "1";
+            window.__ST_LIVE_ON = flag;
+            window.dispatchEvent(new CustomEvent("st-live-change", { detail: { on: flag } }));
+          } catch (e) {}
+        }
+        window.addEventListener("message", function (e) {
+          if (e.data && e.data.type === "st-live") {
+            try { localStorage.setItem("st-pre-live", e.data.on ? "1" : "0"); } catch (err) {}
+            sync();
+          }
+        });
+        window.addEventListener("storage", sync);
+        sync();
+      })();
 
       // standalone 模式：向父页面 post 场景清单（present 模式下被忽略，无害）。
       (function () {
         var scenes = [
-          { id: "cover", start: 0, duration: 45 },
-          { id: "anatomy", start: 45, duration: 60 },
-          { id: "branch-card", start: 105, duration: 30 },
+          { id: "cover", start: 0, duration: 30 },
+          { id: "hook", start: 30, duration: 30 },
+          { id: "llm", start: 60, duration: 30 },
+          { id: "context", start: 90, duration: 45 },
+          { id: "origin", start: 135, duration: 30 },
+          { id: "arch", start: 165, duration: 30 },
+          { id: "models", start: 195, duration: 30 },
+          { id: "data", start: 225, duration: 30 },
+          { id: "fit", start: 255, duration: 30 },
+          { id: "card", start: 285, duration: 45 },
+          { id: "group", start: 330, duration: 30 },
+          { id: "lore", start: 360, duration: 30 },
+          { id: "plugins", start: 390, duration: 30 },
+          { id: "ui", start: 420, duration: 30 },
+          { id: "play", start: 450, duration: 45 },
+          { id: "anatomy", start: 495, duration: 75 },
+          { id: "rag", start: 570, duration: 30 },
+          { id: "memory", start: 600, duration: 30 },
+          { id: "paths", start: 630, duration: 30 },
+          { id: "safety", start: 660, duration: 30 },
+          { id: "qa", start: 690, duration: 45 },
+          { id: "branch-rag", start: 735, duration: 30 },
+          { id: "branch-card", start: 765, duration: 30 },
+          { id: "branch-faq", start: 795, duration: 30 },
         ];
         function postTimeline() {
           try {
             parent.postMessage(
-              {
-                source: "hf-preview",
-                type: "timeline",
-                durationInFrames: 135 * 30,
-                scenes: scenes,
-              },
+              { source: "hf-preview", type: "timeline", durationInFrames: 825 * 30, scenes: scenes },
               "*",
             );
           } catch (e) {}

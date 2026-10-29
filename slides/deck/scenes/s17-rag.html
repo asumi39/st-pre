@@ -1,0 +1,109 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: radial-gradient(110% 80% at 50% -10%, #211711 0%, var(--bg) 60%);
+      color: var(--ink);
+    }
+    #s17-flow {
+      position: absolute;
+      left: 108px;
+      right: 108px;
+      top: 300px;
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+    }
+    .s17-step {
+      flex: 1;
+      border-radius: var(--r);
+      border: var(--card-border);
+      background: var(--surface);
+      padding: 36px 40px;
+      min-height: 320px;
+    }
+    .s17-step .n {
+      font-family: var(--font-mono);
+      font-size: var(--fs-micro);
+      color: var(--accent);
+      letter-spacing: 0.2em;
+    }
+    .s17-step .t { font-size: 36px; font-weight: 700; color: var(--ink-strong); margin-top: 14px; }
+    .s17-step .d { font-size: 28px; color: var(--ink); line-height: 1.55; margin-top: 18px; }
+    .s17-step .e { font-size: var(--fs-micro); color: var(--muted); margin-top: 16px; line-height: 1.45; }
+    .s17-arrow {
+      width: 90px;
+      flex: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      font-size: 44px;
+    }
+    #s17-rag {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 730px;
+      text-align: center;
+      font-family: var(--font-display);
+      font-size: 52px;
+      color: var(--accent);
+      letter-spacing: 0.06em;
+      opacity: 0;
+    }
+    #s17-ind {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 110px;
+      text-align: center;
+      font-size: 29px;
+      color: var(--muted);
+      opacity: 0;
+    }
+    #s17-ind b { color: var(--ink-strong); }
+  </style>
+
+  <div id="root" data-composition-id="rag" data-width="1920" data-height="1080" data-hold>
+    <div class="page-head">
+      <div class="eyebrow">第四幕 · 解剖一次对话</div>
+      <h1 class="slide-title">世界书的学名：RAG</h1>
+    </div>
+
+    <div id="s17-flow">
+      <div class="s17-step">
+        <div class="n">STEP 1 · RETRIEVAL</div>
+        <div class="t">检索</div>
+        <div class="d">关键词命中 → 从设定库里<b style="color:var(--accent)">找回</b>相关条目</div>
+        <div class="e">第 12 页：提到「蟹堡王」→ 蟹堡王条目亮起</div>
+      </div>
+      <div class="s17-arrow">→</div>
+      <div class="s17-step">
+        <div class="n">STEP 2 · AUGMENTED GENERATION</div>
+        <div class="t">增强生成</div>
+        <div class="d">把找到的字<b style="color:var(--accent)">注入请求包</b>，模型的回答立刻带上设定</div>
+        <div class="e">注入 → 「这一包，就是模型看到的全世界」多了一块</div>
+      </div>
+    </div>
+
+    <div id="s17-rag">检索增强生成 · RAG</div>
+    <div id="s17-ind">企业客服机器人、知识库助手——底层思想与<b>世界书一模一样</b>。简历上可以写：理解 RAG。别笑，是真的。</div>
+
+    <div class="act-chip">第四幕 · 解剖一次对话</div>
+    <div class="page-no">17 / 21</div>
+  </div>
+
+  <script>
+    (function () {
+      var tl = gsap.timeline({ paused: true });
+      /* fragments（绝对）：571.0 两步卡 · 572.0 RAG 名字 · 573.0 工业对照 */
+      tl.fromTo(["#s17-flow .s17-step"], { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.34, stagger: 0.12, ease: "power2.out", immediateRender: false }, 0.56);
+      tl.fromTo("#s17-rag", { opacity: 0, letterSpacing: "0.3em" }, { opacity: 1, letterSpacing: "0.06em", duration: 0.42, ease: "power2.out", immediateRender: false }, 1.56);
+      tl.fromTo("#s17-ind", { opacity: 0 }, { opacity: 1, duration: 0.32, ease: "power1.out", immediateRender: false }, 2.56);
+      window.__timelines["rag"] = tl;
+    })();
+  </script>
+</template>

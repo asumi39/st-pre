@@ -1,0 +1,152 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: radial-gradient(110% 80% at 50% -10%, #211711 0%, var(--bg) 60%);
+      color: var(--ink);
+    }
+    #s05-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.14;
+    }
+    #s05-scrim {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(22,16,10,0.5), transparent 40%, rgba(22,16,10,0.75));
+    }
+    #s05-quote {
+      position: absolute;
+      left: 108px;
+      top: 240px;
+      font-family: var(--font-display);
+      font-size: 56px;
+      color: var(--ink-strong);
+      line-height: 1.4;
+    }
+    #s05-quote .en { font-family: var(--font-mono); color: var(--accent); font-size: 48px; }
+    #s05-quote-src {
+      margin-top: 14px;
+      font-size: var(--fs-small);
+      color: var(--muted);
+    }
+    #s05-timeline {
+      position: absolute;
+      left: 108px;
+      right: 108px;
+      top: 560px;
+      height: 130px;
+      opacity: 0;
+    }
+    #s05-line {
+      position: absolute;
+      left: 0;
+      top: 30px;
+      height: 2px;
+      width: 100%;
+      background: linear-gradient(90deg, transparent, var(--line) 12%, var(--line) 88%, transparent);
+      transform: scaleX(0);
+      transform-origin: left;
+    }
+    .s05-node {
+      position: absolute;
+      top: 0;
+      width: 300px;
+      opacity: 0;
+    }
+    .s05-node .dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 14px rgba(232, 163, 76, 0.5);
+      margin-bottom: 16px;
+    }
+    .s05-node .t { font-size: 30px; font-weight: 700; color: var(--ink-strong); }
+    .s05-node .d { font-size: var(--fs-micro); color: var(--muted); margin-top: 6px; line-height: 1.4; }
+    #s05-n1 { left: 0; } #s05-n2 { left: 40%; } #s05-n3 { left: 76%; }
+    #s05-n3 .t { color: var(--accent); }
+
+    #s05-tags {
+      position: absolute;
+      left: 108px;
+      bottom: 140px;
+      display: flex;
+      gap: 20px;
+      opacity: 0;
+    }
+    .s05-tag {
+      font-size: 28px;
+      color: var(--ink-strong);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 12px 30px;
+      background: rgba(232, 163, 76, 0.08);
+    }
+    #s05-nick {
+      position: absolute;
+      right: 420px;
+      bottom: 140px;
+      font-size: 30px;
+      color: var(--muted);
+      opacity: 0;
+    }
+    #s05-nick b { color: var(--accent); font-family: var(--font-display); font-size: 38px; font-weight: 700; }
+  </style>
+
+  <div id="root" data-composition-id="origin" data-width="1920" data-height="1080" data-hold>
+    <img id="s05-bg" src="assets/gen/divider-warm.png" alt="" data-layout-ignore />
+    <div id="s05-scrim" data-layout-ignore></div>
+
+    <div class="page-head">
+      <div class="eyebrow">第二幕 · ST 是什么</div>
+      <h1 class="slide-title">SillyTavern · 为「折腾党」而生</h1>
+    </div>
+
+    <div id="s05-quote">
+      「<span class="en">LLM Frontend for Power Users</span>」
+      <div id="s05-quote-src">—— 官方给自己的定义。中文圈则叫它：<b style="color:var(--accent)">酒馆</b>。</div>
+    </div>
+
+    <div id="s05-timeline">
+      <div id="s05-line" data-layout-ignore></div>
+      <div class="s05-node" id="s05-n1"><div class="dot"></div><div class="t">2023</div><div class="d">从 TavernAI 分叉，社区接管</div></div>
+      <div class="s05-node" id="s05-n2"><div class="dot"></div><div class="t">2023~2026</div><div class="d">开源社区持续重写 · 插件生态爆发</div></div>
+      <div class="s05-node" id="s05-n3"><div class="dot"></div><div class="t">v1.19.0 · 2026.09</div><div class="d">AGPL-3.0 · 仍在活跃更新</div></div>
+    </div>
+
+    <div id="s05-tags">
+      <div class="s05-tag">开源免费</div>
+      <div class="s05-tag">高度可定制</div>
+      <div class="s05-tag">社区生态庞大</div>
+    </div>
+    <div id="s05-nick">三年周更不停 —— 这项目靠社区活着</div>
+
+    <div class="act-chip">第二幕 · ST 是什么</div>
+    <div class="page-no">05 / 21</div>
+  </div>
+
+  <script>
+    (function () {
+      var tl = gsap.timeline({ paused: true });
+      /* fragments（绝对）：136.5 时间线生长 · 137.5 标签+昵称 */
+      tl.fromTo("#s05-quote", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.42, ease: "power2.out", immediateRender: false }, 0.08);
+
+      tl.to("#s05-timeline", { opacity: 1, duration: 0.2, ease: "none", immediateRender: false }, 1.2);
+      tl.fromTo("#s05-line", { scaleX: 0 }, { scaleX: 1, duration: 0.34, ease: "power2.out", immediateRender: false }, 1.16);
+      tl.fromTo("#s05-n1", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.26, ease: "power2.out", immediateRender: false }, 1.2);
+      tl.fromTo("#s05-n2", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.26, ease: "power2.out", immediateRender: false }, 1.36);
+      tl.fromTo("#s05-n3", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.26, ease: "power2.out", immediateRender: false }, 1.52);
+
+      tl.fromTo("#s05-tags", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out", immediateRender: false }, 2.16);
+      tl.fromTo("#s05-nick", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power1.out", immediateRender: false }, 2.3);
+
+      window.__timelines["origin"] = tl;
+    })();
+  </script>
+</template>

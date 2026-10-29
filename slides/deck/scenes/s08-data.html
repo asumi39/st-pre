@@ -1,0 +1,81 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: radial-gradient(110% 80% at 50% -10%, #211711 0%, var(--bg) 60%);
+      color: var(--ink);
+    }
+    .s08-side {
+      position: absolute;
+      top: 280px;
+      width: 700px;
+      height: 480px;
+      border-radius: var(--r);
+      border: var(--card-border);
+      padding: 40px;
+      opacity: 0;
+    }
+    #s08-left { left: 150px; background: rgba(192, 95, 51, 0.06); border-color: rgba(192, 95, 51, 0.3); }
+    #s08-right { right: 150px; background: rgba(232, 163, 76, 0.05); border-color: rgba(232, 163, 76, 0.4); }
+    .s08-title { font-size: 34px; font-weight: 700; }
+    #s08-left .s08-title { color: #d89a7e; }
+    #s08-right .s08-title { color: var(--accent); }
+    .s08-list { margin-top: 26px; display: flex; flex-direction: column; gap: 20px; }
+    .s08-item { font-size: 28px; line-height: 1.5; color: var(--ink); display: flex; gap: 14px; }
+    .s08-item .m { flex: none; font-family: var(--font-mono); color: var(--muted); }
+    #s08-take {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 130px;
+      text-align: center;
+      font-family: var(--font-display);
+      font-size: 40px;
+      color: var(--ink-strong);
+      opacity: 0;
+    }
+    #s08-take b { color: var(--accent); font-weight: 700; }
+  </style>
+
+  <div id="root" data-composition-id="data" data-width="1920" data-height="1080" data-hold>
+    <div class="page-head">
+      <div class="eyebrow">第二幕 · ST 是什么</div>
+      <h1 class="slide-title">你的数据在你手里</h1>
+    </div>
+
+    <div class="s08-side" id="s08-left">
+      <div class="s08-title">网页服务 · 聊天在别人服务器</div>
+      <div class="s08-list">
+        <div class="s08-item"><span class="m">01</span>记录存在厂商云端，说没就没</div>
+        <div class="s08-item"><span class="m">02</span>导出受限，搬家困难</div>
+        <div class="s08-item"><span class="m">03</span>政策一改，人设全灭</div>
+      </div>
+    </div>
+    <div class="s08-side" id="s08-right">
+      <div class="s08-title">酒馆 · 一切都是本地文件</div>
+      <div class="s08-list">
+        <div class="s08-item"><span class="m">01</span>聊天记录 / 角色卡 / 设定 = 你磁盘上的文件</div>
+        <div class="s08-item"><span class="m">02</span>随时备份、分享、搬家</div>
+        <div class="s08-item"><span class="m">03</span>Win / Mac / Linux · 手机浏览器直接访问</div>
+      </div>
+    </div>
+
+    <div id="s08-take"><b>文件即资产</b> —— 不绑架任何人的数据，所以适合当社团基础设施。</div>
+
+    <div class="act-chip">第二幕 · ST 是什么</div>
+    <div class="page-no">08 / 21</div>
+  </div>
+
+  <script>
+    (function () {
+      var tl = gsap.timeline({ paused: true });
+      /* fragments（绝对）：226.5 左卡 · 227.5 右卡 · 228.5 底注 */
+      tl.fromTo("#s08-left", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.36, ease: "power2.out", immediateRender: false }, 1.06);
+      tl.fromTo("#s08-right", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.36, ease: "power2.out", immediateRender: false }, 2.06);
+      tl.fromTo("#s08-take", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.36, ease: "power2.out", immediateRender: false }, 3.06);
+      window.__timelines["data"] = tl;
+    })();
+  </script>
+</template>

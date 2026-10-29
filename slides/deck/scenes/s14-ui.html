@@ -1,0 +1,91 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: radial-gradient(110% 80% at 50% -10%, #211711 0%, var(--bg) 60%);
+      color: var(--ink);
+    }
+    #s14-row {
+      position: absolute;
+      left: 108px;
+      right: 108px;
+      top: 300px;
+      display: flex;
+      gap: 40px;
+      align-items: flex-end;
+    }
+    .s14-shot {
+      background: var(--surface);
+      border: var(--card-border);
+      border-radius: var(--r);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+    }
+    .s14-shot img { width: 100%; display: block; object-fit: cover; object-position: top; }
+    #s14-a { width: 880px; }
+    #s14-a img { height: 520px; }
+    #s14-b { width: 300px; }
+    #s14-b img { height: 560px; }
+    #s14-c { width: 460px; }
+    #s14-c img { height: 520px; }
+    .s14-cap {
+      padding: 14px 20px;
+      font-size: var(--fs-micro);
+      color: var(--muted);
+      border-top: 1px solid var(--line-soft);
+    }
+    #s14-point {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 120px;
+      text-align: center;
+      font-size: 30px;
+      color: var(--muted);
+      opacity: 0;
+    }
+    #s14-point b { color: var(--accent); font-weight: 700; }
+  </style>
+
+  <div id="root" data-composition-id="ui" data-width="1920" data-height="1080" data-hold>
+    <div class="page-head">
+      <div class="eyebrow">第三幕 · 能做什么</div>
+      <h1 class="slide-title">界面：从极客到手机 App</h1>
+    </div>
+
+    <div id="s14-row">
+      <div class="s14-shot" id="s14-a">
+        <img src="assets/ui/ui-desktop.png" alt="桌面深色主题" />
+        <div class="s14-cap">桌面 · 深色主题（本机实拍）</div>
+      </div>
+      <div class="s14-shot" id="s14-b">
+        <img src="assets/ui/ui-mobile.png" alt="手机竖屏" />
+        <div class="s14-cap">手机浏览器 · 像聊天 App</div>
+      </div>
+      <div class="s14-shot" id="s14-c">
+        <img src="assets/ui/ui-skin.png" alt="自定义状态栏皮肤" />
+        <div class="s14-cap">正则 + CSS · 消息渲染成游戏 UI</div>
+      </div>
+    </div>
+
+    <div id="s14-point">界面是前端 → <b>皮肤随便换，大脑不受影响</b>（回扣第 6 页）。体验站里大家自己摸。</div>
+
+    <div class="act-chip">第三幕 · 能做什么</div>
+    <div class="page-no">14 / 21</div>
+  </div>
+
+  <script>
+    (function () {
+      var tl = gsap.timeline({ paused: true });
+      tl.fromTo("#s14-a", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out", immediateRender: false }, 0.08);
+      tl.fromTo("#s14-b", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out", immediateRender: false }, 0.22);
+      tl.fromTo("#s14-c", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out", immediateRender: false }, 0.36);
+      tl.fromTo("#s14-point", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.36, ease: "power2.out", immediateRender: false }, 1.06);
+      window.__timelines["ui"] = tl;
+    })();
+  </script>
+</template>

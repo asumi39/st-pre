@@ -1,0 +1,120 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: radial-gradient(110% 80% at 50% -10%, #211711 0%, var(--bg) 60%);
+      color: var(--ink);
+    }
+    #s03-def {
+      position: absolute;
+      left: 108px;
+      top: 250px;
+      right: 108px;
+      font-family: var(--font-display);
+      font-size: 54px;
+      line-height: 1.4;
+      color: var(--ink-strong);
+    }
+    #s03-def b { color: var(--accent); font-weight: 700; }
+
+    /* 接龙演示条 */
+    #s03-demo {
+      position: absolute;
+      left: 108px;
+      right: 108px;
+      top: 470px;
+      background: var(--surface);
+      border: var(--card-border);
+      border-radius: var(--r);
+      padding: 40px 48px 56px;
+      box-shadow: var(--shadow);
+    }
+    #s03-demo-label {
+      font-family: var(--font-mono);
+      font-size: var(--fs-micro);
+      color: var(--muted);
+      letter-spacing: 0.24em;
+      margin-bottom: 28px;
+    }
+    #s03-seed {
+      font-size: 40px;
+      color: var(--ink-strong);
+      line-height: 1.5;
+    }
+    #s03-gen {
+      font-size: 40px;
+      color: var(--accent);
+      line-height: 1.5;
+      min-height: 60px;
+    }
+    #s03-gen .ch { opacity: 0; }
+    #s03-cursor {
+      display: inline-block;
+      width: 4px;
+      height: 44px;
+      background: var(--accent);
+      vertical-align: -6px;
+      margin-left: 4px;
+    }
+
+    #s03-key {
+      position: absolute;
+      left: 108px;
+      right: 108px;
+      bottom: 150px;
+      text-align: center;
+      font-size: 38px;
+      color: var(--ink);
+      opacity: 0;
+    }
+    #s03-key b { color: var(--accent); font-weight: 700; }
+  </style>
+
+  <div id="root" data-composition-id="llm" data-width="1920" data-height="1080" data-hold>
+    <div class="page-head">
+      <div class="eyebrow">第一幕 · LLM 背景</div>
+      <h1 class="slide-title">它只做一件事：预测下一个字</h1>
+    </div>
+
+    <div id="s03-def">大语言模型 = <b>文字接龙机器</b>：给开头，它猜下一个字；猜完一个，再猜下一个。</div>
+
+    <div id="s03-demo">
+      <div id="s03-demo-label">接龙演示 · 逐 TOKEN 生成 <span id="s03-live-chip" style="margin-left:18px">SIM</span></div>
+      <div id="s03-seed">海绵宝宝去蟹堡王上</div>
+      <div id="s03-gen"><span id="s03-cursor" data-layout-ignore></span></div>
+    </div>
+
+    <div id="s03-key">所谓<b>「人设」</b>，本质上只是喂给它的文字——没有灵魂，只有概率。</div>
+
+    <div class="act-chip">第一幕 · LLM 背景</div>
+    <div class="page-no">03 / 21</div>
+  </div>
+
+  <script>
+    (function () {
+      var tl = gsap.timeline({ paused: true });
+      /* fragments（绝对）：62.0 逐字接龙 · 63.5 关键句
+         接龙字符在 fragment 时刻前完成（settle-at-fragment 铁则）*/
+      tl.fromTo("#s03-def", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.42, ease: "power2.out", immediateRender: false }, 0.08);
+      tl.fromTo("#s03-demo", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.42, ease: "power2.out", immediateRender: false }, 0.2);
+
+      var text = "班，路上遇到了派大星……";
+      var gen = document.getElementById("s03-gen");
+      var chars = [];
+      for (var i = 0; i < text.length; i++) {
+        var sp = document.createElement("span");
+        sp.className = "ch";
+        sp.textContent = text[i];
+        gen.insertBefore(sp, document.getElementById("s03-cursor"));
+        chars.push(sp);
+      }
+      tl.fromTo(chars, { opacity: 0 }, { opacity: 1, duration: 0.09, stagger: 0.05, ease: "none", immediateRender: false }, 1.28);
+
+      tl.fromTo("#s03-key", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.42, ease: "power2.out", immediateRender: false }, 3.06);
+
+      window.__timelines["llm"] = tl;
+    })();
+  </script>
+</template>
