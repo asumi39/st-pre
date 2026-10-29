@@ -60,14 +60,15 @@
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
-      gap: 18px;
+      gap: 14px;
+      overflow-y: auto;
     }
     .hook-msg {
       max-width: 76%;
-      font-size: 29px;
-      line-height: 1.55;
-      padding: 14px 22px;
-      border-radius: 18px;
+      font-size: 26px;
+      line-height: 1.45;
+      padding: 11px 20px;
+      border-radius: 16px;
     }
     .hook-user {
       align-self: flex-end;
@@ -103,11 +104,11 @@
 
   <div id="root" data-composition-id="hook" data-width="1920" data-height="1080" data-hold>
     <div class="page-head">
-      <div class="eyebrow">序幕 · 先看再懂</div>
+      <div class="eyebrow"><!-- taste-skill-ignore: 幕标是 deck 的导航chrome -->序幕 · 先看再懂</div>
       <h1 class="slide-title">一场对话</h1>
     </div>
 
-    <section id="hook-chat">
+    <section id="hook-chat" data-ui>
       <div id="hook-head">
         <div id="hook-avatar">夜</div>
         <div>
@@ -148,6 +149,37 @@
       tl.fromTo("#hook-question", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.42, ease: "power2.out", immediateRender: false }, 5.06);
 
       window.__timelines["hook"] = tl;
+
+      /* -- LIVE：越过对话片段后，追加一条真实流式回复（无感回退：罐头一直在）--*/
+      (function () {
+        var ai2 = document.getElementById("hook-m4");
+        var ai2Text = ai2.textContent;
+        window.__stLiveAt(tl, 4.6, function () {
+          var bubble = document.createElement("div");
+          bubble.className = "hook-msg hook-ai";
+          bubble.style.opacity = "1";
+          bubble.innerHTML = '<span class="hook-em">（LIVE · 正在生成）</span> ';
+          var body = document.createTextNode("");
+          bubble.appendChild(body);
+          var msgs = document.getElementById("hook-msgs");
+          msgs.appendChild(bubble);
+          msgs.scrollTop = msgs.scrollHeight;
+          var chip = document.getElementById("hook-live-chip");
+          if (chip) chip.textContent = "回放 · LIVE";
+          window.__STLIVE.chat(
+            [
+              { role: "system", content: "你是深夜酒馆的店主：慵懒毒舌但心软，说话简短，偶尔带动作描写（括号内）。回复不超过40字。" },
+              { role: "user", content: "这么晚还开着？" },
+              { role: "assistant", content: "深夜来的，都不是为了喝酒。" },
+              { role: "user", content: "……你好像知道我今天过得不好。" },
+            ],
+            {
+              onDelta: function (t) { body.textContent += t; msgs.scrollTop = msgs.scrollHeight; },
+              onError: function () { bubble.remove(); if (chip) chip.textContent = "回放 · SIM（回退）"; },
+            }
+          );
+        });
+      })();
     })();
   </script>
 </template>

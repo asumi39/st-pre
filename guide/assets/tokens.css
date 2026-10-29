@@ -1,0 +1,90 @@
+/* ============================================================
+   ST-PRE 设计系统 tokens · v1（方向 A「烛光酒馆」基调）
+   与 slides/tokens.css 同源同值：色板 / 字族 / 圆角 / 间距完全一致，
+   幻灯片定稿换 tokens-final 时本文件同步替换。
+   指南站专用补充：手机阅读字阶（幻灯片 --fs-* 为 1920×1080 画布专用）。
+   铁律：零字体下载——全部使用 OS 自带字体的 local() 声明。
+   ============================================================ */
+
+:root {
+  /* -- 色板：深色木质 + 烛光暖琥珀（与 slides/tokens.css 一致）-- */
+  --bg: #16100a;
+  --bg-2: #1e1610;
+  --surface: rgba(245, 234, 214, 0.045);
+  --surface-strong: #261b11;
+  --line: rgba(232, 163, 76, 0.22);
+  --line-soft: rgba(245, 234, 214, 0.1);
+  --ink: #f5ead6;
+  --ink-strong: #fff7e8;
+  --muted: #b5a184;
+  --accent: #e8a34c;        /* 烛光琥珀：强调、关键词 */
+  --accent-2: #c05f33;      /* 余烬红：次强调、危险/警示 */
+  --glow: rgba(232, 163, 76, 0.16);
+
+  /* -- 字族：中文系统栈（零字体下载 = 离线铁律）--
+     @font-face local() 声明均为 OS 自带字体：命中即用，不产生任何下载。 */
+  --font-display: "Songti SC", "Noto Serif SC", serif;
+  --font-body: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", monospace;
+
+  /* -- 幻灯片画布字阶（1920×1080；指南站正文不直接使用，保留同源）-- */
+  --fs-display: 132px;
+  --fs-h1: 68px;
+  --fs-h2: 46px;
+  --fs-body: 33px;
+  --fs-small: 30px;
+  --fs-micro: 28px;
+
+  /* -- 指南站补充：手机阅读字阶（正文 ≥17px 的可读下限）-- */
+  --fs-g-body: 17px;
+  --fs-g-small: 14px;
+  --fs-g-code: 13px;
+  --fs-g-h3: 18px;
+  --fs-g-h2: 23px;
+  --fs-g-h1: 31px;
+
+  /* -- 间距 / 质感（与 slides/tokens.css 一致）-- */
+  --s1: 16px;
+  --s2: 32px;
+  --s3: 64px;
+  --s4: 96px;
+  --r: 20px;
+  --r-sm: 12px;
+  --shadow: 0 18px 60px rgba(0, 0, 0, 0.5);
+  --card-border: 1px solid var(--line-soft);
+  --nav-h: 56px;            /* sticky 锚点导航高度 */
+}
+
+/* -- 全局幕布：暖黑，正文文字系统 -- */
+html,
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+}
+
+/* -- OS 自带中文字体的 local() 声明（零下载；仅为满足字体校验）-- */
+@font-face {
+  font-family: "Songti SC";
+  src: local("Songti SC");
+}
+@font-face {
+  font-family: "Noto Serif SC";
+  src: local("Noto Serif SC"), local("Noto Serif CJK SC");
+}
+@font-face {
+  font-family: "PingFang SC";
+  src: local("PingFang SC");
+}
+@font-face {
+  font-family: "Microsoft YaHei";
+  src: local("Microsoft YaHei");
+}
+
+/* -- 烛光氛围：呼吸光晕（CSS ambient loop）-- */
+@keyframes candle-flicker {
+  0%, 100% { opacity: 0.85; }
+  23% { opacity: 1; }
+  47% { opacity: 0.78; }
+  71% { opacity: 0.95; }
+}

@@ -416,6 +416,25 @@
       tl.fromTo("#anat-timing", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power1.out", immediateRender: false }, 7.7);
 
       window.__timelines["anatomy"] = tl;
+
+      /* -- LIVE：回复片段时真实请求，计时 chip 显示真实装配+回复耗时 --*/
+      (function () {
+        var timing = document.getElementById("anat-timing");
+        window.__stLiveAt(tl, 7.72, function () {
+          var t0 = performance.now();
+          timing.textContent = "⏱ LIVE · 装配中…";
+          window.__STLIVE.chat(
+            [
+              { role: "system", content: "你是深夜酒馆的店主，说话简短，40字内。" },
+              { role: "user", content: "我推门进入酒馆" },
+            ],
+            {
+              onDone: function () { timing.textContent = "⏱ LIVE · 装配 + 回复 · " + ((performance.now() - t0) / 1000).toFixed(1) + "s"; },
+              onError: function () { timing.textContent = "⏱ 装配 + 回复 · 4.2s（模拟）"; },
+            }
+          );
+        });
+      })();
     })();
   </script>
 </template>

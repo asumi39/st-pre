@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#16100a" />
+  <meta name="description" content="SillyTavern 社团分享伴学指南：三条上手路径、模型接入、Key 安全、角色卡与 FAQ。零基础照着做，10 分钟上手。" />
+  <title>酒馆上手指南 · SillyTavern 社团分享</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath d='M24 6c3.4 4.2 5.4 7.2 5.4 10.2 0 3.2-2.4 5.6-5.4 5.6s-5.4-2.4-5.4-5.6C18.6 13.2 20.6 10.2 24 6Z' fill='%23e8a34c'/%3E%3Crect x='16.5' y='24' width='15' height='18' rx='3' fill='%233a2c1c'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="assets/tokens.css" />
+  <link rel="stylesheet" href="assets/guide.css" />
+</head>
+<body>
+  <div class="wrap">
+
+    <!-- ========== 头部 ========== -->
+    <header class="hero">
+      <svg class="candle" viewBox="0 0 48 48" aria-hidden="true">
+        <path class="candle-flame" d="M24 5.5c3.6 4.4 5.7 7.5 5.7 10.7 0 3.4-2.5 5.9-5.7 5.9s-5.7-2.5-5.7-5.9c0-3.2 2.1-6.3 5.7-10.7Z" fill="var(--accent)"/>
+        <rect x="19.5" y="22.5" width="9" height="3.4" rx="1.2" fill="#8a6a3f"/>
+        <rect x="16" y="26" width="16" height="17" rx="3" fill="#3a2c1c" stroke="rgba(232,163,76,0.35)"/>
+      </svg>
+      <span class="eyebrow">AI 社团 · 分享现场配套</span>
+      <h1>酒馆上手指南</h1>
+      <p class="sub">今晚酒馆开张了。这一页照着做，把 <b>SillyTavern</b>（开源免费的角色扮演前端）搬回自己的电脑上——<b>10 分钟够用</b>。卡住了？社团群里有我们。</p>
+      <div class="hero-meta">
+        <span class="meta-chip">零基础友好</span>
+        <span class="meta-chip">软件永久免费</span>
+        <span class="meta-chip">本页离线可开</span>
+      </div>
+    </header>
+
+    <!-- ========== 锚点导航（全宽 sticky，内容随主列居中） ========== -->
+  </div>
+  <nav class="toc" aria-label="页面目录">
+    <div class="toc-inner">
+      <ul>
+        <li><a href="#paths">① 装酒馆</a></li>
+        <li><a href="#model">② 接大脑</a></li>
+        <li><a href="#safety">③ Key 安全</a></li>
+        <li><a href="#cards">④ 角色卡</a></li>
+        <li><a href="#faq">⑤ FAQ</a></li>
+      </ul>
+    </div>
+  </nav>
+  <div class="wrap">
+
+    <!-- ========== ① 三条上手路径 ========== -->
+    <section id="paths">
+      <div class="sec-head">
+        <span class="eyebrow">第一步 · 装酒馆</span>
+        <h2>三条上手路径，任选一条</h2>
+        <p class="lede">装的是同一个软件。三条路殊途同归：装完都会在浏览器打开 <code>http://localhost:8000</code>。<b>推荐从「最快」开始</b>，玩起来之后再考虑换路。</p>
+      </div>
+
+      <div class="card">
+        <span class="lvl">最快 · 10 分钟</span>
+        <h3>一键整合包</h3>
+        <p>下载 → 解压 → 双击。零命令行，适合先玩起来。</p>
+        <ol class="steps">
+          <li>打开 <a class="link-out" href="https://github.com/SillyTavern/SillyTavern/releases/latest" target="_blank" rel="noopener">SillyTavern 官方 GitHub Releases</a>，在最新版本的 <b>Assets</b> 里下载 ZIP 压缩包。</li>
+          <li>解压到任意文件夹。</li>
+          <li>双击 <code>Start.bat</code>（Windows）；macOS / Linux 在终端运行 <code>Start.sh</code>。</li>
+          <li>浏览器打开 <code>http://localhost:8000</code>，酒馆开张。</li>
+        </ol>
+      </div>
+
+      <div class="card">
+        <span class="lvl">正统 · 5 分钟</span>
+        <h3>git clone + Node（社区推荐姿势）</h3>
+        <p>先装 <a class="link-out" href="https://nodejs.org/" target="_blank" rel="noopener">Node.js</a>（18 或更新版本），然后一条命令：</p>
+        <div class="codeblock">
+          <pre><code>git clone https://github.com/SillyTavern/SillyTavern.git &amp;&amp; cd SillyTavern &amp;&amp; npm install &amp;&amp; node server.js</code></pre>
+        </div>
+        <p>浏览器打开 <code>http://localhost:8000</code>。好处：以后更新只要 <code>git pull</code> 一行命令。</p>
+      </div>
+
+      <div class="card">
+        <span class="lvl">极客 · Docker</span>
+        <h3>自托管（我们体验站的跑法）</h3>
+        <p>装好 Docker 后，官方镜像一条命令常驻——社团体验站就是这么部署的，多人共用一个酒馆。</p>
+        <div class="codeblock" data-copy="docker pull ghcr.io/sillytavern/sillytavern:latest
+docker run -p 8000:8000 ghcr.io/sillytavern/sillytavern:latest">
+          <pre><code>docker pull ghcr.io/sillytavern/sillytavern:latest
+docker run -p 8000:8000 ghcr.io/sillytavern/sillytavern:latest</code></pre>
+        </div>
+        <p>浏览器打开 <code>http://localhost:8000</code>。想长期玩、数据留在容器外，按<a class="link-out" href="https://docs.sillytavern.app/installation/docker/" target="_blank" rel="noopener">官方 Docker 文档</a>挂载数据目录。</p>
+      </div>
+
+      <div class="callout">
+        <span class="tag">装好 ≠ 玩起来</span>
+        <p>装好只是有了「酒馆」这个界面，它还不会说话——下一步给它<b>接一个大脑（模型）</b>。</p>
+      </div>
+    </section>
+
+    <!-- ========== ② 模型接入 ========== -->
+    <section id="model">
+      <div class="sec-head">
+        <span class="eyebrow">第二步 · 接大脑</span>
+        <h2>模型接入：三件套</h2>
+        <p class="lede">酒馆自己不带模型，说话的「大脑」由你接进来。最通用的接法是 <b>OpenAI 兼容自定义端点</b>——填三件套即可。推荐 <b>DeepSeek</b>：注册即得，Flash 档一次对话<b>不到一分钱</b>。</p>
+      </div>
+
+      <div class="card">
+        <h3>DeepSeek 三件套（推荐）</h3>
+        <p>先去 <a class="link-out" href="https://platform.deepseek.com/" target="_blank" rel="noopener">DeepSeek 开放平台</a>注册，创建一个 API Key。</p>
+        <dl class="trio">
+          <div class="row">
+            <dt>API 地址</dt>
+            <dd><span class="val">https://api.deepseek.com/v1</span></dd>
+          </div>
+          <div class="row">
+            <dt>API Key</dt>
+            <dd><span class="val">sk-xxxx</span>
+              <span class="note">用你自己注册生成的那串（也是 sk- 开头）。Key = 钱包，别外传，见下方三条纪律。</span></dd>
+          </div>
+          <div class="row">
+            <dt>模型名</dt>
+            <dd><span class="val">deepseek-flash</span></dd>
+          </div>
+        </dl>
+        <p>在酒馆里的位置：左上角<b>插头图标</b>（API 连接）→ API 类型选 <b>Chat Completion</b> → 来源选 <b>Custom (OpenAI-compatible)</b> → 依次填 API 地址和 Key → 点连接，模型列表里选 <code>deepseek-flash</code>。</p>
+      </div>
+
+      <div class="callout warn">
+        <span class="tag">⚠ 模型名避坑</span>
+        <p>SillyTavern 官方文档的 DeepSeek 条目里写的还是 <b>deepseek-chat / deepseek-reasoner</b>，<b>已过时</b>。以 DeepSeek 官方文档（<a class="link-out" href="https://api-docs.deepseek.com/" target="_blank" rel="noopener">api-docs.deepseek.com</a>）为准：现行填 <b>deepseek-flash</b>。</p>
+      </div>
+
+      <div class="card">
+        <h3>不想花钱？两条免费路</h3>
+        <p><b>① 内置免费档</b>——AI Horde / Pollinations：酒馆开箱即用，无需注册 Key，代价是共享算力要排队、速度看运气。第一次打开酒馆时按引导选「免费」就能试。</p>
+        <p><b>② 本地 Ollama</b>——去 <a class="link-out" href="https://ollama.com/" target="_blank" rel="noopener">ollama.com</a> 装好后，<code>ollama pull 模型名</code> 拉一个本地模型，酒馆里 API 来源选 Ollama、地址保持 <code>http://localhost:11434</code> 即可。断网也能玩，隐私最强，代价是吃你笔记本的性能。</p>
+      </div>
+    </section>
+
+    <!-- ========== ③ Key 安全三条 ========== -->
+    <section id="safety">
+      <div class="sec-head">
+        <span class="eyebrow">纪律 · 安全与避坑</span>
+        <h2>Key 安全：三条纪律</h2>
+        <p class="lede">不是免责套话，是<b>真实世界的使用纪律</b>——和幻灯片第 20 页一致。</p>
+      </div>
+
+      <div class="card rule-card">
+        <span class="no">纪律 01 · KEY</span>
+        <h3>API Key = 钱包</h3>
+        <p>别提交到 <code>GitHub</code>，别发群里，别贴截图。泄漏 = 别人拿你的钱包刷 API。本页教程里的 <code>sk-xxxx</code> 只是占位符，真 Key 只能是你自己注册的那串。</p>
+      </div>
+
+      <div class="card rule-card">
+        <span class="no">纪律 02 · 隐私</span>
+        <h3>云端 API 看得到你的全部对话</h3>
+        <p>发出去的每个字都会经过别人服务器——隐私内容想清楚再发。想要隐私最强档，用本地模型（Ollama）。</p>
+      </div>
+
+      <div class="card rule-card">
+        <span class="no">纪律 03 · 分寸</span>
+        <h3>内容有护栏，底线要自己守</h3>
+        <p>违法有害内容别碰。社团体验站<b>有日志</b>——互联网没有真正 deleted。</p>
+      </div>
+
+      <div class="callout warn">
+        <span class="tag">⚠ 自托管要清楚</span>
+        <p>SillyTavern 官方明示：多用户密码是<b>「非安全特性」</b>，全部数据<b>明文存储</b>。它只是门禁，不是保险箱——多人共用一台酒馆时，别把敏感内容放上去。</p>
+      </div>
+    </section>
+
+    <!-- ========== ④ 角色卡 ========== -->
+    <section id="cards">
+      <div class="sec-head">
+        <span class="eyebrow">加菜 · 角色卡</span>
+        <h2>角色卡：拿来即玩</h2>
+        <p class="lede">不会写提示词没关系——角色卡里藏的就是现成提示词（名字、人设、开场白的结构化设定），<b>导入即玩</b>。V2 / V3 规范的 PNG 卡直接拖进酒馆窗口就完成导入，JSON 卡在角色管理里点导入。</p>
+      </div>
+
+      <div class="card">
+        <h3>最干净的起点：官方自带示例卡</h3>
+        <p>SillyTavern 仓库自带几张示例角色卡，随软件一起分发，<b>版权干净</b>（开放源码许可）：</p>
+        <ol class="steps">
+          <li>打开<a class="link-out" href="https://github.com/SillyTavern/SillyTavern/tree/release/default/content" target="_blank" rel="noopener">官方仓库 <code>default/content/</code> 目录</a>（Seraphina、Eldoria 等都在这里）。</li>
+          <li>点开 <code>default_Seraphina.png</code>，右上角「下载原始文件」保存 PNG；或直接用<a class="link-out" href="https://raw.githubusercontent.com/SillyTavern/SillyTavern/release/default/content/default_Seraphina.png" target="_blank" rel="noopener">这张直链</a>。</li>
+          <li>把 PNG 文件<b>直接拖进酒馆窗口</b>（角色面板）——完成导入，开聊。</li>
+        </ol>
+        <p>玩多了自然会看懂卡里的门道：从<b>改一张现成的卡</b>开始，比从零写快得多。</p>
+      </div>
+    </section>
+
+    <!-- ========== ⑤ FAQ ========== -->
+    <section id="faq" class="faq">
+      <div class="sec-head">
+        <span class="eyebrow">深挖 · Q&amp;A</span>
+        <h2>FAQ：最常被问的四件事</h2>
+      </div>
+
+      <details>
+        <summary>手机能玩吗？</summary>
+        <p>能。电脑上跑酒馆，手机浏览器访问同一个局域网地址即可——界面本来就是竖屏聊天 App 的样子。也有 Termux 全手机方案，属于进阶折腾；社团分享现场，扫码用我们的体验站最省事。</p>
+      </details>
+
+      <details>
+        <summary>要花钱吗？</summary>
+        <p>软件本身<b>永久免费开源</b>。大脑：AI Horde / Pollinations 免费开箱即用；想要质量，DeepSeek Flash 档一次对话<b>不到一分钱</b>；本地模型 = 电费。</p>
+      </details>
+
+      <details>
+        <summary>和 Character.AI 什么区别？</summary>
+        <p>C.AI 是<b>捆绑套餐</b>：模型、界面、数据都在别人服务器。酒馆只拆出「界面」这一层——大脑随便换、数据在你手里、提示词全透明可改。</p>
+      </details>
+
+      <details>
+        <summary>不会写提示词怎么办？</summary>
+        <p>从现成角色卡开始（见上一节），<b>导入即玩</b>。玩多了自然会看懂卡里的门道——从改一张卡开始，比从零写快得多。</p>
+      </details>
+    </section>
+
+    <!-- ========== 页脚 ========== -->
+    <footer>
+      <div class="salute">今晚，酒馆永远开张。</div>
+      <p>Q&amp;A 弹药提示：卡住了<b style="color:var(--ink)">社团群里有我们</b>——群里喊一声就行。</p>
+      <p class="sig">AI 社团 · 2026</p>
+    </footer>
+
+  </div>
+
+  <script>
+    /* 零依赖内联脚本：代码块复制 + 导航当前区高亮。离线可用。 */
+    (function () {
+      /* 复制按钮：data-copy 为纯文本（长按兜底） */
+      document.querySelectorAll(".codeblock").forEach(function (block) {
+        var text = block.getAttribute("data-copy") || (block.querySelector("code") || {}).textContent;
+        if (!text) return;
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "copy-btn";
+        btn.setAttribute("aria-label", "复制命令");
+        btn.textContent = "复制";
+        block.appendChild(btn);
+        function done() {
+          btn.textContent = "已复制 ✓";
+          btn.classList.add("ok");
+          setTimeout(function () { btn.textContent = "复制"; btn.classList.remove("ok"); }, 1600);
+        }
+        function fail() {
+          btn.textContent = "长按全选复制";
+          setTimeout(function () { btn.textContent = "复制"; }, 2400);
+        }
+        btn.addEventListener("click", function () {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(done, fail);
+          } else {
+            try {
+              var ta = document.createElement("textarea");
+              ta.value = text;
+              ta.style.position = "fixed";
+              ta.style.opacity = "0";
+              document.body.appendChild(ta);
+              ta.select();
+              var ok = document.execCommand("copy");
+              document.body.removeChild(ta);
+              ok ? done() : fail();
+            } catch (e) { fail(); }
+          }
+        });
+      });
+
+      /* 导航高亮：滚动到哪一节，哪一枚锚点亮 */
+      var links = Array.prototype.slice.call(document.querySelectorAll(".toc a"));
+      var sections = links.map(function (a) { return document.querySelector(a.getAttribute("href")); }).filter(Boolean);
+      if ("IntersectionObserver" in window && sections.length) {
+        var current = null;
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (en) {
+            if (en.isIntersecting) current = en.target;
+          });
+          links.forEach(function (a) {
+            a.classList.toggle("active", current && a.getAttribute("href") === "#" + current.id);
+          });
+        }, { rootMargin: "-40% 0px -55% 0px" });
+        sections.forEach(function (s) { io.observe(s); });
+      }
+    })();
+  </script>
+</body>
+</html>

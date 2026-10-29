@@ -200,25 +200,92 @@
       rootTl.to({}, { duration: 825 });
       window.__timelines["root"] = rootTl;
 
-      /* -- LIVE 双模开关（2d 接线入口）--
-         ?live=1 / Shift+L 切换；存 localStorage 使 wrapper 与 iframe 共享。 */
+      /* -- LIVE 双模客户端（2d）--
+         sim 为默认路径；?live=1 或 Shift+L 切换（localStorage 共享给 wrapper/iframe）。
+         fetch 走 proxy（默认 http://localhost:3011，部署时同源 /live），SSE 解析，
+         任何错误 → 无感回退罐头（罐头始终先可见）。 */
       (function () {
-        var params = new URLSearchParams((parent !== window ? document.referrer : location.href));
-        function sync() {
-          try {
-            var flag = localStorage.getItem("st-pre-live") === "1";
-            window.__ST_LIVE_ON = flag;
-            window.dispatchEvent(new CustomEvent("st-live-change", { detail: { on: flag } }));
-          } catch (e) {}
-        }
+        var live = {
+          get on() {
+            try { return localStorage.getItem("st-pre-live") === "1"; } catch (e) { return false; }
+          },
+          get url() {
+            try { return localStorage.getItem("st-pre-live-url") || "http://localhost:3011"; } catch (e) { return "http://localhost:3011"; }
+          },
+          /* chat(messages, {onDelta, onDone, onError}) —— 返回 abort 函数 */
+          chat: function (messages, h) {
+            var ctrl = new AbortController();
+            fetch(live.url + "/live/chat", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ messages: messages }),
+              signal: ctrl.signal,
+            }).then(function (res) {
+              if (!res.ok || !res.body) { h.onError && h.onError({ code: res.status }); return; }
+              var reader = res.body.getReader();
+              var dec = new TextDecoder();
+              var buf = "";
+              function pump() {
+                return reader.read().then(function (r) {
+                  if (r.done) { h.onDone && h.onDone(); return; }
+                  buf += dec.decode(r.value, { stream: true });
+                  var frames = buf.split("\n\n");
+                  buf = frames.pop();
+                  frames.forEach(function (fr) {
+                    var ev = "message", data = "";
+                    fr.split("\n").forEach(function (line) {
+                      if (line.indexOf("event:") === 0) ev = line.slice(6).trim();
+                      if (line.indexOf("data:") === 0) data += line.slice(5).trim();
+                    });
+                    if (!data) return;
+                    try {
+                      var p = JSON.parse(data);
+                      if (ev === "delta" && p.t) h.onDelta && h.onDelta(p.t);
+                      else if (ev === "done") h.onDone && h.onDone(p.usage);
+                      else if (ev === "error") h.onError && h.onError(p);
+                    } catch (e) {}
+                  });
+                  return pump();
+                });
+              }
+              pump().catch(function (e) { h.onError && h.onError({ code: "network" }); });
+            }).catch(function (e) {
+              if (e.name !== "AbortError") h.onError && h.onError({ code: "network" });
+            });
+            return function () { ctrl.abort(); };
+          },
+        };
+        window.__STLIVE = live;
+
         window.addEventListener("message", function (e) {
           if (e.data && e.data.type === "st-live") {
             try { localStorage.setItem("st-pre-live", e.data.on ? "1" : "0"); } catch (err) {}
-            sync();
+            if (e.data.url) { try { localStorage.setItem("st-pre-live-url", e.data.url); } catch (err) {} }
+            window.dispatchEvent(new CustomEvent("st-live-change", { detail: { on: live.on } }));
           }
         });
-        window.addEventListener("storage", sync);
-        sync();
+        window.addEventListener("storage", function () {
+          window.dispatchEvent(new CustomEvent("st-live-change", { detail: { on: live.on } }));
+        });
+        try {
+          var q = new URLSearchParams(parent.location.search);
+          if (q.get("live") === "1") localStorage.setItem("st-pre-live", "1");
+          if (q.get("live") === "0") localStorage.setItem("st-pre-live", "0");
+          if (q.get("liveurl")) localStorage.setItem("st-pre-live-url", q.get("liveurl"));
+        } catch (e) {}
+
+        /* 场景注册「播放头越过某时刻」的钩子：onCross 只在 live 开启时触发一次 */
+        window.__stLiveAt = function (tl, at, onCross) {
+          var fired = false;
+          tl.eventCallback("onUpdate", function () {
+            var t = tl.time();
+            if (!fired && t >= at) {
+              fired = true;
+              if (live.on) onCross();
+            }
+            if (fired && t < at) fired = false; // seek 回退后允许再次触发
+          });
+        };
       })();
 
       // standalone 模式：向父页面 post 场景清单（present 模式下被忽略，无害）。

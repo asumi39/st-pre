@@ -1,0 +1,821 @@
+{
+ "url": "/Users/f/WorkSpace/ST-PRE/slides/deck.html",
+ "at": "2026-10-29T17:47:04.165Z",
+ "allow": [],
+ "viewports": [
+  {
+   "width": 1440,
+   "height": 900,
+   "load": "load",
+   "screens": 1,
+   "filled": [
+    1
+   ],
+   "motion": {
+    "elements": 0,
+    "css": 0,
+    "transitions": 0,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "page": {
+     "height": 900,
+     "screens": 1,
+     "words": 4,
+     "img": 0,
+     "video": 0,
+     "canvas": 0,
+     "svg": 2,
+     "sections": 0,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": null,
+    "h1": null,
+    "headings": [],
+    "headingSummary": {
+     "count": 0,
+     "maxLines": 0,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 0,
+     "medianWords": null,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Inter",
+       "share": 0.86,
+       "mono": false
+      },
+      {
+       "family": "Arial",
+       "share": 0.14,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      13,
+      16
+     ],
+     "sizeCount": 2,
+     "notLoaded": [
+      "Inter"
+     ],
+     "body": null,
+     "measureChars": null,
+     "max": {
+      "size": 16,
+      "vw": 1.1,
+      "font": "Arial",
+      "text": "›"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0,
+     "centerShare": 1,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#16100a",
+     "bodyBgHsl": {
+      "h": 30,
+      "s": 0.38,
+      "l": 0.06
+     },
+     "dark": true,
+     "sectionBgs": [
+      {
+       "color": "#000000",
+       "top": 0,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 0
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#ffffff",
+       "share": 1
+      }
+     ],
+     "button": null,
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 0,
+     "inHero": 0,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": []
+    },
+    "surfaces": {
+     "shadowStatic": 1,
+     "shadowOverlay": 0,
+     "shadowSamples": [
+      "div → rgba(0, 0, 0, 0.45) 0px 4px 24px 0px"
+     ],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 1,
+     "roundedBoxes": 0,
+     "boxRadius": 0,
+     "squareMedia": 0,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [],
+    "nav": null,
+    "fontsLoaded": []
+   },
+   "layout": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "pageH": 900,
+    "margins": {
+     "left": 1251,
+     "right": 37
+    },
+    "sections": [
+     {
+      "sel": "hyperframes-player",
+      "tag": "hyperframes-player",
+      "top": 0,
+      "height": 900,
+      "words": 0,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": null,
+      "right": null,
+      "textLeft": null,
+      "textRight": null,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div",
+      "tag": "div",
+      "top": 0,
+      "height": 900,
+      "words": 3,
+      "media": 0,
+      "middle": 9,
+      "heading": null,
+      "left": 1251,
+      "right": 37,
+      "textLeft": 1251,
+      "textRight": 156,
+      "fullBleed": false,
+      "footer": true,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [],
+    "edgeText": [],
+    "edges": [],
+    "leftBlocks": 0,
+    "bodySize": 16,
+    "stage": false,
+    "explains": false,
+    "slivers": [],
+    "voidShare": 0.73,
+    "voidBox": {
+     "x": 0,
+     "y": 120,
+     "w": 1440,
+     "h": 660
+    }
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 768,
+   "height": 1024,
+   "load": "load",
+   "screens": 1,
+   "filled": [
+    1
+   ],
+   "motion": {
+    "elements": 1,
+    "css": 1,
+    "transitions": 0,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "page": {
+     "height": 1024,
+     "screens": 1,
+     "words": 4,
+     "img": 0,
+     "video": 0,
+     "canvas": 0,
+     "svg": 2,
+     "sections": 0,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": null,
+    "h1": null,
+    "headings": [],
+    "headingSummary": {
+     "count": 0,
+     "maxLines": 0,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 0,
+     "medianWords": null,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Inter",
+       "share": 0.86,
+       "mono": false
+      },
+      {
+       "family": "Arial",
+       "share": 0.14,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      13,
+      16
+     ],
+     "sizeCount": 2,
+     "notLoaded": [
+      "Inter"
+     ],
+     "body": null,
+     "measureChars": null,
+     "max": {
+      "size": 16,
+      "vw": 2.1,
+      "font": "Arial",
+      "text": "›"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0,
+     "centerShare": 1,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#16100a",
+     "bodyBgHsl": {
+      "h": 30,
+      "s": 0.38,
+      "l": 0.06
+     },
+     "dark": true,
+     "sectionBgs": [
+      {
+       "color": "#000000",
+       "top": 0,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 0
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#ffffff",
+       "share": 1
+      }
+     ],
+     "button": null,
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 0,
+     "inHero": 0,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": []
+    },
+    "surfaces": {
+     "shadowStatic": 1,
+     "shadowOverlay": 0,
+     "shadowSamples": [
+      "div → rgba(0, 0, 0, 0.45) 0px 4px 24px 0px"
+     ],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 1,
+     "roundedBoxes": 0,
+     "boxRadius": 0,
+     "squareMedia": 0,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [],
+    "nav": null,
+    "fontsLoaded": []
+   },
+   "layout": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "pageH": 1024,
+    "margins": {
+     "left": 579,
+     "right": 37
+    },
+    "sections": [
+     {
+      "sel": "hyperframes-player",
+      "tag": "hyperframes-player",
+      "top": 0,
+      "height": 1024,
+      "words": 0,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": null,
+      "right": null,
+      "textLeft": null,
+      "textRight": null,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div",
+      "tag": "div",
+      "top": 0,
+      "height": 1024,
+      "words": 3,
+      "media": 0,
+      "middle": 9,
+      "heading": null,
+      "left": 579,
+      "right": 37,
+      "textLeft": 579,
+      "textRight": 156,
+      "fullBleed": false,
+      "footer": true,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [],
+    "edgeText": [],
+    "edges": [],
+    "leftBlocks": 0,
+    "bodySize": 16,
+    "stage": false,
+    "explains": false,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 390,
+   "height": 844,
+   "load": "load",
+   "screens": 1,
+   "filled": [
+    1
+   ],
+   "motion": {
+    "elements": 1,
+    "css": 1,
+    "transitions": 0,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "page": {
+     "height": 844,
+     "screens": 1,
+     "words": 4,
+     "img": 0,
+     "video": 0,
+     "canvas": 0,
+     "svg": 2,
+     "sections": 0,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": null,
+    "h1": null,
+    "headings": [],
+    "headingSummary": {
+     "count": 0,
+     "maxLines": 0,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 0,
+     "medianWords": null,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Inter",
+       "share": 0.86,
+       "mono": false
+      },
+      {
+       "family": "Arial",
+       "share": 0.14,
+       "mono": false
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      13,
+      16
+     ],
+     "sizeCount": 2,
+     "notLoaded": [
+      "Inter"
+     ],
+     "body": null,
+     "measureChars": null,
+     "max": {
+      "size": 16,
+      "vw": 4.1,
+      "font": "Arial",
+      "text": "›"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0,
+     "centerShare": 1,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#16100a",
+     "bodyBgHsl": {
+      "h": 30,
+      "s": 0.38,
+      "l": 0.06
+     },
+     "dark": true,
+     "sectionBgs": [
+      {
+       "color": "#000000",
+       "top": 0,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 0
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#ffffff",
+       "share": 1
+      }
+     ],
+     "button": null,
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 0,
+     "inHero": 0,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": []
+    },
+    "surfaces": {
+     "shadowStatic": 1,
+     "shadowOverlay": 0,
+     "shadowSamples": [
+      "div → rgba(0, 0, 0, 0.45) 0px 4px 24px 0px"
+     ],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 1,
+     "roundedBoxes": 0,
+     "boxRadius": 0,
+     "squareMedia": 0,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [],
+    "nav": null,
+    "fontsLoaded": []
+   },
+   "layout": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "pageH": 844,
+    "margins": {
+     "left": 201,
+     "right": 37
+    },
+    "sections": [
+     {
+      "sel": "hyperframes-player",
+      "tag": "hyperframes-player",
+      "top": 0,
+      "height": 844,
+      "words": 0,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": null,
+      "right": null,
+      "textLeft": null,
+      "textRight": null,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div",
+      "tag": "div",
+      "top": 0,
+      "height": 844,
+      "words": 3,
+      "media": 0,
+      "middle": 9,
+      "heading": null,
+      "left": 201,
+      "right": 37,
+      "textLeft": 201,
+      "textRight": 156,
+      "fullBleed": false,
+      "footer": true,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [],
+    "edgeText": [],
+    "edges": [],
+    "leftBlocks": 0,
+    "bodySize": 16,
+    "stage": false,
+    "explains": false,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  }
+ ],
+ "findings": [
+  {
+   "level": "FAIL",
+   "id": "shadow",
+   "width": 1440,
+   "message": "1 box-shadow(s) on elements at rest: div → rgba(0, 0, 0, 0.45) 0px 4px 24px 0px",
+   "fix": "Remove. Separate surfaces with a tone step or space. Shadows are for things that really float (menus, dialogs, sticky bars).",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "font-fallback",
+   "width": 1440,
+   "message": "Typeface(s) declared but not loaded, so a fallback is rendering: Inter",
+   "fix": "Fix the font URL / family name, or the screenshots you are judging are not the design.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "first-action",
+   "width": 1440,
+   "message": "No visible button in the first screen.",
+   "fix": "Give the one primary action a real button in the first screen (a filled or solid-bordered control, 44px or taller), not only a link in the navigation.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "few-pictures",
+   "width": 1440,
+   "message": "Only 0 picture(s) on the page (0 photographs, footage or raster images, 0 interface fragments). Drawings in SVG do not count.",
+   "fix": "Find real pictures of the subject's world with scripts/assets.mjs (photographs, archival images, maps, engravings, footage), download them to assets/ and give them room: a hero picture, one per section that has a subject, a full-width band. At least four, usually six to twelve."
+  },
+  {
+   "level": "WARN",
+   "id": "no-footage",
+   "width": 1440,
+   "message": "No video anywhere on the page.",
+   "fix": "Look for one honest clip with scripts/assets.mjs --video (the place, the material, the process) and use it as a muted loop with a poster frame. Defend its absence only if no clip fits the subject."
+  },
+  {
+   "level": "WARN",
+   "id": "no-hero",
+   "width": 1440,
+   "message": "No headline found in the first viewport.",
+   "fix": "The first screen needs a clear focal statement or image.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "off-centre",
+   "width": 1440,
+   "message": "The page sits off-centre: its content comes to 1251px from the left edge but only to 37px from the right, at 1440px.",
+   "fix": "Give the page one pair of equal margins. Check the wrapper for a max-width without margin-inline: auto, a grid with an empty last column, or padding on one side only. If one side is meant to hold air, it must still be closed by something that reaches the margin (a picture, the navigation's last item, a figure).",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "no-title",
+   "width": 1440,
+   "message": "The page has no visible h1.",
+   "fix": "Give the first screen a clear title in an h1 that says what this is (a name with what it does, the product with what it is for, the event with its date and place).",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "hero-void",
+   "width": 1440,
+   "message": "73% of the first screen is one empty block (1440×660px at 0,120).",
+   "fix": "Place the void on purpose or fill it: move the picture, the film or one fact into it, grow the headline to meet it, or shrink the screen to its content. A void reads as placed only when something closes it on the far side and it is the screen's one rest."
+  },
+  {
+   "level": "FAIL",
+   "id": "still-page",
+   "width": 1440,
+   "message": "Only 0 element(s) moved while the page loaded and scrolled.",
+   "fix": "Build the motion layer (SKILL.md step 9, references/motion.md): the signature move, an entrance for the parts of every section, feedback on every control, and one moving picture. Transform and opacity only, with a reduced-motion fallback."
+  }
+ ],
+ "images": [
+  {
+   "viewport": "desktop",
+   "width": 1440,
+   "fold": "/Users/f/WorkSpace/ST-PRE/slides/.taste-skill/deck/desktop-fold.jpg",
+   "pages": [
+    "/Users/f/WorkSpace/ST-PRE/slides/.taste-skill/deck/desktop-page-01.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "tablet",
+   "width": 768,
+   "fold": "/Users/f/WorkSpace/ST-PRE/slides/.taste-skill/deck/tablet-fold.jpg",
+   "pages": [
+    "/Users/f/WorkSpace/ST-PRE/slides/.taste-skill/deck/tablet-page-01.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "mobile",
+   "width": 390,
+   "fold": "/Users/f/WorkSpace/ST-PRE/slides/.taste-skill/deck/mobile-fold.jpg",
+   "pages": [
+    "/Users/f/WorkSpace/ST-PRE/slides/.taste-skill/deck/mobile-page-01.jpg"
+   ],
+   "film": []
+  }
+ ]
+}

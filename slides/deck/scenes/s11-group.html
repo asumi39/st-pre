@@ -49,9 +49,9 @@
     .s11-line[data-who="你"] .s11-ava { background: rgba(232, 163, 76, 0.25); color: var(--ink-strong); }
     .s11-bubble {
       max-width: 72%;
-      font-size: 27px;
-      line-height: 1.5;
-      padding: 13px 20px;
+      font-size: 28px;
+      line-height: 1.45;
+      padding: 12px 20px;
       border-radius: 16px;
       background: rgba(245, 234, 214, 0.05);
       border: 1px solid var(--line-soft);
@@ -77,11 +77,11 @@
 
   <div id="root" data-composition-id="group" data-width="1920" data-height="1080" data-hold>
     <div class="page-head">
-      <div class="eyebrow">第三幕 · 能做什么</div>
+      <div class="eyebrow"><!-- taste-skill-ignore: 幕标是 deck 的导航chrome -->第三幕 · 能做什么</div>
       <h1 class="slide-title">群聊：让角色同台</h1>
     </div>
 
-    <div id="s11-room">
+    <div id="s11-room" data-ui>
       <div id="s11-room-title">群聊 · 深夜酒馆房间 · 3 位成员</div>
       <div class="s11-line" data-who="你" id="s11-l1">
         <div class="s11-ava">你</div>
@@ -89,11 +89,11 @@
       </div>
       <div class="s11-line" data-who="吟游诗人" id="s11-l2">
         <div class="s11-ava">诗</div>
-        <div><div class="s11-name">吟游诗人</div><div class="s11-bubble">三十年前，一位旅人在风雪里敲错了门——敲开的不是客栈，是这间酒馆。</div></div>
+        <div><div class="s11-name">吟游诗人</div><div class="s11-bubble">三十年前，有人风雪夜里敲错了门——敲开的是酒馆，不是客栈。</div></div>
       </div>
       <div class="s11-line" data-who="店长" id="s11-l3">
         <div class="s11-ava">夜</div>
-        <div><div class="s11-name">半夜的店主</div><div class="s11-bubble">（擦杯子的手停了一下）……他的版本比我好听。实际只是我懒得装门牌。</div></div>
+        <div><div class="s11-name">半夜的店主</div><div class="s11-bubble">（擦杯子的手停了一下）他的版本比我好听。实际是我懒得装门牌。</div></div>
       </div>
       <div class="s11-line" data-who="你" id="s11-l4">
         <div class="s11-ava">你</div>
@@ -112,7 +112,7 @@
       var tl = gsap.timeline({ paused: true });
       /* fragments（绝对）：331.5 对话四条 · 333.5 底注 */
       tl.fromTo("#s11-room", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.42, ease: "power2.out", immediateRender: false }, 0.08);
-      tl.fromTo(["#s11-l1", "#s11-l2", "#s11-l3", "#s11-l4"], { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.26, stagger: 0.14, ease: "power2.out", immediateRender: false }, 1.1);
+      tl.fromTo(["#s11-l1", "#s11-l2", "#s11-l3", "#s11-l4"], { opacity: 0 }, { opacity: 1, duration: 0.26, stagger: 0.14, ease: "none", immediateRender: false }, 1.1);
       tl.fromTo("#s11-point", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.36, ease: "power2.out", immediateRender: false }, 3.06);
       window.__timelines["group"] = tl;
     })();

@@ -122,7 +122,7 @@
 
   <div id="root" data-composition-id="arch" data-width="1920" data-height="1080" data-hold>
     <div class="page-head">
-      <div class="eyebrow">第二幕 · ST 是什么</div>
+      <div class="eyebrow"><!-- taste-skill-ignore: 幕标是 deck 的导航chrome -->第二幕 · ST 是什么</div>
       <h1 class="slide-title">前端与后端分离：界面 ≠ 智能</h1>
     </div>
 
@@ -131,7 +131,7 @@
     <section id="s06-front">
       <div class="s06-panel-title">前端 · 你看到的酒馆</div>
       <div class="s06-panel-sub">界面、角色卡、聊天记录、插件——全在你自己的设备上</div>
-      <div id="s06-ui">
+      <div id="s06-ui" data-ui>
         <div class="s06-bubble u">这么晚还开着？</div>
         <div class="s06-bubble a">深夜来的，都不是为了喝酒。</div>
         <div class="s06-bubble u" id="s06-send-b">那是为了什么？</div>
@@ -150,7 +150,7 @@
 
     <div id="s06-wire" data-layout-ignore></div>
     <div id="s06-reply" data-layout-ignore></div>
-    <div id="s06-packet">📦 全部上下文<small>角色卡+设定+历史</small></div>
+    <div id="s06-packet">全部上下文<small>角色卡+设定+历史</small></div>
 
     <div id="s06-note2">ChatGPT 是捆绑套餐；酒馆把界面拆出来单卖——大脑随你换。</div>
 
@@ -177,6 +177,29 @@
       tl.fromTo("#s06-note2", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.42, ease: "power2.out", immediateRender: false }, 3.06);
 
       window.__timelines["arch"] = tl;
+
+      /* -- LIVE：请求包片段时真实发一次请求；计时落在 note 上 --*/
+      (function () {
+        var note = document.getElementById("s06-note");
+        var noteText = note.textContent;
+        window.__stLiveAt(tl, 1.1, function () {
+          var t0 = performance.now();
+          note.textContent = "LIVE · 请求已发出，等待首包…";
+          window.__STLIVE.chat(
+            [{ role: "user", content: "一句话回答：你是谁？" }],
+            {
+              onDelta: function () {
+                var ms = Math.round(performance.now() - t0);
+                note.textContent = "LIVE · 首包 " + ms + "ms —— 你的全部上下文真的在路上";
+              },
+              onDone: function () {
+                note.textContent = "LIVE · 完成 " + Math.round(performance.now() - t0) + "ms";
+              },
+              onError: function () { note.textContent = noteText + "（LIVE 回退到模拟）"; },
+            }
+          );
+        });
+      })();
     })();
   </script>
 </template>

@@ -140,5 +140,36 @@
       }
     </script>
     </hyperframes-slideshow>
+
+    <script>
+      /* LIVE 开关：Shift+L 切换，?live=1 直开（转发给 composition iframe）。
+         开关只改本地状态；proxy 地址可用 ?liveurl= 覆盖。 */
+      (function () {
+        var q = new URLSearchParams(location.search);
+        function post() {
+          var player = document.querySelector("hyperframes-player");
+          var win = player && player.iframeElement && player.iframeElement.contentWindow;
+          if (win) {
+            var on = { "1": true, "0": false }[q.get("live")];
+            win.postMessage({ type: "st-live", on: on !== undefined ? on : null, url: q.get("liveurl") }, "*");
+          }
+        }
+        window.addEventListener("keydown", function (e) {
+          if (e.shiftKey && (e.key === "L" || e.key === "l")) {
+            try {
+              var cur = localStorage.getItem("st-pre-live") === "1";
+              localStorage.setItem("st-pre-live", cur ? "0" : "1");
+            } catch (err) {}
+            post();
+            var b = document.createElement("div");
+            b.textContent = "LIVE " + ((function(){try{return localStorage.getItem("st-pre-live")==="1"}catch(e){return false}})() ? "ON · 真实调用" : "OFF · 模拟");
+            b.style.cssText = "position:fixed;left:50%;top:24px;transform:translateX(-50%);z-index:99999;font:600 15px/1 system-ui,sans-serif;color:#16100a;background:#e8a34c;padding:10px 18px;border-radius:999px;transition:opacity .4s;pointer-events:none";
+            document.body.appendChild(b);
+            setTimeout(function () { b.style.opacity = "0"; setTimeout(function () { b.remove(); }, 450); }, 1600);
+          }
+        });
+        window.addEventListener("load", function () { setTimeout(post, 600); setTimeout(post, 1800); });
+      })();
+    </script>
   </body>
 </html>
