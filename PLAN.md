@@ -129,7 +129,7 @@ ST-PRE/
 - **构建**：`web-design-engineer`（HTML 幻灯片）+ slideshow 契约；**design-taste-frontend** 统一验收（`inspect.mjs`/`lint.mjs` 兼验指南站）
 - **QA**：agent-browser（默认走查+上线验收，Chromium 系）→ firefox MCP（引擎兼容）→ safari-official（WebKit/观众 iPhone）→ chrome-devtools 仅 trace/CDP 性能分析
 - **素材**：本机 Docker 起真 ST 抓截图录屏（peekaboo.capture 直出 MP4）；chrome-devtools.screencast 录幻灯片动画兜底；ffmpeg 压缩；`gh` 拉 SillyTavern 官方仓库取自带角色卡（版权干净）
-- **图片生成**：`imagegen.txt` 通道（OpenAI 兼容中转，model `gpt-image-2.5-sunburst`），prompt 模板由设计 tokens 约束风格；端点路径以阶段 2b 首张图的测试调用为准，**逐张先给 prompt 确认再花钱**
+- **图片生成**：`imagegen.txt` 通道（端点已实测确认）：`POST https://wawapii.com/v1/images/generations`，JSON + Bearer，最小规格 `{"model":"gpt-image-2.5-sunburst","prompt":"…","size":"1024x1024","quality":"low","n":1}`；响应同时含 `b64_json` 与 `url`，**优先取 b64 落盘**（url 为中转 OSS 直链，保存期无承诺）；单张实测约 35s；图生图走 `/v1/images/edits`（multipart，仅回 url）。**逐张先给 prompt 确认再花钱**
 - **研究**：websearch / tavily（ST 最新特性、生态事实核查）
 - **提醒/知识**：openchamber_notify（长任务）；openchamber_knowledge（跨会话计划）
 - **部署/验收**：rsync+ssh；agent-browser 全链路自动化；二维码 `npx qrcode`
@@ -209,9 +209,9 @@ HTTPS：Let's Encrypt / acme.sh；nginx 反代 ST（WebSocket upgrade）
 | DeepSeek thinking | 默认 `enabled`，LIVE 必须显式 `disabled` | 同上 |
 | DeepSeek 流式 | SSE，`data: [DONE]` 终止；usage 搭最后内容 chunk；错误码 401/402/422/429/500/503 | 同上 |
 | GSAP 许可 | 3.13 起全插件免费（含商用），2025-04 起 | gsap.com |
+| imagegen 端点 | `POST /v1/images/generations`（OpenAI 兼容，JSON+Bearer）实测 200；`quality:"low"`、`size` 生效；返回 `b64_json`+`url` 双通道，edits 端点（multipart）仅 `url`；可用模型 gpt-image-2 / 2.5-flare / 2.5-sunburst；单张 ~35s | 关联会话实测（2026-10-29） |
 | ST 文档 DeepSeek 条目 | **过时**（仍写 `deepseek-chat`），配置时以 DeepSeek 官方文档为准 | ST docs 对比 |
 
 **遗留待核**（进对应阶段时处理）：
-- `imagegen.txt` 端点路径 → 阶段 2b 首张图测试调用确认
 - DeepSeek 具体价格数字（定价页抓取被重定向）→ 阶段 1 内容稿涉及价格话术前复核 platform.deepseek.com
 - ST multi-user 批量建号的脚本化路径 → 阶段 5 部署手册编写时验证
