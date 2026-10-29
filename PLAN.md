@@ -129,7 +129,7 @@ ST-PRE/
 - **构建**：`web-design-engineer`（HTML 幻灯片）+ slideshow 契约；**design-taste-frontend** 统一验收（`inspect.mjs`/`lint.mjs` 兼验指南站）
 - **QA**：agent-browser（默认走查+上线验收，Chromium 系）→ firefox MCP（引擎兼容）→ safari-official（WebKit/观众 iPhone）→ chrome-devtools 仅 trace/CDP 性能分析
 - **素材**：本机 Docker 起真 ST 抓截图录屏（peekaboo.capture 直出 MP4）；chrome-devtools.screencast 录幻灯片动画兜底；ffmpeg 压缩；`gh` 拉 SillyTavern 官方仓库取自带角色卡（版权干净）
-- **图片生成**：`imagegen.txt` 通道（端点已实测确认）：`POST https://wawapii.com/v1/images/generations`，JSON + Bearer，最小规格 `{"model":"gpt-image-2.5-sunburst","prompt":"…","size":"1024x1024","quality":"low","n":1}`；响应同时含 `b64_json` 与 `url`，**优先取 b64 落盘**（url 为中转 OSS 直链，保存期无承诺）；单张实测约 35s；图生图走 `/v1/images/edits`（multipart，仅回 url）。**逐张先给 prompt 确认再花钱**
+- **图片生成**：`imagegen.txt` 通道（OpenAI 兼容中转）：`POST https://wawapii.com/v1/images/generations`，JSON + Bearer，最小规格 `{"model":"gpt-image-2.5-sunburst","prompt":"…","size":"1024x1024","quality":"low","n":1}`；响应同时含 `b64_json` 与 `url`，**优先取 b64 落盘**（url 为中转 OSS 直链，保存期无承诺）；单张约 35s；图生图走 `/v1/images/edits`（multipart，仅回 url）。**逐张先给 prompt 确认再花钱**
 - **研究**：websearch / tavily（ST 最新特性、生态事实核查）
 - **提醒/知识**：openchamber_notify（长任务）；openchamber_knowledge（跨会话计划）
 - **部署/验收**：rsync+ssh；agent-browser 全链路自动化；二维码 `npx qrcode`
