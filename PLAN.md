@@ -14,7 +14,7 @@
 | 优先级 | 先做**带 LIVE 的完整幻灯片**；体验站为最后增量（阶段 5） |
 | 时长 | 正片 30 分钟 + 现场体验 15 分钟 + Q&A |
 | 讲者备注 | 简洁版：每页 3~5 条要点 + 串场句（换人也能讲） |
-| 模型 | **DeepSeek**（`deepseek-flash`，OpenAI 兼容，Key 已就位） |
+| 模型 | **DeepSeek**（`deepseek-flash`，OpenAI 兼容） |
 | 视觉协作 | 设计探索由 OpenDesign 承担（`start_run` 出样张、用户在 OD 内迭代、`get_artifact` 拉回 tokens）；验收统一 design-taste-frontend |
 | 代码管理 | 本机开发测试 → GitHub 私有仓库 `asumi39/st-pre` |
 | 设计铁律 | 教室离线可放映；所有动效都在讲知识点；LIVE 必有模拟兜底；Key 永不进仓库 |
@@ -25,7 +25,7 @@
 |---|---|---|
 | 开场 | ①② | 封面「今晚，酒馆开张」；Hook：真实 AI 角色对话，抛问"背后发生了什么？" |
 | LLM 背景 | ③④ | 文字接龙 + 提示词就是一切；没有记忆 → 上下文窗口 |
-| ST 是什么 | ⑤~⑨ | 身世与定位（TavernAI 分叉、开源、Power Users）；前端/后端分离架构；能接什么模型（云 API→本地→免费）；跨平台 + 数据自主；诚实的定位（适合谁/不适合谁，提 RisuAI 等替代）。最新版 **v1.19.0（2026.09）**，AGPL-3.0，仍在活跃更新 |
+| ST 是什么 | ⑤~⑨ | 身世与定位（TavernAI 分叉、开源、Power Users）；前端/后端分离架构；能接什么模型——云 API（DeepSeek / GLM / Qwen / Claude / Gemini / OpenRouter）、本地（KoboldCpp / llama.cpp / Ollama）、免费（AI Horde / Pollinations，均开箱即用）；跨平台 + 数据自主；诚实的定位（适合谁/不适合谁，提 RisuAI 等替代）。最新版 **v1.19.0（2026.09）**，AGPL-3.0，仍在活跃更新 |
 | 能做什么 | ⑩~⑮ | 角色卡（PNG 里藏结构化设定，V2/V3 卡规范互通）；群聊；世界书（关键词触发）；扩展生态（TTS/绘图/翻译/总结/正则）；界面可玩性；玩法案例（跑团 GM / 语言陪练 / 小说共创，**本机 ST 实录素材**） |
 | 解剖一次对话 | ⑯~⑱ | 请求拼装解剖图；世界书触发 = RAG 思想；聊久了会忘 → 总结与向量 |
 | 上手 | ⑲~㉑ | 三条上手路径 + API 选择；安全避坑（Key/隐私/内容分寸）；从玩到学 + Q&A + 二维码 |
@@ -53,7 +53,7 @@
 
 ## 4. LIVE 模式技术设计
 
-> 依据 DeepSeek 官方文档核对（2026-10，api-docs.deepseek.com）。
+> 规格来源：api-docs.deepseek.com（2026-10 版）。
 
 ```
 幻灯片组件 (fetch, SSE 解析)
@@ -133,7 +133,7 @@ ST-PRE/
 - **研究**：websearch / tavily（ST 最新特性、生态事实核查）
 - **提醒/知识**：openchamber_notify（长任务）；openchamber_knowledge（跨会话计划）
 - **部署/验收**：rsync+ssh；agent-browser 全链路自动化；二维码 `npx qrcode`
-- **已装技能**：animation-performance、fixing-motion-performance、impeccable/extract
+- **辅助技能**：animation-performance、fixing-motion-performance、impeccable/extract
 
 ## 8. 图片生成清单（5~8 张，逐张确认）
 
@@ -150,7 +150,7 @@ ST-PRE/
 
 | 阶段 | 内容 | 产出 | 依赖 |
 |---|---|---|---|
-| 0 开工 ✅ | `git init`+`.gitignore`、GitHub 私有仓库、装三项技能 | 工程底座 | — |
+| 0 开工 | `git init`+`.gitignore`、GitHub 私有仓库、装三项技能 | 工程底座 | — |
 | 1 内容稿 | 21 页逐页文案+图示创意+备注 | `notes/content.md` | **用户审** |
 | 2a 视觉定调 | OpenDesign 出 2~3 个视觉方向样张（各含封面+解剖页，run 与阶段 1 并行）→ 用户在 OD 内评审选定 → `get_artifact` 拉回 → 沉淀 tokens.css | 设计系统 | — |
 | 2b 实现 | slideshow spike 验证 → 全量 21 页+活演示（模拟路径）+素材生产（本机 Docker ST 实拍：截图/官方卡/⑮页案例实录） | `slides/` 初版 | 1+2a |
@@ -195,30 +195,9 @@ HTTPS：Let's Encrypt / acme.sh；nginx 反代 ST（WebSocket upgrade）
 - proxy 运行时从环境变量 `DEEPSEEK_KEY` 或本地文件读取；服务器上写入 systemd env 或 `.env`（同样不入库）
 - 图片中转 Key 同理，仅 `tools/` 脚本运行时读取
 
-## 13. 需要用户提供
+## 13. 前置条件
 
-1. ~~DeepSeek Key~~ ✅ 已就位（`deepseek-key.txt`）
-2. ~~图片模型~~ ✅ 已就位（`imagegen.txt`）
-3. 阶段 4 前：北京服务器就绪确认（SSH 方式、域名解析到位、备案可用于该子域名）
-4. 阶段 5 前：体验站规模预期（建号数量、是否长期开放）
-
-## 14. 事实核查记录（2026-10-29）
-
-| 事实 | 结论 | 来源 |
-|---|---|---|
-| SillyTavern 最新版 | **1.19.0**（2026-09-14 发布），AGPL-3.0，35k stars，活跃更新 | GitHub API `releases/latest` |
-| ST 定位原话 | "LLM Frontend for Power Users." | 仓库描述 |
-| 免费后端（文档确认） | AI Horde（开箱即用）、Pollinations（免注册免费） | ST 官方文档 API Connections |
-| 本地后端（文档确认） | KoboldCpp、llama.cpp、Ollama、Oobabooga、TabbyAPI | 同上 |
-| 角色卡规范 | V3 规范已在 ST 代码库支持（`chara_card_v3`），与 V2 互通 | GitHub 代码检索 |
-| DeepSeek 现行模型 | `deepseek-flash`（V4.1-Flash-1017 服务）、`deepseek-v4-pro`；`deepseek-chat` 已淘汰 | DeepSeek 官方文档 |
-| DeepSeek thinking | 默认 `enabled`，LIVE 必须显式 `disabled` | 同上 |
-| DeepSeek 流式 | SSE，`data: [DONE]` 终止；usage 搭最后内容 chunk；错误码 401/402/422/429/500/503 | 同上 |
-| GSAP 许可 | 3.13 起全插件免费（含商用），2025-04 起 | gsap.com |
-| imagegen 端点 | `POST /v1/images/generations`（OpenAI 兼容，JSON+Bearer）实测 200；`quality:"low"`、`size` 生效；返回 `b64_json`+`url` 双通道，edits 端点（multipart）仅 `url`；可用模型 gpt-image-2 / 2.5-flare / 2.5-sunburst；单张 ~35s | 关联会话实测（2026-10-29） |
-| ST 文档 DeepSeek 条目 | **过时**（仍写 `deepseek-chat`），配置时以 DeepSeek 官方文档为准 | ST docs 对比 |
-
-| DeepSeek 定价 | flash：输入缓存命中 0.02/0.04 元/M、未命中 1/2 元/M、输出 4/8 元/M（空闲/高峰，高峰=工作日 9-12 与 14-18）；上下文 1M、输出上限 384K、支持视觉、并发 2500；⚠ v4-pro 自 2026-09-14 起请求路由至 Flash（官方淘汰中，勿选） | 官方定价页（2026-10-29） |
-| ST multi-user | enableUserAccounts/enableDiscreetLogin；建号 = users-admin 端点（admin 会话）；预置内容 = content scaffolding；官方明示密码非安全特性、数据明文存储 | ST docs Administration/multi-user + 代码库（2026-10-29） |
-
-**遗留待核**：无——三项均已核实（2026-10-29）。
+- 模型凭据：`deepseek-key.txt`（DeepSeek API Key）
+- 图片通道凭据：`imagegen.txt`（WawAPI 中转配置）
+- 阶段 4 前：北京服务器就绪（SSH 方式、域名解析到位、备案可用于子域名）
+- 阶段 5 前：体验站规模预期（建号数量、是否长期开放）
