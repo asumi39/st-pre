@@ -27,12 +27,12 @@
   --fs-small: 30px;
   --fs-micro: 28px;
 
-  /* -- 字族：中文系统栈（零字体下载 = 离线铁律）--
-     @font-face local() 声明仅为满足渲染器字体校验：这些都是 OS 自带字体，
-     local() 命中即用，不产生任何下载。 */
+  /* -- 字族：显示=衬线（Songti 验证正常）；正文=系统栈（CJK 由系统回退：
+     macOS→PingFang、Windows→雅黑、手机→系统默认。不显式点名 CJK 字族，
+     规避 Firefox local() 对 PingFang TTC 的坏字形问题；零字体下载 = 离线铁律）-- */
   --font-display: "Songti SC", "Noto Serif SC", serif;
-  --font-body: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
-  --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", monospace;
+  --font-body: system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", monospace;
 
   /* -- 间距 / 质感 -- */
   --s1: 16px;
@@ -53,7 +53,9 @@ body {
   font-family: var(--font-body);
 }
 
-/* -- OS 自带中文字体的 local() 声明（零下载；仅为满足渲染器字体校验）-- */
+/* -- OS 自带衬线字体的 local() 声明（零下载；仅为满足渲染器字体校验）--
+   注意：不对 PingFang SC 做 local() 声明 —— Firefox 的 local() 对其 TTC 产生坏字形，
+   正文改用 system-ui + 系统回退（各平台默认 CJK 回退即 PingFang/雅黑）。 */
 @font-face {
   font-family: "Songti SC";
   src: local("Songti SC");
@@ -61,14 +63,6 @@ body {
 @font-face {
   font-family: "Noto Serif SC";
   src: local("Noto Serif SC"), local("Noto Serif CJK SC");
-}
-@font-face {
-  font-family: "PingFang SC";
-  src: local("PingFang SC");
-}
-@font-face {
-  font-family: "Microsoft YaHei";
-  src: local("Microsoft YaHei");
 }
 
 /* -- 共用页面骨架（各场景 .page 内）-- */

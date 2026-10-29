@@ -10,9 +10,9 @@
     #s11-room {
       position: absolute;
       left: 50%;
-      top: 236px;
+      top: 216px;
       width: 1100px;
-      height: 660px;
+      height: 680px;
       transform: translateX(-50%);
       border-radius: var(--r);
       border: var(--card-border);
@@ -30,6 +30,7 @@
       letter-spacing: 0.2em;
     }
     .s11-line { display: flex; gap: 16px; align-items: flex-start; opacity: 0; }
+    .s11-line > div { max-width: 78%; }
     .s11-ava {
       width: 52px;
       height: 52px;
@@ -48,7 +49,7 @@
     .s11-line[data-who="你"] { flex-direction: row-reverse; }
     .s11-line[data-who="你"] .s11-ava { background: rgba(232, 163, 76, 0.25); color: var(--ink-strong); }
     .s11-bubble {
-      max-width: 72%;
+      max-width: 100%;
       font-size: 28px;
       line-height: 1.45;
       padding: 12px 20px;
@@ -97,7 +98,7 @@
       </div>
       <div class="s11-line" data-who="你" id="s11-l4">
         <div class="s11-ava">你</div>
-        <div><div class="s11-name">你 · @店长</div><div class="s11-bubble">承认吧，你也很喜欢这个故事。</div></div>
+        <div><div class="s11-name">你 · @店长</div><div class="s11-bubble">承认吧，你也很喜欢它。</div></div>
       </div>
     </div>
 
