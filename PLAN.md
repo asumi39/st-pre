@@ -15,7 +15,7 @@
 | 时长 | 正片 30 分钟 + 现场体验 15 分钟 + Q&A |
 | 讲者备注 | 简洁版：每页 3~5 条要点 + 串场句（换人也能讲） |
 | 模型 | **DeepSeek**（`deepseek-chat`，OpenAI 兼容，Key 已就位） |
-| 视觉协作 | 不走飞书；不继承旧 H5 视觉；设计探索 + 验收由 design-taste-frontend / web-design-engineer 承担，样张在聊天内渲染评审 |
+| 视觉协作 | 设计探索由 OpenDesign 承担（`start_run` 出样张、用户在 OD 内迭代、`get_artifact` 拉回 tokens）；验收统一 design-taste-frontend |
 | 代码管理 | 本机开发测试 → GitHub 私有仓库 `asumi39/st-pre` |
 | 设计铁律 | 教室离线可放映；所有动效都在讲知识点；LIVE 必有模拟兜底；Key 永不进仓库 |
 
@@ -113,6 +113,7 @@ ST-PRE/
 
 ## 7. 工具链分工（按 AGENTS.md 路由）
 
+- **设计探索**：OpenDesign（`start_run` 生成样张，run 通常 5~30 分钟，与内容稿并行；定稿后 `get_artifact` 一次拉回入口文件+引用的全部 tokens/资源）
 - **构建**：`web-design-engineer`（HTML 幻灯片）+ slideshow 契约；**design-taste-frontend** 统一验收（`inspect.mjs`/`lint.mjs` 兼验指南站）
 - **QA**：agent-browser（默认走查+上线验收，Chromium 系）→ firefox MCP（引擎兼容）→ safari-official（WebKit/观众 iPhone）→ chrome-devtools 仅 trace/CDP 性能分析
 - **素材**：本机 Docker 起真 ST 抓截图录屏（peekaboo.capture 直出 MP4）；chrome-devtools.screencast 录幻灯片动画兜底；ffmpeg 压缩；`gh` 拉 SillyTavern 官方仓库取自带角色卡（版权干净）
@@ -131,7 +132,7 @@ ST-PRE/
 | 3 | 玩法案例点缀插画 | 跑团/陪练/共创三场景（配合实录内容） |
 | 4 | 自制教学演示卡头像 | 第⑩页拆解"一张卡里有什么"用的结构清晰示例卡 |
 
-不生成的：UI 截图（实拍）、示意图/解剖图（页内 SVG 动画）、二维码（程序生成）、体验站角色卡（用官方自带卡）。
+来源规则：UI 素材=本机 ST 实拍截图；示意图/解剖图=页内 SVG 动画；二维码=程序生成；体验站角色卡=官方自带卡。
 
 ## 9. 阶段计划
 
@@ -139,7 +140,7 @@ ST-PRE/
 |---|---|---|---|
 | 0 开工 ✅ | `git init`+`.gitignore`、GitHub 私有仓库、装三项技能 | 工程底座 | — |
 | 1 内容稿 | 21 页逐页文案+图示创意+备注 | `notes/content.md` | **用户审** |
-| 2a 视觉定调 | 2~3 个视觉方向样张（封面+解剖页）→ 用户选定 → tokens.css | 设计系统 | 与阶段 1 并行 |
+| 2a 视觉定调 | OpenDesign 出 2~3 个视觉方向样张（各含封面+解剖页，run 与阶段 1 并行）→ 用户在 OD 内评审选定 → `get_artifact` 拉回 → 沉淀 tokens.css | 设计系统 | — |
 | 2b 实现 | slideshow spike 验证 → 全量 21 页+活演示（模拟路径）+素材生产（本机 Docker ST 实拍：截图/官方卡/⑮页案例实录） | `slides/` 初版 | 1+2a |
 | 2c 打磨 | 讲者备注、fragments 节奏、分支热点、三引擎 QA、trace、**关 Wi-Fi 干跑**、PDF | 幻灯片定稿 | 2b |
 | 2d LIVE | proxy 开发+接线+DeepSeek 真实调用验证+回退测试 | 交付物 3 | 2c |
