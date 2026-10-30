@@ -1517,11 +1517,13 @@ html.speaker-progress .progress { height: 5px; }
       }
     } catch (e) { }
   }
-  /* 真机两轮实证：弱转子马达 45ms 仍无感（400ms 可感）。默认档 90ms；
-     ?haptic-test=1 面板可现场校准，localStorage 按设备记忆覆盖默认。 */
-  var VIB_MS = 90;
+  /* 真机实证：阈值 80ms（405ms 可感、45/80 以下无感）。默认 100ms 留余量；
+     ?haptic-test=1 面板可现场校准，localStorage 按设备记忆覆盖默认。
+     storedMs 提升作用域：面板需展示「已校准/默认」状态。 */
+  var storedMs = null;
+  var VIB_MS = 100;
   try {
-    var storedMs = parseInt(localStorage.getItem("vibTickMs"), 10);
+    storedMs = parseInt(localStorage.getItem("vibTickMs"), 10);
     if (storedMs >= 20 && storedMs <= 300) VIB_MS = storedMs;
   } catch (e) { }
   var lastVibeAt = 0;
@@ -1710,8 +1712,11 @@ html.speaker-progress .progress { height: 5px; }
       + '<b id="vibMs" style="min-width:52px;text-align:right;color:#e8a34c">' + VIB_MS + 'ms</b>'
       + '<button id="vibTry" style="padding:8px 14px;background:#3a2c1c;color:#fff7e8;border-radius:8px">试震</button>'
       + '</div>'
-      + '<div style="margin-top:10px"><button id="vibSet" style="width:100%;padding:10px;background:#e8a34c;color:#16100a;border-radius:8px;font-weight:700">把这档设为滑杆触觉（本机记忆）</button></div>'
-      + '<div id="vibLog" style="margin-top:8px;color:#c9b99b">从 20ms 往右拖，找到第一个「能感觉到」的档位，试震后设为滑杆触觉。</div>';
+      + '<div style="display:flex;gap:8px;margin-top:10px">'
+      + '<button id="vibSet" style="flex:1;padding:10px;background:#e8a34c;color:#16100a;border-radius:8px;font-weight:700">把这档设为滑杆触觉（本机记忆）</button>'
+      + '<button id="vibReset" style="padding:10px 14px;background:#3a2c1c;color:#fff7e8;border-radius:8px">恢复默认</button>'
+      + '</div>'
+      + '<div id="vibLog" style="margin-top:8px;color:#c9b99b">从 20ms 往右拖，找到第一个「能感觉到」的档位，试震后设为滑杆触觉。当前生效 ' + VIB_MS + 'ms' + (storedMs ? '（已校准）' : '（默认）') + '。</div>';
     document.body.appendChild(dp);
     var vr = dp.querySelector("#vibRange"), vms = dp.querySelector("#vibMs");
     vr.addEventListener("input", function () { vms.textContent = vr.value + "ms"; });
@@ -1724,6 +1729,11 @@ html.speaker-progress .progress { height: 5px; }
       VIB_MS = +vr.value;
       try { localStorage.setItem("vibTickMs", String(VIB_MS)); } catch (e) { }
       document.getElementById("vibLog").textContent = "已设为 " + VIB_MS + "ms 并记忆在本机——去拖上面的滑杆试试手感。";
+    });
+    dp.querySelector("#vibReset").addEventListener("click", function () {
+      try { localStorage.removeItem("vibTickMs"); } catch (e) { }
+      VIB_MS = 100; vr.value = VIB_MS; vms.textContent = VIB_MS + "ms";
+      document.getElementById("vibLog").textContent = "已恢复默认 100ms（此前若被低档位校准锁死，现在已解开）。";
     });
   }
 })();
