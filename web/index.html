@@ -1517,13 +1517,20 @@ html.speaker-progress .progress { height: 5px; }
       }
     } catch (e) { }
   }
+  var lastVibeAt = 0;
   simRange.addEventListener("input", function () {
     var v = +simRange.value;
     if (v === lastVibeVal) return;
-    var over = v > CAP ? [18, 60, 26] : 20; /* 9ms 在不少安卓马达上低于感知阈（启动 10-20ms），提到 20ms */
-    if (canVibe) haptic(over);                            /* Android/桌面：真马达 */
-    else if (dragActive && dragMoved) audioTick(v > CAP); /* iPhone 拖拽：苹果 18.4+ 永不授权，听觉顶上 */
-    else haptic(over);                                    /* iPhone 点按：click 授权内，合成翻转可震 */
+    /* 真机实证：弱转子马达启动要 30-50ms，<50ms 短脉冲无感。tick 定 45ms；
+       70ms 节流防高频 input 把离散 tick 重启成嗡鸣；溢出（越过 CAP）必震。 */
+    var now = Date.now(), over = v > CAP;
+    if (over || now - lastVibeAt > 70) {
+      var pat = over ? [45, 70, 45] : 45;
+      if (canVibe) haptic(pat);                            /* Android/桌面：真马达 */
+      else if (dragActive && dragMoved) audioTick(v > CAP); /* iPhone 拖拽：苹果 18.4+ 永不授权，听觉顶上 */
+      else haptic(pat);                                    /* iPhone 点按：click 授权内，合成翻转可震 */
+      lastVibeAt = now;
+    }
     lastVibeVal = v;
   });
 
@@ -1692,8 +1699,8 @@ html.speaker-progress .progress { height: 5px; }
       + (typeof navigator.vibrate === "function" ? "有" : "无（非安卓或内核阉割）")
       + '<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">'
       + '<button data-p="400" style="flex:1;padding:10px;background:#e8a34c;color:#16100a;border-radius:8px;font-weight:700">长震 400ms</button>'
-      + '<button data-p="18,60,26" style="flex:1;padding:10px;background:#3a2c1c;color:#fff7e8;border-radius:8px">溢出节奏</button>'
-      + '<button data-p="20" style="flex:1;padding:10px;background:#3a2c1c;color:#fff7e8;border-radius:8px">棘轮 20ms</button>'
+      + '<button data-p="45" style="flex:1;padding:10px;background:#3a2c1c;color:#fff7e8;border-radius:8px">棘轮 45ms</button>'
+      + '<button data-p="45,70,45" style="flex:1;padding:10px;background:#3a2c1c;color:#fff7e8;border-radius:8px">溢出节奏</button>'
       + '</div><div id="vibLog" style="margin-top:8px;color:#c9b99b">点按钮试震，结果显示在这里。顺手拖一拖上面的滑杆。</div>';
     document.body.appendChild(dp);
     dp.addEventListener("click", function (e) {
