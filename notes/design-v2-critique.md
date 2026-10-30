@@ -71,3 +71,27 @@ Caps applied: 无。
 - 字号实测 15 档（新增 37px = 纪律带标题 clamp 插值），维持「流式排版必需」辩护。
 - FAQ 卡列右侧 ~180px 空气（标题与卡片同左缘，读作呼吸而非偏挤）。
 
+## ROUND 3 · 细节排查（用户要求逐端逐节复查，2026-10-30）
+
+桌面 1440 与移动 390（inspect 仿真）/500 逐节截图走查，修复 8 项：
+
+1. **页脚标记在 390px 被无声裁切**（真 bug，body overflow-x:hidden 掩盖）：焰形+烛台
+   总宽 2.34×mark 高，22svh 高度下需 453px > 可用 327px。→ ≤700px 限高
+   `clamp(90px, 24vw, 132px)`；Firefox 真 390 视口实测 markRight=359<390、scrollWidth=390。
+   （chrome-devtools 窗口最小宽 500px，390 只能靠 inspect 仿真 / Firefox set_viewport_size。）
+2. **Hook 右半空洞**（桌面 ~580px）：聊天窗左置、旁注原在窗下。→ hook-stage 改双列，
+   `#chatNote` 移右列底对齐，成为旁注栏（≤860px 回落单列）。
+3. **开张段 statement 与路径行间 ~250px 空档**：statement 收进 open-grid 左列首行。
+4. **战利品收束句位次**：先移至段尾 → inspect 判「QR caption 在大标题上方=eyebrow」FAIL
+   （768/390），回退至 spoil-grid 之前；收尾节拍由琥珀页脚承担。两版均留痕。
+5. **FAQ 五张卡抽屉层次**：桌面端 2/4/5 卡同色、层叠感失效；答案行孤字「始。」。
+   → 五级递进卡色（#1e1610→#362a17），子元素透明化 + 打印回退；`p { text-wrap: pretty }` 全局化。
+6. **菜单两枚深色特写再提亮**（群聊 1.5、插件货架 1.75）。
+7. 讲者面板（N 键）、模拟器 4/8/12 三态、FAQ 手风琴、聊天回放完成态——交互走查全部正常。
+8. 复验：lint 0 FAIL / inspect 三视口 0 FAIL；同源讲义重生成（12.1MB）。
+
+### 390px 特记
+
+- chrome-devtools 窗口最小宽 500 → 移动细节以 inspect 仿真截图 + Firefox set_viewport_size(390) 实测为准。
+- 罐头回放完毕的聊天（chip「离线回放·完」）、菜单标题/标签分行、开张句单行——390 下均确认。
+

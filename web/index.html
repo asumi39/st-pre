@@ -70,7 +70,7 @@ button { font: inherit; cursor: pointer; border: 0; background: none; color: inh
 h2.display { font-size: clamp(30px, 3.6vw, 54px); margin-bottom: clamp(20px, 3vw, 40px); }
 .statement { font-size: clamp(20px, 2.2vw, 32px); line-height: 1.5; font-weight: 500; color: var(--ink); max-width: 30em; }
 h1, h2, h3 { text-wrap: balance; }
-.lede, .statement, .after, .sim-verdict { text-wrap: pretty; }
+p { text-wrap: pretty; }
 p, li { max-width: var(--measure); }
 .lede { font-size: clamp(18px, 1.3vw, 20px); color: var(--muted); max-width: 34em; }
 .note { font-size: 15px; color: var(--muted); }
@@ -156,7 +156,9 @@ section { padding: clamp(72px, 11vw, 170px) var(--margin); position: relative; }
   margin: 0 0.14em; border-radius: 0.16em; object-fit: cover;
   background: var(--bg-3);
 }
-.hook-stage { margin-top: clamp(36px, 5vw, 64px); }
+.hook-stage { margin-top: clamp(36px, 5vw, 64px); display: grid; grid-template-columns: minmax(0, 620px) 1fr; gap: clamp(28px, 5vw, 72px); align-items: end; }
+.chat-note { margin-top: 0; max-width: 36ch; padding-bottom: 8px; }
+@media (max-width: 860px) { .hook-stage { grid-template-columns: 1fr; } .chat-note { margin-top: 14px; max-width: none; padding-bottom: 0; } }
 
 /* ---------- 聊天舞台（真界面片段 data-ui） ---------- */
 .chat {
@@ -332,7 +334,8 @@ input[type="range"].big::-moz-range-thumb {
 .routes button:hover { color: var(--accent); }
 .routes button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); font-weight: 600; }
 .openup .after { margin-top: 26px; color: var(--muted); font-size: 15px; max-width: 44em; }
-.open-grid { display: grid; grid-template-columns: 8fr 4fr; gap: clamp(28px, 5vw, 72px); align-items: center; margin-top: 26px; }
+.open-grid { display: grid; grid-template-columns: 8fr 4fr; gap: clamp(28px, 5vw, 72px); align-items: center; margin-top: 10px; }
+.openup-line { margin-bottom: 30px; }
 @media (max-width: 700px) { .open-grid { grid-template-columns: 1fr; } .open-shot { max-width: 240px; } }
 .open-shot { width: min(100%, 280px); height: auto; justify-self: center; border-radius: 22px; aspect-ratio: 9 / 15; object-fit: cover; object-position: top; filter: brightness(1.3); }
 .route-detail { margin-top: 26px; max-width: 44em; }
@@ -354,27 +357,26 @@ input[type="range"].big::-moz-range-thumb {
 .faq-cards { max-width: 1020px; }
 .fcard { position: relative; }
 .fcard + .fcard { margin-top: -18px; }
+.fcard { background: var(--bg-2); }
+.fcard:nth-child(2) { background: #241a10; }
+.fcard:nth-child(3) { background: #2a1f12; }
+.fcard:nth-child(4) { background: #302415; }
+.fcard:nth-child(5) { background: #362a17; }
 .fcard .tab {
   display: block; width: 100%; text-align: left;
-  background: var(--bg-2); border-radius: 12px 12px 0 0; padding: 16px 22px;
+  background: none; border-radius: 12px 12px 0 0; padding: 16px 22px;
 }
-.fcard:nth-child(2) .tab { background: var(--bg-3); }
-.fcard:nth-child(3) .tab { background: #2d2013; }
-.fcard:nth-child(4) .tab { background: var(--bg-2); }
-.fcard:nth-child(5) .tab { background: var(--bg-3); }
 .fcard .tab h3 { font-size: 17px; font-weight: 600; color: var(--ink-strong); display: flex; justify-content: space-between; align-items: center; gap: 14px; }
 .fcard .tab .marker { color: var(--accent); font-size: 22px; line-height: 1; transition: transform 0.25s ease; flex: none; }
 .fcard[data-open="true"] .tab { border-radius: 12px 12px 0 0; }
 .fcard[data-open="true"] .marker { transform: rotate(45deg); }
 .fcard .answer {
-  background: var(--bg-2); overflow: hidden; max-height: 0;
+  background: none; overflow: hidden; max-height: 0;
   transition: max-height 0.35s ease;
 }
 .fcard[data-open="true"] .answer { max-height: 400px; }
 .fcard .answer p { padding: 2px 22px 22px; font-size: 16px; color: var(--muted); max-width: 56ch; }
 .fcard .answer p b { color: var(--ink); }
-.fcard:nth-child(2) .answer, .fcard:nth-child(4) .answer, .fcard:nth-child(2) .tab, .fcard:nth-child(4) .tab { background: var(--bg-3); }
-
 /* ---------- 收束 · 战利品 ---------- */
 .spoils { background: var(--bg-2); }
 .spoil-words { display: flex; flex-wrap: wrap; gap: 14px 28px; margin-top: clamp(24px, 3vw, 40px); }
@@ -399,6 +401,7 @@ footer { background: var(--accent); color: var(--on-accent); padding: clamp(56px
 .foot-mark svg { height: 100%; width: auto; fill: var(--on-accent); }
 .foot-mark .candles { color: var(--on-accent); }
 .candles .fl { transform-box: fill-box; transform-origin: 50% 100%; animation: flick 2.8s ease-in-out infinite; }
+@media (max-width: 700px) { .foot-mark { height: clamp(90px, 24vw, 132px); } }
 @keyframes flick { 0%, 100% { transform: scaleY(1); opacity: 1; } 50% { transform: scaleY(1.05) scaleX(0.96); opacity: 0.9; } }
 .foot-links { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: clamp(40px, 6vw, 72px); }
 @media (max-width: 640px) { .foot-links { grid-template-columns: 1fr 1fr; } }
@@ -443,6 +446,7 @@ body.speaker-progress .progress { height: 5px; }
   .hero-flame, .brain-photo { display: none; }
   .fcard .answer { max-height: none; }
   a { color: inherit; }
+  .faq-cards .fcard { background: var(--bg-2); }
   footer { background: none; color: var(--ink); }
   .foot-mark svg { fill: var(--ink); }
   .foot-mark .candles { color: var(--ink); }
@@ -681,7 +685,7 @@ body.speaker-progress .progress { height: 5px; }
           <p>名字、描述、性格、场景、示例对话、首条消息——图片是皮，藏在里面的 JSON 是魂。V2/V3 规范互通，社区百万张卡直接导入就能玩。</p></div>
       </li>
       <li class="menu-item rise d1">
-        <img class="bullet" src="assets/ui-mobile.png" alt="" style="object-position:50% 40%;filter:brightness(1.35)" width="128" height="128" loading="lazy" />
+        <img class="bullet" src="assets/ui-mobile.png" alt="" style="object-position:50% 40%;filter:brightness(1.5)" width="128" height="128" loading="lazy" />
         <div><h4>群聊 · 让角色同台<span class="tag">一个模型演一台戏</span></h4>
           <p>多个角色头像互相接话，你 @ 谁谁说话。原理没变：提示词里写了「你现在扮演房间里所有人」。</p></div>
       </li>
@@ -691,7 +695,7 @@ body.speaker-progress .progress { height: 5px; }
           <p>设定库平时睡觉，聊天里提到「蟹堡王」，那条设定才醒来、飞进请求包。记住这个动作，第四幕给它一个学名。</p></div>
       </li>
       <li class="menu-item rise d1">
-        <img class="bullet" src="assets/ui-skin.png" alt="" style="object-position:50% 30%;filter:brightness(1.6)" width="128" height="128" loading="lazy" />
+        <img class="bullet" src="assets/ui-skin.png" alt="" style="object-position:50% 30%;filter:brightness(1.75)" width="128" height="128" loading="lazy" />
         <div><h4>插件货架 · 给酒馆装插件<span class="tag">一切皆是文字加工</span></h4>
           <p>TTS 语音、AI 绘图、自动翻译、总结记忆、正则渲染成状态栏……全在改写「发出去的文字」、美化「收回来的文字」。</p></div>
       </li>
@@ -768,9 +772,9 @@ body.speaker-progress .progress { height: 5px; }
 <section class="openup" id="openup" aria-labelledby="h-openup">
   <div class="wrap">
     <h2 class="display rise" id="h-openup">第五幕 · 今晚就开张</h2>
-    <p class="display openup-line rise d1">把酒馆装进你的电脑。</p>
     <div class="open-grid">
       <div>
+        <p class="display openup-line rise d1">把酒馆装进你的电脑。</p>
         <div class="route-row rise d2">
           <span class="route-label">选一条路：</span>
           <span class="routes" role="group" aria-label="安装路径">
@@ -861,7 +865,6 @@ body.speaker-progress .progress { height: 5px; }
       </figure>
       <div class="rise d1">
         <p class="statement" style="font-size:clamp(19px,1.9vw,26px)">酒馆最好玩的地方不是它多能玩，<br/>而是你玩着玩着，把 LLM 学了。</p>
-        <p class="note" style="margin-top:14px">体验站筹备中，开放后社团群内通知。</p>
       </div>
     </div>
   </div>
