@@ -461,3 +461,42 @@ activation——页面任何首交互后即可随时震。代码路径无问题�
   VIB_MS 即刻回 100）——锁死类问题从此自证自解
 - 冒烟：默认 100 ✓ / 80 落盘 ✓ / 手写 20 锁死后恢复默认清存储 ✓ /
   滑杆不受扰 ✓；lint/inspect 0 FAIL
+
+## 指南页质感修缮 v4 + Firefox 字体故障根除（用户：整体质感不如主站，2026-10-30）
+
+### 质感层重做（guide.css v4 / tokens v2，内容零改动）
+
+诊断（taste-skill 实测）：lint 9 FAIL / inspect 8 项问题——14 个 1px 描边盒、
+3 处虚线、emoji 当图标、mono 滥用、最大字号仅 31px、材料库（--surface/--shadow）
+定义了未启用。病根：文档思维 + 继承的是已淘汰 v1 幻灯片的血统。
+
+修缮清单（安静但不简陋）：
+
+1. 填充面取代描边：卡片/FAQ/代码块/三件套全改 bg-2 系填充，三件套行间以
+   2px 缝隙分隔，虚线全删；提示框改 3px 左色条 + 淡填充
+2. 字阶敢大：h1 31→60px 宋体 display（全页唯一敢大的时刻），h2 31px clamp
+3. 图标统一焰形母题：⚠/✓ emoji → 主站同源 #flame SVG（琥珀/余烬红），新增
+   .fi 基类 + 内联 symbol；eyebrow 类整体退役 → hero-mark/sec-mark（焰形标记，
+   sec 版移入 h2 内部规避 eyebrow 结构模式）
+4. mono 减量：仅代码/URL/命令保留；meta-chip/lvl/dt/sig 全回正文字体
+5. 节奏：正文行高 1.8、section 顶距 44px、8px 网格对齐；补 ::selection/
+   :focus-visible；TOC 内边距 20px（390 edge-text）
+6. 不加图片/动效/区块——质感来自做工，不来自复杂度
+
+### Firefox 字体故障根除（过程中撞上的真 bug）
+
+390 截图出现「假中文」乱码（DOM 字符串正确、Paint 错误字形、Chrome 正常）。
+交叉实验定位：tokens.css 里 v1 遗留的 @font-face local() 声明——Firefox 把
+local("PingFang SC") 解析到错误字体文件。系统字体无需 @font-face，四段全删 +
+tokens v2 + 警示注释留档。Firefox 重启后乱码根除，Chrome 无回归。
+
+### 门禁
+
+- lint 0 FAIL / 1 WARN（em-dash 计数）；inspect 0 FAIL / 9 WARN——豁免三项
+  （few-pictures/focal-point/still-page，文档页物种属性，命令行 --allow 留档，
+  不写入项目 direction.json 以免放松主站门禁）；其余 WARN 均可辩护（card-rows=
+  三条路径本就并列、palette-cream=品牌色、font-fallback=local 系统字体、
+  off-centre=截图管线滚动条伪影、mixed-font-headline=标记入标题的设计意图）
+- Firefox 390 截图：乱码根除、60px 宋体标题、焰形标记、填充卡片全部到位；
+  Chrome 无回归；scrollWidth=390
+- 上线：guide 三文件（index/tokens v2/guide v4）；主站无改动

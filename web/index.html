@@ -1486,7 +1486,7 @@ html.speaker-progress .progress { height: 5px; }
       return true;
     } catch (e) { return false; }
   }
-  var lastVibeVal = +simRange.value;
+  var lastVibeVal = +simRange.value, lastVibeAt = 0, vibCalls = 0;
   var actx = null, dragActive = false, dragMoved = false, dragX = 0, dragY = 0;
   simRange.addEventListener("pointerdown", function (e) {
     dragActive = true; dragMoved = false; dragX = e.clientX; dragY = e.clientY;
@@ -1533,10 +1533,14 @@ html.speaker-progress .progress { height: 5px; }
     var now = Date.now(), over = v > CAP;
     if (over || now - lastVibeAt > VIB_MS + 30) {
       var pat = over ? [VIB_MS, 70, VIB_MS] : VIB_MS;
-      if (canVibe) haptic(pat);                            /* Android/桌面：真马达 */
-      else if (dragActive && dragMoved) audioTick(v > CAP); /* iPhone 拖拽：苹果 18.4+ 永不授权，听觉顶上 */
-      else haptic(pat);                                    /* iPhone 点按：click 授权内，合成翻转可震 */
+      var ret;
+      if (canVibe) ret = haptic(pat);                      /* Android/桌面：真马达 */
+      else if (dragActive && dragMoved) { audioTick(v > CAP); ret = "音频"; } /* iPhone 拖拽：苹果 18.4+ 永不授权，听觉顶上 */
+      else ret = haptic(pat);                              /* iPhone 点按：click 授权内，合成翻转可震 */
       lastVibeAt = now;
+      vibCalls++;
+      var lv = document.getElementById("vibLive");
+      if (lv) lv.textContent = "震动调用 " + vibCalls + " 次 · 最近 " + (typeof pat === "number" ? pat + "ms" : pat.join("/")) + " · 返回 " + ret;
     }
     lastVibeVal = v;
   });
@@ -1716,7 +1720,9 @@ html.speaker-progress .progress { height: 5px; }
       + '<button id="vibSet" style="flex:1;padding:10px;background:#e8a34c;color:#16100a;border-radius:8px;font-weight:700">把这档设为滑杆触觉（本机记忆）</button>'
       + '<button id="vibReset" style="padding:10px 14px;background:#3a2c1c;color:#fff7e8;border-radius:8px">恢复默认</button>'
       + '</div>'
-      + '<div id="vibLog" style="margin-top:8px;color:#c9b99b">从 20ms 往右拖，找到第一个「能感觉到」的档位，试震后设为滑杆触觉。当前生效 ' + VIB_MS + 'ms' + (storedMs ? '（已校准）' : '（默认）') + '。</div>';
+      + '<div id="vibLog" style="margin-top:8px;color:#c9b99b">从 20ms 往右拖，找到第一个「能感觉到」的档位。当前生效 ' + VIB_MS + 'ms' + (storedMs ? '（已校准）' : '（默认）') + '。</div>'
+      + '<div id="vibLive" style="margin-top:6px;padding:6px 8px;background:#16100a;border-radius:8px;color:#e8a34c;font-weight:600">震动调用 0 次 · 拖动滑杆实时计数</div>'
+      + '<div style="margin-top:6px;color:#8a7a5f;font-size:11px">' + navigator.userAgent.slice(0, 90) + '</div>';
     document.body.appendChild(dp);
     var vr = dp.querySelector("#vibRange"), vms = dp.querySelector("#vibMs");
     vr.addEventListener("input", function () { vms.textContent = vr.value + "ms"; });

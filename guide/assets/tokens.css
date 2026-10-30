@@ -3,7 +3,7 @@
    与 slides/tokens.css 同源同值：色板 / 字族 / 圆角 / 间距完全一致，
    幻灯片定稿换 tokens-final 时本文件同步替换。
    指南站专用补充：手机阅读字阶（幻灯片 --fs-* 为 1920×1080 画布专用）。
-   铁律：零字体下载——全部使用 OS 自带字体的 local() 声明。
+   铁律：零字体下载——全部使用 OS 自带字体（按字族名直引，不加 @font-face）。
    ============================================================ */
 
 :root {
@@ -21,8 +21,7 @@
   --accent-2: #c05f33;      /* 余烬红：次强调、危险/警示 */
   --glow: rgba(232, 163, 76, 0.16);
 
-  /* -- 字族：中文系统栈（零字体下载 = 离线铁律）--
-     @font-face local() 声明均为 OS 自带字体：命中即用，不产生任何下载。 */
+  /* -- 字族：中文系统栈（零字体下载 = 离线铁律）-- */
   --font-display: "Songti SC", "Noto Serif SC", serif;
   --font-body: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
   --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", monospace;
@@ -63,23 +62,9 @@ body {
   font-family: var(--font-body);
 }
 
-/* -- OS 自带中文字体的 local() 声明（零下载；仅为满足字体校验）-- */
-@font-face {
-  font-family: "Songti SC";
-  src: local("Songti SC");
-}
-@font-face {
-  font-family: "Noto Serif SC";
-  src: local("Noto Serif SC"), local("Noto Serif CJK SC");
-}
-@font-face {
-  font-family: "PingFang SC";
-  src: local("PingFang SC");
-}
-@font-face {
-  font-family: "Microsoft YaHei";
-  src: local("Microsoft YaHei");
-}
+/* -- 字族警示：不要为系统字体添加 @font-face local()——Firefox 会把 local()
+   解析到错误字体并画出错误字形（2026-10 真机故障）。系统字体按字族名直接
+   引用即可，无需任何 @font-face。 -- */
 
 /* -- 烛光氛围：呼吸光晕（CSS ambient loop）-- */
 @keyframes candle-flicker {

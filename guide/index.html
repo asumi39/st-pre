@@ -7,10 +7,11 @@
   <meta name="description" content="SillyTavern 社团分享伴学指南：三条上手路径、模型接入、Key 安全、角色卡与 FAQ。零基础照着做，10 分钟上手。" />
   <title>酒馆上手指南 · SillyTavern 社团分享</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath d='M24 6c3.4 4.2 5.4 7.2 5.4 10.2 0 3.2-2.4 5.6-5.4 5.6s-5.4-2.4-5.4-5.6C18.6 13.2 20.6 10.2 24 6Z' fill='%23e8a34c'/%3E%3Crect x='16.5' y='24' width='15' height='18' rx='3' fill='%233a2c1c'/%3E%3C/svg%3E" />
-  <link rel="stylesheet" href="assets/tokens.css?v=1" />
-  <link rel="stylesheet" href="assets/guide.css?v=3" />
+  <link rel="stylesheet" href="assets/tokens.css?v=2" />
+  <link rel="stylesheet" href="assets/guide.css?v=4" />
 </head>
 <body>
+  <svg style="display:none" aria-hidden="true"><symbol id="flame" viewBox="0 0 100 120"><path d="M50 0 C58 22 92 44 92 76 A42 44 0 1 1 8 76 C8 44 42 22 50 0 Z"/></symbol></svg>
   <div class="wrap">
 
     <!-- ========== 头部 ========== -->
@@ -20,7 +21,7 @@
         <rect x="19.5" y="22.5" width="9" height="3.4" rx="1.2" fill="#8a6a3f"/>
         <rect x="16" y="26" width="16" height="17" rx="3" fill="#3a2c1c" stroke="rgba(232,163,76,0.35)"/>
       </svg>
-      <span class="eyebrow">AI 社团 · 分享现场配套</span>
+      <span class="hero-mark"><svg class="fi" aria-hidden="true"><use href="#flame"/></svg>AI 社团 · 分享现场配套</span>
       <h1>酒馆上手指南</h1>
       <p class="sub">今晚酒馆开张了。这一页照着做，把 <b>SillyTavern</b>（开源免费的角色扮演前端）搬回自己的电脑上——<b>10 分钟够用</b>。卡住了？社团群里有我们。</p>
       <div class="hero-meta">
@@ -48,8 +49,7 @@
     <!-- ========== ① 三条上手路径 ========== -->
     <section id="paths">
       <div class="sec-head">
-        <span class="eyebrow">第一步 · 装酒馆</span>
-        <h2>三条上手路径，任选一条</h2>
+        <h2><span class="sec-mark"><svg class="fi" aria-hidden="true"><use href="#flame"/></svg>第一步 · 装酒馆</span>三条上手路径，任选一条</h2>
         <p class="lede">装的是同一个软件。三条路殊途同归：装完都会在浏览器打开 <code>http://localhost:8000</code>。<b>推荐从「最快」开始</b>，玩起来之后再考虑换路。</p>
       </div>
 
@@ -88,7 +88,7 @@ docker run -p 8000:8000 ghcr.io/sillytavern/sillytavern:latest</code></pre>
       </div>
 
       <div class="callout">
-        <span class="tag">装好 ≠ 玩起来</span>
+        <span class="tag"><svg class="fi" aria-hidden="true"><use href="#flame"/></svg>装好 ≠ 玩起来</span>
         <p>装好只是有了「酒馆」这个界面，它还不会说话——下一步给它<b>接一个大脑（模型）</b>。</p>
       </div>
     </section>
@@ -96,8 +96,7 @@ docker run -p 8000:8000 ghcr.io/sillytavern/sillytavern:latest</code></pre>
     <!-- ========== ② 模型接入 ========== -->
     <section id="model">
       <div class="sec-head">
-        <span class="eyebrow">第二步 · 接大脑</span>
-        <h2>模型接入：三件套</h2>
+        <h2><span class="sec-mark"><svg class="fi" aria-hidden="true"><use href="#flame"/></svg>第二步 · 接大脑</span>模型接入：三件套</h2>
         <p class="lede">酒馆自己不带模型，说话的「大脑」由你接进来。最通用的接法是 <b>OpenAI 兼容自定义端点</b>——填三件套即可。推荐 <b>DeepSeek</b>：注册即得，Flash 档一次对话<b>不到一分钱</b>。</p>
       </div>
 
@@ -107,23 +106,23 @@ docker run -p 8000:8000 ghcr.io/sillytavern/sillytavern:latest</code></pre>
         <dl class="trio">
           <div class="row">
             <dt>API 地址</dt>
-            <dd><span class="val">https://api.deepseek.com/v1</span></dd>
+            <dd><code class="val">https://api.deepseek.com/v1</code></dd>
           </div>
           <div class="row">
             <dt>API Key</dt>
-            <dd><span class="val">sk-xxxx</span>
-              <span class="note">用你自己注册生成的那串（也是 sk- 开头）。Key = 钱包，别外传，见下方三条纪律。</span></dd>
+            <dd><code class="val">sk-xxxx</code>
+              <span class="note">用你自己注册生成的那串（也是 sk- 开头）。Key = 钱包，别外传，见下方三条纪律。</code></dd>
           </div>
           <div class="row">
             <dt>模型名</dt>
-            <dd><span class="val">deepseek-flash</span></dd>
+            <dd><code class="val">deepseek-flash</code></dd>
           </div>
         </dl>
         <p>在酒馆里的位置：左上角<b>插头图标</b>（API 连接）→ API 类型选 <b>Chat Completion</b> → 来源选 <b>Custom (OpenAI-compatible)</b> → 依次填 API 地址和 Key → 点连接，模型列表里选 <code>deepseek-flash</code>。</p>
       </div>
 
       <div class="callout warn">
-        <span class="tag">⚠ 模型名避坑</span>
+        <span class="tag"><svg class="fi" aria-hidden="true"><use href="#flame"/></svg>模型名避坑</span>
         <p>SillyTavern 官方文档的 DeepSeek 条目里写的还是 <b>deepseek-chat / deepseek-reasoner</b>，<b>已过时</b>。以 DeepSeek 官方文档（<a class="link-out" href="https://api-docs.deepseek.com/" target="_blank" rel="noopener">api-docs.deepseek.com</a>）为准：现行填 <b>deepseek-flash</b>。</p>
       </div>
 
@@ -137,8 +136,7 @@ docker run -p 8000:8000 ghcr.io/sillytavern/sillytavern:latest</code></pre>
     <!-- ========== ③ Key 安全三条 ========== -->
     <section id="safety">
       <div class="sec-head">
-        <span class="eyebrow">纪律 · 安全与避坑</span>
-        <h2>Key 安全：三条纪律</h2>
+        <h2><span class="sec-mark"><svg class="fi" aria-hidden="true"><use href="#flame"/></svg>纪律 · 安全与避坑</span>Key 安全：三条纪律</h2>
         <p class="lede">不是免责套话，是<b>真实世界的使用纪律</b>——和幻灯片第 20 页一致。</p>
       </div>
 
@@ -161,7 +159,7 @@ docker run -p 8000:8000 ghcr.io/sillytavern/sillytavern:latest</code></pre>
       </div>
 
       <div class="callout warn">
-        <span class="tag">⚠ 自托管要清楚</span>
+        <span class="tag"><svg class="fi" aria-hidden="true"><use href="#flame"/></svg>自托管要清楚</span>
         <p>SillyTavern 官方明示：多用户密码是<b>「非安全特性」</b>，全部数据<b>明文存储</b>。它只是门禁，不是保险箱——多人共用一台酒馆时，别把敏感内容放上去。</p>
       </div>
     </section>
@@ -169,8 +167,7 @@ docker run -p 8000:8000 ghcr.io/sillytavern/sillytavern:latest</code></pre>
     <!-- ========== ④ 角色卡 ========== -->
     <section id="cards">
       <div class="sec-head">
-        <span class="eyebrow">加菜 · 角色卡</span>
-        <h2>角色卡：拿来即玩</h2>
+        <h2><span class="sec-mark"><svg class="fi" aria-hidden="true"><use href="#flame"/></svg>加菜 · 角色卡</span>角色卡：拿来即玩</h2>
         <p class="lede">不会写提示词没关系——角色卡里藏的就是现成提示词（名字、人设、开场白的结构化设定），<b>导入即玩</b>。V2 / V3 规范的 PNG 卡直接拖进酒馆窗口就完成导入，JSON 卡在角色管理里点导入。</p>
       </div>
 
@@ -189,8 +186,7 @@ docker run -p 8000:8000 ghcr.io/sillytavern/sillytavern:latest</code></pre>
     <!-- ========== ⑤ FAQ ========== -->
     <section id="faq" class="faq">
       <div class="sec-head">
-        <span class="eyebrow">深挖 · Q&amp;A</span>
-        <h2>FAQ：最常被问的四件事</h2>
+        <h2><span class="sec-mark"><svg class="fi" aria-hidden="true"><use href="#flame"/></svg>深挖 · Q&amp;A</span>FAQ：最常被问的四件事</h2>
       </div>
 
       <details>
@@ -237,7 +233,7 @@ docker run -p 8000:8000 ghcr.io/sillytavern/sillytavern:latest</code></pre>
         btn.textContent = "复制";
         block.appendChild(btn);
         function done() {
-          btn.textContent = "已复制 ✓";
+          btn.textContent = "已复制";
           btn.classList.add("ok");
           setTimeout(function () { btn.textContent = "复制"; btn.classList.remove("ok"); }, 1600);
         }
