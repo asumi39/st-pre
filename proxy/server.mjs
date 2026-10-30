@@ -345,7 +345,7 @@ const server = http.createServer((req, res) => {
 
 server.on('clientError', (_err, socket) => socket.destroy());
 
-server.listen(PORT, () => {
+server.listen(PORT, "127.0.0.1", () => {
   log(`LIVE proxy listening on :${PORT}, upstream ${BASE_URL}${UPSTREAM_PATH}`);
   log(`key loaded: ${KEY ? 'yes' : 'no'}`);
 });

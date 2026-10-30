@@ -8,7 +8,7 @@ server {
     index deck.html;
     error_page 404 = /deck.html;
 
-    location /guide/ {
+    location ^~ /guide/ {
         alias /opt/st-pre/guide/;
         index index.html;
     }
