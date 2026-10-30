@@ -1109,6 +1109,14 @@ body.speaker-progress .progress { height: 5px; }
   </div>
 </footer>
 
+<noscript><style>.rise,.drop-shutter{opacity:1;transform:none;clip-path:none}</style></noscript>
+<!-- iOS 触觉替代（iOS 17.4+ 系统对 switch 开合有触觉反馈）：隐形开关 + 合成翻转，
+     借马达给模拟器滑杆。避开正文 DOM，pointer-events:none 防误触。 -->
+<input type="checkbox" switch id="hapticSwitch" aria-hidden="true" tabindex="-1"
+       style="position:fixed;left:-99px;top:-99px;width:16px;height:16px;opacity:0;pointer-events:none" />
+<label for="hapticSwitch" id="hapticLabel" aria-hidden="true" tabindex="-1"
+       style="position:fixed;left:-99px;top:-99px;width:16px;height:16px;opacity:0;pointer-events:none"></label>
+
 <script>
 /* ============================================================
    运行时：LIVE 客户端 / 模拟器 / IO 入场 / FAQ / 视频 / 讲者模式
@@ -1446,14 +1454,29 @@ body.speaker-progress .progress { height: 5px; }
   renderSim();
 
   /* 触觉棘轮：拖过每格短震一下，旧消息被挤出窗口时改双击警示（体感「它忘了」）。
-     Vibration API 仅 Android 系浏览器实现（iOS Safari 不开放马达），无则静默跳过。 */
+     Android 走原生 Vibration API；iPhone Safari 无此 API，退而借 <input switch>
+     的系统开合触觉（合成 label.click 翻转隐形开关）：
+     iOS ≤18.3 免交互；18.4 起苹果只认 click 且授权 1s——点按/轻拖全程有效，
+     长拖中段可能静音，是苹果的限权不是 bug。 */
   var canVibe = typeof navigator.vibrate === "function";
+  var vibeSwitch = document.getElementById("hapticSwitch");
+  var vibeLabel = document.getElementById("hapticLabel");
+  function haptic(pattern) {
+    if (canVibe) return navigator.vibrate(pattern);
+    try {
+      if (!vibeSwitch || !vibeLabel) return false;
+      vibeLabel.click();
+      if (pattern instanceof Array && pattern.length > 1) {
+        setTimeout(function () { vibeLabel.click(); }, pattern[1] || 50);
+      }
+      return true;
+    } catch (e) { return false; }
+  }
   var lastVibeVal = +simRange.value;
   simRange.addEventListener("input", function () {
-    if (!canVibe) return;
     var v = +simRange.value;
     if (v === lastVibeVal) return;
-    navigator.vibrate(v > CAP ? [12, 50, 22] : 9);
+    haptic(v > CAP ? [12, 50, 22] : 9);
     lastVibeVal = v;
   });
 

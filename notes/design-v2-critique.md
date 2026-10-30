@@ -288,3 +288,23 @@ iOS Safari 不开放马达**（feature-detect 后静默跳过，桌面无马达�
 - 间谍函数验证节奏：[9,9,(同值无),[12,50,22],[12,50,22],9] 精确匹配
 
 讲义不重生成（纯 JS）；lint 0 FAIL。
+
+## ROUND 7c · iPhone 触觉替代（用户追问 iOS 是否真的没办法，2026-10-30）
+
+调研结论（Tavily）：iOS Safari 至今不实现 Vibration API，但 2026-03 社区发现
+「隐形开关」技法——iOS 17.4+ 对 `<input type=checkbox switch>` 的开合有系统触觉
+反馈，翻转即可借到马达。samdenty/ios-vibrator-pro-max（v3.0.3, ISC）是完整实现，
+但其方式是把整个 body DOM 搬进巨型 label（MutationObserver 维持）——对本页的
+讲者面板搬移/IO 揭示/display:contents 布局风险过高，不引入。
+
+采用手工最小版（约 25 行，零依赖、零 DOM 手术）：
+
+- 正文末尾一对隐形 switch+label（16px、opacity 0、屏幕外、pointer-events:none）
+- haptic()：原生 vibrate 可用走原生（Android/桌面）；否则 label.click() 合成翻转
+  借系统触觉；双击节奏用 setTimeout 第二次翻转
+- iOS 限制如实注释：≤18.3 免交互；18.4 起苹果只认 click 授权且 1s 过期——
+  点按/轻拖全程有效，长拖中段可能静音（平台限权，非 bug）
+- 修了一轮 lint：1px 内联样式触发 [hairline]，改 16px+opacity:0 绕开
+
+验证：开关交替翻转 ✓、屏幕外 ✓、无布局影响（scrollW 不变）✓；lint/inspect
+0 FAIL；触觉本体只有真机可证，交用户 iPhone 验收。讲义不重生成（纯 JS/DOM 尾巴）。
