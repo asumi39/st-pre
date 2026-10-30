@@ -397,3 +397,15 @@ pill 停屏外 ✓；桌面路径不受影响（整块门控）✓；lint/inspec
 
 验证：computed style 全过（html/body none、button manipulation/none-select、
 滑杆 none、chat input 与正文 selectable）；lint/inspect 0 FAIL；双页上线。
+
+## ROUND 8b · iOS 双击缩放兜底（真机：manipulation 仍被触发，2026-10-30）
+
+touch-action: manipulation 是文档正解（MDN/Andy Bell），但 iOS Safari 实现时灵
+时不灵（版本/standalone 各有偏差，SO 有案）。补商业页实际发货的经典守卫：
+
+- document 级 touchend 非被动监听：300ms 窗口内吞第二次 touchend（preventDefault）
+  ——双击缩放没了第二次触摸就没有燃料；捏合不受影响（低视力保留）
+- 代价：极速连点第二次 click 不再产生——本页无双击交互，无损
+- 语法检查 + 桌面冒烟（FAQ/滑杆照常）+ lint/inspect 0 FAIL
+- 附注：iOS 动了 CSS 但仍见缩放，先排除 HTML 缓存（Safari 激进；书签/恢复标签页
+  常给旧 DOM），刷新方式：地址栏刷新或清 Safari 网站数据

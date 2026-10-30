@@ -1167,6 +1167,17 @@ html.speaker-progress .progress { height: 5px; }
   }, { passive: true });
   onScrollFrame();
 
+  /* ---------- iOS 双击缩放兜底 ----------
+     Safari 对 touch-action: manipulation 的实现时灵时不灵（版本/standalone 模式各有偏差），
+     双击 300ms 窗口内吞掉第二次 touchend，缩放手势没有燃料。代价：极速连点的第二次
+     click 不再产生——本页无双击交互，无损。捏合缩放不受影响（低视力保留）。 */
+  var lastTouchEnd = 0;
+  document.addEventListener("touchend", function (e) {
+    var now = Date.now();
+    if (now - lastTouchEnd <= 300) e.preventDefault();
+    lastTouchEnd = now;
+  }, { passive: false });
+
   /* ---------- IO 入场 + 章节点灯 ---------- */
   var io = new IntersectionObserver(function (es) {
     es.forEach(function (e) {
