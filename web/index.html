@@ -1517,15 +1517,20 @@ html.speaker-progress .progress { height: 5px; }
       }
     } catch (e) { }
   }
+  /* 真机两轮实证：弱转子马达 45ms 仍无感（400ms 可感）。默认档 90ms；
+     ?haptic-test=1 面板可现场校准，localStorage 按设备记忆覆盖默认。 */
+  var VIB_MS = 90;
+  try {
+    var storedMs = parseInt(localStorage.getItem("vibTickMs"), 10);
+    if (storedMs >= 20 && storedMs <= 300) VIB_MS = storedMs;
+  } catch (e) { }
   var lastVibeAt = 0;
   simRange.addEventListener("input", function () {
     var v = +simRange.value;
     if (v === lastVibeVal) return;
-    /* 真机实证：弱转子马达启动要 30-50ms，<50ms 短脉冲无感。tick 定 45ms；
-       70ms 节流防高频 input 把离散 tick 重启成嗡鸣；溢出（越过 CAP）必震。 */
     var now = Date.now(), over = v > CAP;
-    if (over || now - lastVibeAt > 70) {
-      var pat = over ? [45, 70, 45] : 45;
+    if (over || now - lastVibeAt > VIB_MS + 30) {
+      var pat = over ? [VIB_MS, 70, VIB_MS] : VIB_MS;
       if (canVibe) haptic(pat);                            /* Android/桌面：真马达 */
       else if (dragActive && dragMoved) audioTick(v > CAP); /* iPhone 拖拽：苹果 18.4+ 永不授权，听觉顶上 */
       else haptic(pat);                                    /* iPhone 点按：click 授权内，合成翻转可震 */
@@ -1699,16 +1704,26 @@ html.speaker-progress .progress { height: 5px; }
       + (typeof navigator.vibrate === "function" ? "有" : "无（非安卓或内核阉割）")
       + '<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">'
       + '<button data-p="400" style="flex:1;padding:10px;background:#e8a34c;color:#16100a;border-radius:8px;font-weight:700">长震 400ms</button>'
-      + '<button data-p="45" style="flex:1;padding:10px;background:#3a2c1c;color:#fff7e8;border-radius:8px">棘轮 45ms</button>'
-      + '<button data-p="45,70,45" style="flex:1;padding:10px;background:#3a2c1c;color:#fff7e8;border-radius:8px">溢出节奏</button>'
-      + '</div><div id="vibLog" style="margin-top:8px;color:#c9b99b">点按钮试震，结果显示在这里。顺手拖一拖上面的滑杆。</div>';
+      + '</div>'
+      + '<div style="display:flex;align-items:center;gap:10px;margin-top:10px">'
+      + '<input type="range" id="vibRange" min="20" max="300" step="10" value="' + VIB_MS + '" style="flex:1;accent-color:#e8a34c">'
+      + '<b id="vibMs" style="min-width:52px;text-align:right;color:#e8a34c">' + VIB_MS + 'ms</b>'
+      + '<button id="vibTry" style="padding:8px 14px;background:#3a2c1c;color:#fff7e8;border-radius:8px">试震</button>'
+      + '</div>'
+      + '<div style="margin-top:10px"><button id="vibSet" style="width:100%;padding:10px;background:#e8a34c;color:#16100a;border-radius:8px;font-weight:700">把这档设为滑杆触觉（本机记忆）</button></div>'
+      + '<div id="vibLog" style="margin-top:8px;color:#c9b99b">从 20ms 往右拖，找到第一个「能感觉到」的档位，试震后设为滑杆触觉。</div>';
     document.body.appendChild(dp);
-    dp.addEventListener("click", function (e) {
-      var b = e.target.closest("button[data-p]");
-      if (!b) return;
-      var ok = typeof navigator.vibrate === "function" ? navigator.vibrate(b.dataset.p.split(",").map(Number)) : false;
-      document.getElementById("vibLog").textContent = "「" + b.textContent + "」API 返回 " + ok
-        + (ok ? "（已接受。若无体感：检查系统静音/勿扰/省电模式，或马达偏弱）" : "（被拒：浏览器或站点设置禁用了振动）");
+    var vr = dp.querySelector("#vibRange"), vms = dp.querySelector("#vibMs");
+    vr.addEventListener("input", function () { vms.textContent = vr.value + "ms"; });
+    dp.querySelector("#vibTry").addEventListener("click", function () {
+      var ok = navigator.vibrate(+vr.value);
+      document.getElementById("vibLog").textContent = "试震 " + vr.value + "ms · API 返回 " + ok
+        + (ok ? "。有感就往低拖一档找下限，没感就往右加。" : "（被拒：浏览器或站点设置禁用了振动）");
+    });
+    dp.querySelector("#vibSet").addEventListener("click", function () {
+      VIB_MS = +vr.value;
+      try { localStorage.setItem("vibTickMs", String(VIB_MS)); } catch (e) { }
+      document.getElementById("vibLog").textContent = "已设为 " + VIB_MS + "ms 并记忆在本机——去拖上面的滑杆试试手感。";
     });
   }
 })();
