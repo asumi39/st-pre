@@ -109,7 +109,20 @@ section { padding: clamp(72px, 11vw, 170px) var(--margin); position: relative; }
 .topnav { display: flex; gap: 26px; }
 .topnav a { color: var(--muted); font-size: 15px; }
 .topnav a:hover { color: var(--ink-strong); }
-@media (max-width: 700px) { .topnav { gap: 16px; } .topnav a:nth-child(n+4) { display: none; } }
+.topbar-right { display: flex; align-items: center; gap: 20px; }
+.top-cta {
+  font-size: 14px; font-weight: 600; color: var(--on-accent);
+  background: var(--accent); padding: .5em 1.1em; border-radius: 999px;
+  transition: transform .18s ease, background .18s ease;
+}
+.top-cta:hover { background: var(--ink-strong); transform: translateY(-1px); }
+.nav-flames { display: flex; gap: 5px; align-items: center; }
+.nfl { width: 11px; height: 13px; fill: #453722; transform-origin: 50% 100%; transition: fill .5s ease; }
+.nfl.lit { fill: var(--accent); animation: nflPop .55s cubic-bezier(.3,1.6,.4,1); }
+@keyframes nflPop { 0% { transform: scale(.5); } 55% { transform: scale(1.5); } 100% { transform: scale(1); } }
+@media (max-width: 900px) { .nav-flames { display: none; } }
+@media (max-width: 700px) { .topnav { gap: 14px; } .topnav a:nth-child(n+4) { display: none; } .topbar-right { gap: 14px; } }
+@media (max-width: 560px) { .topnav { display: none; } .top-cta { font-size: 13px; padding: .45em .95em; } }
 
 /* 进度（scroll-driven，兜底 JS） */
 .progress { position: fixed; top: 0; left: 0; height: 3px; width: 100%; z-index: 60; background: transparent; }
@@ -194,6 +207,8 @@ body.busy .hero-flame { animation: heroBusy 1.1s ease-in-out infinite; }
 }
 .hook-stage { margin-top: clamp(36px, 5vw, 64px); display: grid; grid-template-columns: minmax(0, 620px) 1fr; gap: clamp(28px, 5vw, 72px); align-items: end; }
 .chat-note { margin-top: 0; max-width: 36ch; padding-bottom: 8px; }
+.hook-side { min-width: 0; }
+.hook-exit { margin-top: 12px; }
 @media (max-width: 860px) { .hook-stage { grid-template-columns: 1fr; } .chat-note { margin-top: 14px; max-width: none; padding-bottom: 0; } }
 
 /* ---------- 聊天舞台（真界面片段 data-ui） ---------- */
@@ -244,8 +259,14 @@ body.busy .chat-chip { animation: chipPulse 1.2s ease-in-out infinite; }
   aspect-ratio: 4 / 4.6;
   clip-path: url(#flameclip);
 }
+.drop-shutter { clip-path: inset(100% 0 0 0); transition: clip-path .95s cubic-bezier(.65,0,.25,1) .1s; }
+.drop-shutter.open { clip-path: inset(0 0 0 0); }
 .drop-inner { position: absolute; inset: -34px; isolation: isolate; will-change: transform; }
-.brain-photo { filter: brightness(1.35) saturate(1.05); width: 100%; height: 100%; object-fit: cover; }
+.brain-photo {
+  filter: brightness(1.35) saturate(1.05); width: 100%; height: 100%; object-fit: cover;
+  transform: scale(1.12); transform-origin: 50% 88%; transition: transform 1.5s cubic-bezier(.22,.7,.2,1) .1s;
+}
+.drop-shutter.open .brain-photo { transform: scale(1); }
 .drop-glow {
   position: absolute; left: 0; top: 38%; width: 100%; height: 62%;
   pointer-events: none; mix-blend-mode: screen;
@@ -365,6 +386,22 @@ input[type="range"].big::-moz-range-thumb {
 .vid-side h3 { font-family: var(--font-display); font-size: clamp(20px, 2.2vw, 32px); color: var(--ink-strong); font-weight: 700; margin-bottom: 12px; }
 .vid-side p { font-size: 15px; color: var(--muted); }
 
+/* ---------- 上手指南横幅（第五幕出口） ---------- */
+.guide-banner {
+  margin-top: clamp(26px, 3.5vw, 44px);
+  display: flex; align-items: center; gap: 18px; max-width: 640px;
+  background: color-mix(in srgb, var(--accent) 15%, var(--bg-2));
+  border-radius: 14px; padding: 18px 22px;
+  transition: transform .2s ease, background .2s ease;
+}
+.guide-banner:hover { transform: translateY(-2px); background: color-mix(in srgb, var(--accent) 22%, var(--bg-2)); }
+.guide-banner .flame-i { flex: none; width: 28px; height: 34px; fill: var(--accent); }
+.guide-banner .txt { color: var(--muted); font-size: 15px; line-height: 1.65; }
+.guide-banner .txt b { color: var(--ink-strong); font-size: 17px; }
+.guide-banner .go { margin-left: auto; flex: none; font-weight: 700; color: var(--accent); white-space: nowrap; transition: transform .2s ease; }
+.guide-banner:hover .go { transform: translateX(4px); }
+@media (max-width: 700px) { .guide-banner { padding: 16px; gap: 14px; } .guide-banner .txt b { font-size: 16px; } }
+
 /* ---------- 上手路径切换过渡 ---------- */
 .routes button { transition: color .25s ease, background .25s ease; }
 #routeDetail { transition: opacity .28s ease, transform .28s ease; }
@@ -392,9 +429,7 @@ input[type="range"].big::-moz-range-thumb {
 .diagram .ar { opacity: .5; transition: opacity 0.7s ease; }
 .section-lit .diagram .ar { opacity: 1; }
 .diagram .ar line { stroke-dasharray: 10 6; }
-.section-lit .diagram .ar line { animation: dashFlow .6s linear infinite; }
-body.busy .diagram .ar line { animation-duration: .45s; }
-@keyframes dashFlow { to { stroke-dashoffset: -16; } }
+/* 虚线保留为静态纹理，运动交给流动光点（busy 时点速 ×2.4 由 JS 驱动） */
 
 /* ---------- 第五幕 · 开张（句子留白） ---------- */
 .openup-line { font-size: clamp(30px, 3.6vw, 54px); margin-bottom: 10px; }
@@ -468,6 +503,7 @@ body.busy .diagram .ar line { animation-duration: .45s; }
 .qr-card { text-align: center; }
 .qr-card img { width: 148px; height: 148px; border-radius: 12px; background: #fff; padding: 10px; }
 .qr-card figcaption { margin-top: 12px; font-size: 15px; color: var(--muted); }
+.qr-url { display: inline-block; margin-top: 4px; font-size: 14px; color: var(--accent); letter-spacing: .03em; font-variant-numeric: tabular-nums; }
 .spoils .last-line { margin-top: clamp(48px, 7vw, 96px); font-family: var(--font-display); font-size: clamp(30px, 3.6vw, 54px); color: var(--ink-strong); font-weight: 700; }
 
 /* ---------- 页脚 · 大标记 ---------- */
@@ -522,8 +558,10 @@ body.speaker-progress .progress { height: 5px; }
   .hero-flame, .scroll-cue .flame-i, .candles .fl { animation: none; }
   .hero-spark, .hero .display, .hero .lede, .hero .btn, .scroll-cue, .drop-bloom, .drop-glow,
   body.busy .hero-flame, body.busy .drop-glow, body.busy .candles .fl,
-  .section-lit .diagram .ar line, .msg.typing::after, .msg.streaming::after, body.busy .chat-chip { animation: none; }
+  .msg.typing::after, .msg.streaming::after, body.busy .chat-chip { animation: none; }
   .diagram .bd, .diagram .ot { opacity: 1; transform: none; }
+  .drop-shutter { clip-path: none; transition: none; }
+  .brain-photo { transform: none; transition: none; }
   .diagram .ar line { stroke-dasharray: none; }
   .section-lit .flame-i.dim, .section-lit .diagram .cell, .section-lit .spoil-words span { transition: none; }
 }
@@ -571,14 +609,25 @@ body.speaker-progress .progress { height: 5px; }
 
 <header class="topbar" id="topbar">
   <a class="wordmark" href="#top">酒馆<em>·</em>开张</a>
-  <nav class="topnav" aria-label="章节">
-    <a href="#hook">对话</a>
-    <a href="#brain">大脑</a>
-    <a href="#tavern">酒馆</a>
-    <a href="#menu">玩法</a>
-    <a href="#anatomy">解剖</a>
-    <a href="#openup">上手</a>
-  </nav>
+  <div class="topbar-right">
+    <nav class="topnav" aria-label="章节">
+      <a href="#hook">对话</a>
+      <a href="#brain">大脑</a>
+      <a href="#tavern">酒馆</a>
+      <a href="#menu">玩法</a>
+      <a href="#anatomy">解剖</a>
+      <a href="#openup">上手</a>
+    </nav>
+    <span class="nav-flames" id="navFlames" aria-hidden="true">
+      <svg class="nfl" viewBox="0 0 100 120"><use href="#flame"/></svg>
+      <svg class="nfl" viewBox="0 0 100 120"><use href="#flame"/></svg>
+      <svg class="nfl" viewBox="0 0 100 120"><use href="#flame"/></svg>
+      <svg class="nfl" viewBox="0 0 100 120"><use href="#flame"/></svg>
+      <svg class="nfl" viewBox="0 0 100 120"><use href="#flame"/></svg>
+      <svg class="nfl" viewBox="0 0 100 120"><use href="#flame"/></svg>
+    </span>
+    <a class="top-cta" href="https://tavern.phuyu.cloud/guide/" target="_blank" rel="noopener">上手指南</a>
+  </div>
 </header>
 
 <!-- ================= HERO ================= -->
@@ -626,7 +675,10 @@ body.speaker-progress .progress { height: 5px; }
           <button class="chat-send" id="chatSend">发送</button>
         </div>
       </div>
-      <p class="note chat-note" id="chatNote">进页面自动回放一段实录。切「接真大脑」后，每一句都是此刻真实生成的——顺便演示了：同一副界面，可以换一颗大脑。</p>
+      <div class="hook-side">
+        <p class="note chat-note" id="chatNote">进页面自动回放一段实录。切「接真大脑」后，每一句都是此刻真实生成的——顺便演示了：同一副界面，可以换一颗大脑。</p>
+        <p class="note hook-exit">想边看边装？<a href="https://tavern.phuyu.cloud/guide/" target="_blank" rel="noopener">上手指南</a>五分钟入门，先看离线回放不用花一分钱。</p>
+      </div>
     </div>
     <aside class="spk" aria-hidden="true">
       <h3>序幕 · 讲者备注</h3>
@@ -644,12 +696,14 @@ body.speaker-progress .progress { height: 5px; }
   <div class="wrap">
     <div class="two-col">
       <div class="rise">
+        <div class="drop-shutter">
         <div class="drop-stage">
           <div class="drop-inner">
             <img class="brain-photo" src="assets/cover-hero.png" alt="深夜酒馆内景：木吧台上一点烛光" width="880" height="1012" />
             <div class="drop-glow" aria-hidden="true"></div>
             <div class="drop-bloom" aria-hidden="true"></div>
           </div>
+        </div>
         </div>
       </div>
       <div>
@@ -775,7 +829,7 @@ body.speaker-progress .progress { height: 5px; }
 </section>
 
 <!-- ================= 第三幕 · 菜单 ================= -->
-<section id="menu" aria-labelledby="h-menu">
+<section id="menu" aria-labelledby="h-menu" style="padding-top:clamp(44px,6vw,96px)">
   <div class="wrap">
     <h2 class="display rise" id="h-menu">第三幕 · 今晚的菜单</h2>
     <p class="lede rise d1">酒馆能玩什么？按菜单点。每一道都是同一个原理的变体：把文字喂进去，把角色请出来。</p>
@@ -891,6 +945,11 @@ body.speaker-progress .progress { height: 5px; }
           <p><b>一键整合包</b>——下载、解压、双击。三步，五分钟内进门。适合第一次接触、电脑里没有命令行的同学。</p>
         </div>
         <p class="after rise d4">模型接入 = 在设置里填一个 API 地址和 Key（DeepSeek 注册即得）。三条路殊途同归：界面、角色卡、聊天记录完全一样。卡住了，社团群里有我们。</p>
+        <a class="guide-banner rise d4" href="https://tavern.phuyu.cloud/guide/" target="_blank" rel="noopener">
+          <svg class="flame-i" viewBox="0 0 100 120" aria-hidden="true"><use href="#flame"/></svg>
+          <span class="txt"><b>手把手图文 · 上手指南</b><br/>从下载到第一句对话，每一步带截图。tavern.phuyu.cloud/guide</span>
+          <span class="go">前往 ↗</span>
+        </a>
       </div>
       <img class="open-shot rise d2" src="assets/ui-mobile.png" alt="手机浏览器里的 SillyTavern：聊天界面" width="390" height="844" loading="lazy" />
     </div>
@@ -964,7 +1023,7 @@ body.speaker-progress .progress { height: 5px; }
     <div class="spoil-grid">
       <figure class="qr-card rise">
         <img src="assets/qr-guide.png" alt="指南站二维码，指向 tavern.phuyu.cloud/guide" width="148" height="148" loading="lazy" />
-        <figcaption>上手指南 · 扫码即达</figcaption>
+        <figcaption>上手指南 · 扫码即达<br/><span class="qr-url">tavern.phuyu.cloud/guide</span></figcaption>
       </figure>
       <div class="rise d1">
         <p class="statement" style="font-size:clamp(19px,1.9vw,26px)">酒馆最好玩的地方不是它多能玩，<br/>而是你玩着玩着，把 LLM 学了。</p>
@@ -1075,12 +1134,34 @@ body.speaker-progress .progress { height: 5px; }
   /* 安全网：任何原因（含截图/无 IO）导致未入场的内容，3 秒后一律揭示——内容永不隐藏 */
   setTimeout(function () {
     document.querySelectorAll(".rise:not(.in)").forEach(function (el) { el.classList.add("in"); });
+    var sh = document.querySelector(".drop-shutter");
+    if (sh) sh.classList.add("open");
   }, 3000);
+  var dropStage = document.querySelector(".drop-stage");
+  if (dropStage && !reduced) new IntersectionObserver(function (es) {
+    es.forEach(function (e) {
+      if (e.isIntersecting) { e.target.parentElement.classList.add("open"); this.disconnect(); }
+    });
+  }, { threshold: 0.06 }).observe(dropStage);
 
   var secIO = new IntersectionObserver(function (es) {
     es.forEach(function (e) { if (e.isIntersecting) e.target.classList.add("section-lit"); });
   }, { threshold: 0.3 });
   document.querySelectorAll("section").forEach(function (s) { secIO.observe(s); });
+
+  /* 章节点烛：六幕各一支，读到哪亮到哪（进度=烛数） */
+  var flames = document.querySelectorAll("#navFlames .nfl");
+  if (flames.length) {
+    var ACTS = ["hook", "brain", "tavern", "menu", "anatomy", "openup"], litActs = {};
+    var actIO = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        var i = ACTS.indexOf(e.target.id);
+        if (i > -1 && !litActs[i]) { litActs[i] = 1; flames[i].classList.add("lit"); }
+      });
+    }, { threshold: 0.12 });
+    ACTS.forEach(function (id) { var sec = document.getElementById(id); if (sec) actIO.observe(sec); });
+  }
 
   /* ---------- 讲者模式 ---------- */
   var speaker = false, spkPanel = null;
@@ -1394,6 +1475,36 @@ body.speaker-progress .progress { height: 5px; }
     for (var m = 0; m < 24; m++) {
       cell(840 + (m % 8) * 45, 66 + Math.floor(m / 8) * 48, 30, 26, "#e8a34c", 1100 + m * 30, "ot");
     }
+    /* 流动光点：沿箭头飞行的琥珀光珠——数据在流动，比虚线行进远看也可见 */
+    var FLOWS = [];
+    [[394, 474, 135], [778, 826, 135]].forEach(function (fg) {
+      var d = document.createElementNS(NS, "circle");
+      d.setAttribute("r", 5.5); d.setAttribute("fill", "#ffd9a0"); d.setAttribute("opacity", "0");
+      diagram.appendChild(d);
+      FLOWS.push({ dot: d, x1: fg[0] + 4, x2: fg[1] - 12, y: fg[2] });
+    });
+    var flowOn = false, flowRAF = 0;
+    function flowTick(now) {
+      if (!flowOn) { flowRAF = 0; return; }
+      var lit = diagram.closest("section").classList.contains("section-lit");
+      var dur = document.body.classList.contains("busy") ? 380 : 900;
+      for (var i = 0; i < FLOWS.length; i++) {
+        var f = FLOWS[i];
+        if (!lit) { f.dot.setAttribute("opacity", "0"); continue; }
+        var t = ((now / dur) + i * 0.5) % 1;
+        f.dot.setAttribute("cx", (f.x1 + (f.x2 - f.x1) * t).toFixed(1));
+        f.dot.setAttribute("cy", f.y);
+        var o = t < 0.1 ? t / 0.1 : t > 0.9 ? (1 - t) / 0.1 : 1;
+        f.dot.setAttribute("opacity", o.toFixed(2));
+      }
+      flowRAF = requestAnimationFrame(flowTick);
+    }
+    if (!reduced) new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        flowOn = e.isIntersecting;
+        if (flowOn && !flowRAF) flowRAF = requestAnimationFrame(flowTick);
+      });
+    }, { threshold: 0.1 }).observe(diagram);
   })();
 
   /* ---------- 实录视频切换 ---------- */
