@@ -1445,6 +1445,18 @@ body.speaker-progress .progress { height: 5px; }
   simRange.addEventListener("input", renderSim);
   renderSim();
 
+  /* 触觉棘轮：拖过每格短震一下，旧消息被挤出窗口时改双击警示（体感「它忘了」）。
+     Vibration API 仅 Android 系浏览器实现（iOS Safari 不开放马达），无则静默跳过。 */
+  var canVibe = typeof navigator.vibrate === "function";
+  var lastVibeVal = +simRange.value;
+  simRange.addEventListener("input", function () {
+    if (!canVibe) return;
+    var v = +simRange.value;
+    if (v === lastVibeVal) return;
+    navigator.vibrate(v > CAP ? [12, 50, 22] : 9);
+    lastVibeVal = v;
+  });
+
   /* ---------- 解剖图（SVG 由脚本构建，保持页面轻） ---------- */
   var diagram = document.getElementById("diagram");
   (function buildDiagram() {
