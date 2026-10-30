@@ -372,9 +372,26 @@ input[type="range"].big::-moz-range-thumb {
 .menu-item h4 .tag { color: var(--accent); font-size: 13px; font-weight: 500; white-space: nowrap; }
 .menu-item p { font-size: 15px; color: var(--muted); margin-top: 5px; line-height: 1.6; max-width: 40ch; }
 .menu-item .note { margin-top: 4px; display: block; color: var(--accent-2); }
-.menu-item button.pick { text-align: left; display: flex; gap: 18px; align-items: flex-start; width: 100%; border-radius: 10px; }
+/* 实拍实录切换：选中态一眼可辨（旧版只有缩略图描边，几乎看不见） */
+.menu-item button.pick { position: relative; text-align: left; display: flex; gap: 18px; align-items: flex-start; width: 100%; border-radius: 10px; padding: 12px 14px; margin: -12px -14px; transition: background .25s ease; }
 .menu-item button.pick:hover h4 { color: var(--accent); }
-.menu-item button.pick[aria-pressed="true"] .bullet { outline: 2px solid var(--accent); outline-offset: 3px; }
+.menu-item button.pick::before { content: ''; position: absolute; left: 0; top: 16px; bottom: 16px; width: 3px; border-radius: 2px; background: var(--accent); opacity: 0; transform: scaleY(.4); transition: opacity .25s ease, transform .25s ease; }
+.menu-item button.pick[aria-pressed="true"] { background: color-mix(in srgb, var(--accent) 13%, transparent); }
+.menu-item button.pick[aria-pressed="true"]::before { opacity: 1; transform: none; }
+.pick .thumb { position: relative; flex: none; }
+.pick .pb { position: absolute; right: -7px; bottom: -7px; width: 24px; height: 24px; border-radius: 50%; background: var(--bg-3); display: grid; place-items: center; opacity: 0; transform: scale(.6); transition: opacity .22s ease, transform .22s ease, background .22s ease; }
+.pick .pb svg { width: 9px; height: 11px; fill: var(--ink-strong); margin-left: 1px; }
+.pick:hover .pb, .pick:focus-visible .pb { opacity: 1; transform: none; }
+.pick[aria-pressed="true"] .pb { opacity: 1; transform: none; background: var(--accent); }
+.pick[aria-pressed="true"] .pb svg { fill: var(--on-accent); }
+.pick .now { position: absolute; top: calc(100% + 7px); left: 1px; display: none; font-size: 12px; font-weight: 600; letter-spacing: .1em; color: var(--accent); white-space: nowrap; }
+.pick[aria-pressed="true"] .now { display: block; }
+.vid-frame { position: relative; border-radius: 12px; overflow: hidden; }
+.vid-frame::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: var(--accent); opacity: 0; }
+.vid-frame.swap::after { animation: vidFlash .55s ease-out both; }
+@keyframes vidFlash { 0% { opacity: .3; } 100% { opacity: 0; } }
+#vidTitle { transition: opacity .22s ease, transform .22s ease; }
+#vidTitle.fade { opacity: 0; transform: translateY(5px); }
 .vid-stage { margin-top: clamp(30px, 4vw, 48px); display: grid; grid-template-columns: 7fr 4fr; gap: clamp(24px, 4vw, 56px); align-items: center; }
 @media (max-width: 860px) { .vid-stage { grid-template-columns: 1fr; } }
 .vid-stage video {
@@ -583,13 +600,15 @@ body.speaker-progress .progress { height: 5px; }
   body::before, body::after { animation: none; }
   body::before { opacity: .3; } body::after { opacity: .25; }
   .section-lit .flame-i.dim, .section-lit .diagram .cell, .section-lit .spoil-words span { transition: none; }
+  .menu-item .pick::before, .pick .pb, #vidTitle { transition: none; }
+  .vid-frame.swap::after { animation: none; }
 }
 
 /* ---------- 打印（同源讲义） ---------- */
 @media print {
   :root { --bg: #fff; --bg-2: #f6f1e7; --bg-3: #efe7d8; --ink: #241a0e; --ink-strong: #16100a; --muted: #6b5a41; --accent: #9a6414; --accent-2: #a34a22; }
   body { font-size: 12pt; color: var(--ink); background: #fff; }
-  .topbar, .scroll-cue, .chat-foot, .sim-slider-row, .progress, .spk, .routes, .btn-ghost, .vid-stage video, .drop-glow, .drop-bloom, .hero-spark { display: none !important; }
+  .topbar, .scroll-cue, .chat-foot, .sim-slider-row, .progress, .spk, .routes, .btn-ghost, .vid-stage video, .drop-glow, .drop-bloom, .hero-spark, .pick .pb, .pick .now { display: none !important; }
   body::before, body::after { display: none; }
   section { padding: 24pt 0; page-break-inside: avoid; }
   h2.display, section[id] { page-break-before: auto; }
@@ -878,23 +897,23 @@ body.speaker-progress .progress { height: 5px; }
       </li>
     </ul>
 
-    <div class="menu-cat rise"><h3>实拍实录</h3><span>三段 · 本机录制</span></div>
+    <div class="menu-cat rise"><h3>实拍实录</h3><span>点一道菜，换一段实录 · 本机录制</span></div>
     <ul class="menu-list" data-stagger>
       <li class="menu-item"><button class="pick" data-vid="rpg" aria-pressed="true">
-        <img class="bullet" src="assets/play-rpg.png" alt="" width="128" height="128" loading="lazy" />
+        <span class="thumb"><img class="bullet" src="assets/play-rpg.png" alt="" width="128" height="128" loading="lazy" /><i class="pb" aria-hidden="true"><svg viewBox="0 0 12 14"><path d="M0 0l12 7L0 14Z"/></svg></i><span class="now">正在放映</span></span>
         <div><h4>跑团 GM<span class="tag">骰子 · 剧情推进</span></h4><p>掷骰判定、状态栏、剧情推进，一个人也能开团。</p></div>
       </button></li>
       <li class="menu-item"><button class="pick" data-vid="tutor" aria-pressed="false">
-        <img class="bullet" src="assets/play-tutor.png" alt="" width="128" height="128" loading="lazy" />
+        <span class="thumb"><img class="bullet" src="assets/play-tutor.png" alt="" width="128" height="128" loading="lazy" /><i class="pb" aria-hidden="true"><svg viewBox="0 0 12 14"><path d="M0 0l12 7L0 14Z"/></svg></i><span class="now">正在放映</span></span>
         <div><h4>语言陪练<span class="tag">纠错 · 情景对话</span></h4><p>顺手纠错、代入情景，比背单词软件有耐心得多。</p></div>
       </button></li>
       <li class="menu-item"><button class="pick" data-vid="coauthor" aria-pressed="false">
-        <img class="bullet" src="assets/play-coauthor.png" alt="" width="128" height="128" loading="lazy" />
+        <span class="thumb"><img class="bullet" src="assets/play-coauthor.png" alt="" width="128" height="128" loading="lazy" /><i class="pb" aria-hidden="true"><svg viewBox="0 0 12 14"><path d="M0 0l12 7L0 14Z"/></svg></i><span class="now">正在放映</span></span>
         <div><h4>小说共创<span class="tag">给开头 · AI 接龙</span></h4><p>你起个头，它接龙改写——接龙机器的本职工作。</p></div>
       </button></li>
     </ul>
     <div class="vid-stage rise">
-      <video id="vidPlayer" src="assets/rpg.mp4" poster="assets/play-rpg.png" controls preload="none" playsinline></video>
+      <div class="vid-frame"><video id="vidPlayer" src="assets/rpg.mp4" poster="assets/play-rpg.png" controls preload="none" playsinline></video></div>
       <div class="vid-side">
         <h3 id="vidTitle">跑团 GM · 实录</h3>
         <p>不是宣传图，是我们自己录的。今晚之后，你们每个人都能搭出一模一样的。</p>
@@ -1516,6 +1535,7 @@ body.speaker-progress .progress { height: 5px; }
   };
   var vid = document.getElementById("vidPlayer");
   var vidTitle = document.getElementById("vidTitle");
+  var vidFrame = document.querySelector(".vid-frame");
   document.querySelectorAll(".pick[data-vid]").forEach(function (btn) {
     btn.addEventListener("click", function () {
       document.querySelectorAll(".pick[data-vid]").forEach(function (b) { b.setAttribute("aria-pressed", "false"); });
@@ -1525,7 +1545,24 @@ body.speaker-progress .progress { height: 5px; }
       vid.setAttribute("poster", v.poster);
       vid.src = v.src;
       vid.load();
-      vidTitle.textContent = v.title;
+      /* 让「点菜 → 换片」的因果可见：标题淡入换装 + 放映框闪光 */
+      vidTitle.classList.add("fade");
+      setTimeout(function () {
+        vidTitle.textContent = v.title;
+        vidTitle.classList.remove("fade");
+      }, 180);
+      if (!reduced && vidFrame) {
+        vidFrame.classList.remove("swap");
+        void vidFrame.offsetWidth;
+        vidFrame.classList.add("swap");
+      }
+      /* 手机上菜单位与放映框常不同屏：换片后不在视口就跟过去 */
+      if (vidFrame) {
+        var r = vidFrame.getBoundingClientRect();
+        if (r.bottom < 80 || r.top > innerHeight - 80) {
+          vidFrame.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "center" });
+        }
+      }
     });
   });
 
