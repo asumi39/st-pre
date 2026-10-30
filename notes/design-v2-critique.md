@@ -333,3 +333,23 @@ label.click 合成翻转依赖 click 授权，而拖拽全程既无 click 也无
 （60%→8 条、90%→11 条、readout 同步）✓、溢出 verdict/risk ✓、抬手恢复 ✓、
 pill 停屏外 ✓；桌面路径不受影响（整块门控）✓；lint/inspect 0 FAIL。
 真机体感待用户 iPhone 验收。
+
+## ROUND 7e · 引入完整触觉 polyfill（手工叠指在真机上仍只响点按，2026-10-30）
+
+用户 iPhone 实测 7d 的最小叠指仍拖拽无声。盲仿 iOS 内部行为到头了——改为
+**完整引入 ios-vibrator-pro-max v3.0.3**（esbuild 打包 18KB 内联，零 CDN）：
+
+- 激活门控：`!navigator.vibrate && maxTouchPoints>0 && (iPhone/iPad UA ||
+  Macintosh)`。polyfillKind 自带版本判：非 Safari / 有原生 API / Safari<18
+  一律零执行——桌面/安卓实测 body 未被劫持、无库 DOM。
+- **配套迁移（iOS 上库会把 document.body 劫持为 label 根）**：全部 body 类与
+  变量依赖搬至 documentElement——html.busy ×10、html.speaker-progress、
+  documentElement.classList ×4、--glow-* 变量 ×2。CSS 后代选择器（.speaker
+  .spk 等）从 html 匹配不变。
+- 桌面回归：body 仍为 HTMLBodyElement、html.busy 生效（heroBusy 挂/卸）、
+  滑杆/无溢出 ✓；lint/inspect 0 FAIL；页面 118KB。
+- 自研叠指代码保留（canVibe 真时自然休眠），作为库失效时的点按后备。
+
+真机验收点：①拖拽滴答 ②聊天发送/FAQ/讲者面板（N 键）/整页滚动在 iOS 上
+无回归 ③库的 label 覆盖层是否有可见异样。若库也不响 → 该 iOS 版本无解，
+回退点按版（保留）。
