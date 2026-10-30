@@ -531,6 +531,8 @@ body.busy .candles .fl { animation: flick .9s ease-in-out infinite; }
 .foot-links a, .foot-links span { display: block; font-size: 15px; color: color-mix(in srgb, var(--on-accent) 78%, var(--accent)); padding: 3px 0; }
 .foot-links a:hover { color: var(--bg); }
 .foot-base { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin-top: clamp(40px, 6vw, 64px); font-size: 13px; color: color-mix(in srgb, var(--on-accent) 75%, var(--accent)); }
+.foot-base a { color: inherit; }
+.foot-base a:hover { color: var(--bg); }
 .foot-base .btn { background: var(--on-accent); color: var(--accent); font-size: 14px; padding: 0.6em 1.4em; }
 .foot-base .btn:hover { background: var(--bg); color: var(--ink-strong); }
 
@@ -1082,7 +1084,7 @@ body.speaker-progress .progress { height: 5px; }
       </div>
     </div>
     <div class="foot-base">
-      <span>AI 社团 · 二〇二六年秋</span>
+      <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">晋ICP备2025069595号-2</a>
       <a class="btn" href="#top">回到顶部</a>
     </div>
   </div>
