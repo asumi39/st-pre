@@ -246,9 +246,6 @@ body.busy .chat-chip { animation: chipPulse 1.2s ease-in-out infinite; }
 .chat-foot input::placeholder { color: var(--muted); }
 .chat-send { background: var(--accent); color: var(--on-accent); border-radius: 999px; font-weight: 600; padding: 0 22px; font-size: 16px; white-space: nowrap; }
 .chat-send:disabled { background: var(--bg); color: var(--muted); cursor: default; }
-.chat-modes { display: flex; gap: 4px; padding: 0 18px 14px; background: var(--bg-2); }
-.chat-modes button { font-size: 13px; color: var(--muted); padding: 5px 12px; border-radius: 999px; transition: color .25s ease, background .25s ease; }
-.chat-modes button[aria-pressed="true"] { background: var(--bg); color: var(--accent); font-weight: 600; }
 .chat-note { margin-top: 14px; }
 
 /* ---------- 第一幕 · 焰形大图（D1：光漾+呼吸+视差） + 焰点清单 ---------- */
@@ -570,7 +567,7 @@ body.speaker-progress .progress { height: 5px; }
 @media print {
   :root { --bg: #fff; --bg-2: #f6f1e7; --bg-3: #efe7d8; --ink: #241a0e; --ink-strong: #16100a; --muted: #6b5a41; --accent: #9a6414; --accent-2: #a34a22; }
   body { font-size: 12pt; color: var(--ink); background: #fff; }
-  .topbar, .scroll-cue, .chat-foot, .chat-modes, .sim-slider-row, .progress, .spk, .routes, .btn-ghost, .vid-stage video, .drop-glow, .drop-bloom, .hero-spark { display: none !important; }
+  .topbar, .scroll-cue, .chat-foot, .sim-slider-row, .progress, .spk, .routes, .btn-ghost, .vid-stage video, .drop-glow, .drop-bloom, .hero-spark { display: none !important; }
   body::before, body::after { display: none; }
   section { padding: 24pt 0; page-break-inside: avoid; }
   h2.display, section[id] { page-break-before: auto; }
@@ -666,17 +663,13 @@ body.speaker-progress .progress { height: 5px; }
           <span class="chat-chip" id="chatChip">准备中</span>
         </div>
         <div class="chat-body" id="chatBody" aria-live="polite"></div>
-        <div class="chat-modes" role="group" aria-label="对话模式">
-          <button id="modeCanned" aria-pressed="true">离线回放</button>
-          <button id="modeLive" aria-pressed="false">接真大脑</button>
-        </div>
         <div class="chat-foot">
           <input id="chatInput" type="text" placeholder="跟老板说点什么……" aria-label="对话输入" />
           <button class="chat-send" id="chatSend">发送</button>
         </div>
       </div>
       <div class="hook-side">
-        <p class="note chat-note" id="chatNote">进页面自动回放一段实录。切「接真大脑」后，每一句都是此刻真实生成的——顺便演示了：同一副界面，可以换一颗大脑。</p>
+        <p class="note chat-note" id="chatNote">老板有两副嗓子：开场是离线罐头——不花钱、断网也能演；你发一句话，他就去接一颗真大脑，每个字都是此刻生成的。断了网？自动回到罐头，酒馆照常开门。同一副界面，换一颗大脑——这就是前端。</p>
         <p class="note hook-exit">想边看边装？<a href="https://tavern.phuyu.cloud/guide/" target="_blank" rel="noopener">上手指南</a>五分钟入门，先看离线回放不用花一分钱。</p>
       </div>
     </div>
@@ -1221,10 +1214,7 @@ body.speaker-progress .progress { height: 5px; }
   var chatChip = document.getElementById("chatChip");
   var chatInput = document.getElementById("chatInput");
   var chatSend = document.getElementById("chatSend");
-  var modeCanned = document.getElementById("modeCanned");
-  var modeLive = document.getElementById("modeLive");
-  var chatNote = document.getElementById("chatNote");
-  var mode = "canned", busy = false, autoPlayed = false, userActed = false, replayGen = 0;
+  var busy = false, autoPlayed = false, userActed = false, replayGen = 0;
   /* A3 全屋烛光同频：busy = 生成中（hero 焰 / 水滴光斑 / 页脚烛台三处读者） */
   function setBusy(on) { busy = !!on; document.body.classList.toggle("busy", busy); }
 
@@ -1281,10 +1271,11 @@ body.speaker-progress .progress { height: 5px; }
   }
 
   function sendLive(text, onDone) {
-    setBusy(true);
-    chip("LIVE · 生成中", true);
+    chip("真大脑 · 生成中", true);
     var t = addMsg("them typing", "……");
     var acc = "";
+    var ctrl = window.AbortController ? new AbortController() : null;
+    var tmo = ctrl ? setTimeout(function () { ctrl.abort(); }, 6000) : 0;
     fetch(chatUrl(), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -1293,13 +1284,14 @@ body.speaker-progress .progress { height: 5px; }
           { role: "system", content: "你是深夜酒馆的老板，说话简短、带一点江湖气，动作用（）描述。不超过 60 字。" },
           { role: "user", content: text }
         ]
-      })
+      }),
+      signal: ctrl ? ctrl.signal : undefined
     }).then(function (res) {
       if (!res.ok) throw new Error("HTTP " + res.status);
       var reader = res.body.getReader(), dec = new TextDecoder(), buf = "";
       function pump() {
         return reader.read().then(function (r) {
-          if (r.done) { t.classList.remove("typing"); chip("回放 · LIVE", true); setBusy(false); chatSend.disabled = false; onDone(); return; }
+          if (r.done) { if (tmo) clearTimeout(tmo); t.classList.remove("typing"); chip("真大脑 · 在线", true); setBusy(false); chatSend.disabled = false; onDone(); return; }
           buf += dec.decode(r.value, { stream: true });
           var frames = buf.split("\n\n");
           buf = frames.pop();
@@ -1316,54 +1308,29 @@ body.speaker-progress .progress { height: 5px; }
       }
       return pump();
     }).catch(function () {
+      if (tmo) clearTimeout(tmo);
       t.classList.remove("typing");
-      t.innerHTML = fmt("（酒馆今夜断网——这句话是离线罐头）网络不通时，酒馆照样开门：刚才那段回放，就是证据。");
-      chip("离线回退", false);
-      setBusy(false); chatSend.disabled = false;
+      t.classList.add("streaming");
+      typeInto(t, "（擦杯子）今晚断网——这句是离线罐头。网络通了，我就能现编；刚才的开场回放，也是罐头。", function () {
+        t.classList.remove("streaming");
+        chip("离线罐头 · 断网", false);
+        setBusy(false); chatSend.disabled = false;
+      });
     });
   }
 
+  /* 合二为一：一句话发出去——能连真大脑就现编，断了网自动回罐头 */
   chatSend.addEventListener("click", function () {
     if (busy) return;
     userActed = true; replayGen++;
     var text = chatInput.value.trim();
-    if (!text) { if (mode === "canned" && !autoPlayed) autoPlay(); return; }
+    if (!text) { if (!autoPlayed) autoPlay(); return; }
     chatInput.value = "";
-    if (mode === "canned") {
-      if (autoPlayed) { /* 追问走罐头尾句 */ }
-      setBusy(true); chatSend.disabled = true;
-      addMsg("me", fmt(text));
-      var t = addMsg("them typing", "……");
-      setTimeout(function () {
-        t.classList.remove("typing");
-        t.classList.add("streaming");
-        typeInto(t, "（擦杯子）好问题。等切到「接真大脑」，这句话会真的发往一颗大语言模型——离线时，我只能给你这个罐头答案。", function () {
-          t.classList.remove("streaming");
-          setBusy(false); chatSend.disabled = false;
-        });
-      }, 400);
-    } else {
-      setBusy(true); chatSend.disabled = true;
-      addMsg("me", fmt(text));
-      sendLive(text, function () {});
-    }
+    setBusy(true); chatSend.disabled = true;
+    addMsg("me", fmt(text));
+    sendLive(text, function () {});
   });
   chatInput.addEventListener("keydown", function (e) { if (e.key === "Enter") chatSend.click(); });
-
-  modeCanned.addEventListener("click", function () {
-    mode = "canned";
-    modeCanned.setAttribute("aria-pressed", "true");
-    modeLive.setAttribute("aria-pressed", "false");
-    chip(autoPlayed ? "离线回放" : "准备中", false);
-    chatNote.textContent = "离线回放：进页面自动播放的实录剧本，不花钱、断网也能演。";
-  });
-  modeLive.addEventListener("click", function () {
-    mode = "live"; userActed = true; replayGen++;
-    modeLive.setAttribute("aria-pressed", "true");
-    modeCanned.setAttribute("aria-pressed", "false");
-    chip("LIVE · 待发", true);
-    chatNote.textContent = "已接入真大脑：每句都是此刻真实流式生成的（一次约 ¥0.002，社团经费请省着点花）。断网自动回退。";
-  });
 
   /* 进视口自动回放 */
   var hookIO = new IntersectionObserver(function (es) {
