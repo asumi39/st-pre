@@ -215,3 +215,45 @@ C3 指针视差）→ 大水滴 A/B 实测页（真实原图，选 B）→ 实�
 - 双路径实测：真大脑（localhost 代理，回复在角色内、chip 在线）✓；断网（liveurl 指向
   关闭端口，即时回落、打字机罐头）✓。
 - 门禁 lint/inspect 0 FAIL；讲义重生成上线。
+
+## ROUND 6 · 移动端动效重排（用户反馈「桌面还好，移动端很糟糕」，2026-10-30）
+
+诊断先行：桌面 Chrome 满帧不代表手机——真正的受害者是 iOS Safari 路径
+（无 scroll-timeline → JS 兜底）。逐帧审查找到六处病灶，全部按小屏规律重排
+（新增 `@media (max-width: 700px)` 动效减负块，置于 RM 块之前保证减弱动效恒胜）：
+
+1. **全屏光位层逐帧重绘**（头号）：JS 兜底每帧写 body CSS 变量=整树样式重算
+   + 两层全屏渐变重绘。→ 伪元素加 `will-change: opacity`（合成器接管）；
+   ≤700px 光层静态化（暖光固定 .3，暗角整个砍掉——小屏上暗角直接罩正文，
+   桌面它只罩边缘留白）；JS 变量写入门控 `wideMQ`。
+2. **视差每帧 gBCR**：强制布局 + 大面积 SVG 裁切图层 transform。→ ≤700px
+   停用视差（转档清残留 transform），桌面保留。
+3. **顶栏 backdrop-filter: blur(10px)**：内容滚过每帧重算模糊。→ blur 收进
+   `@media (min-width: 701px)`，小屏不出现该属性（顺带消掉 glass WARN，
+   lint 回落 1 WARN）。
+4. **解剖图在手机上根本没点亮**（截图实锤 bug）：section-lit 用 ratio 0.12，
+   手机段落高数千 px，844 视口最大相交 ~10%，阈值永远够不到 → 装配/回流
+   色块 opacity:0 藏着，页面读作「图挂了」。→ 高瘦段落改「段落顶进入视口
+   下 1/3 即点亮」（rootMargin 0 0 -35% / threshold 0），桌面维持 0.3。
+5. **缩放后动效不可见**：1244 单位宽 SVG 在 390 屏缩到 0.29 倍——光点 1.5px、
+   虚线噪点。→ 光点 r 5.5→12（加载时按屏宽取值）、箭头 stroke 4→7 +
+   dasharray 16 9（CSS 压过 SVG 属性）。
+6. **手机开场没有点火**：hero 焰 animation:none、spark 隐藏。→ 移动块补
+   one-shot heroIgniteM（scale .5→1 + fade，.7s）；busy 摆焰仍不做（大图层
+   持续重绘）。快门揭幕 .95→.7s、图沉降 1.12→1.07/1.1s；水滴光斑换
+   dropGlowM 温和档（6.8s，scale ≤1.06）。
+
+### 附带修复与验证
+
+- RM 块历史遗漏：`body::before/::after` 滚动联动未受 reduced-motion 约束，
+  补 `animation: none` + 静态值（.3/.25）。
+- 顶栏 solid toggle 加状态守卫（同值不写 class）。
+- 500px（移动分支）行为断言：视差 none、暖光静态 .3/无动画、暗角 none、
+  blur none、光点 r12、点火完成后 opacity 1。1440 断言：视差在跑、warmUp
+  联动、blur 回归。
+- 解剖图 500px 实拍：三组色块齐亮、光点飞行中帧、正文清晰。
+- 门禁：lint 0 FAIL / inspect 三视口 0 FAIL（2 WARN 既往辩护）。
+- 讲义不重生成：本轮零内容文字变更，打印输出不变（打印宽度走桌面分支）。
+- 测量注记：桌面 Chrome 500px 滚动探针 16.7ms 满帧（改造前后同）——桌面
+  GPU 本就无感；本轮消的是 iOS Safari 的每帧重绘/整树重算/强制布局，行为
+  断言为准。
