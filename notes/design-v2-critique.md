@@ -374,3 +374,26 @@ pill 停屏外 ✓；桌面路径不受影响（整块门控）✓；lint/inspec
 
 门禁 0 FAIL。iPhone 最终形态：点按=真马达，拖拽=轻滴答音。若教学现场不欲
 出声，音量一行可调（gain .03）或注释 audioTick 调用退回纯静音。
+
+## ROUND 8 · 手势契约（用户问「为何商业页不触发原生手势」，2026-10-30）
+
+根因：浏览器默认把网页当文档——下拉刷新/双击缩放/橡皮筋/横滑翻页全是文档
+默认值。商业页不是更 native，而是显式声明了手势契约（viewport + touch-action
++ overscroll-behavior + 定向 user-select）；我们一条没写，所有默认值全生效。
+
+落地三声明（特稿页 + 指南页 v3）：
+
+1. `overscroll-behavior: none`（html+body）——下拉刷新（Chrome Android 演示中
+   误拉=整页重载）、过滚弹跳、触控板双指横扫=历史翻页（讲义场景大忌）出局
+2. `* { touch-action: manipulation }`——双击缩放出局（快速点发送/FAQ 不再
+   呲一下放大），**捏合缩放保留**（WCAG/低视力；iOS 亦无视 user-scalable=no，
+   不做自欺声明）；滑杆 `touch-action: none` 独占手势（竖直抖动不滚页）
+3. 控件定向 `user-select: none` + `-webkit-touch-callout: none` +
+   tap-highlight 透明——长按按钮/滑杆不呼出菜单选区；正文与聊天文字保留
+   可选中（复制 AI 回复是功能）
+
+明确不做的：user-scalable=no（iOS 无视、Android 伤低视力）；iOS 边缘横滑
+返回是系统手势，网页无权限——宣讲时若误触，系统级返回只能靠讲的时候避开屏幕边缘。
+
+验证：computed style 全过（html/body none、button manipulation/none-select、
+滑杆 none、chat input 与正文 selectable）；lint/inspect 0 FAIL；双页上线。

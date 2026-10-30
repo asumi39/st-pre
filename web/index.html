@@ -35,8 +35,8 @@
   --margin: clamp(20px, 8vw, 96px);
   --measure: 38em;
 }
-* { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+* { margin: 0; padding: 0; box-sizing: border-box; touch-action: manipulation; } /* 手势契约①：仅保留平移+捏合——双击缩放、长按误触出局 */
+html { scroll-behavior: smooth; overscroll-behavior: none; } /* 手势契约②：下拉刷新/过滚弹跳/触控板横滑翻页出局（捏合缩放保留给低视力） */
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 body {
   background: var(--bg);
@@ -46,7 +46,9 @@ body {
   line-height: 1.75;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  overscroll-behavior: none;
 }
+button, label, input[type="range"] { user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; } /* 手势契约③：控件长按不呼出菜单/选区，去点按灰块；输入框文字保留可选中 */
 ::selection { background: var(--accent); color: var(--on-accent); }
 img, svg, video { display: block; max-width: 100%; }
 a { color: var(--accent); text-decoration: none; }
@@ -318,7 +320,7 @@ html.busy .drop-glow { animation: dropGlowB 1.1s ease-in-out infinite; }
 .sim-slot.empty { opacity: 0.25; background: none; }
 .sim-slider-row { margin-top: 22px; display: flex; align-items: center; gap: 18px; }
 .sim-readout { font-size: 15px; color: var(--ink); min-width: 8.5em; font-variant-numeric: tabular-nums; }
-input[type="range"].big { flex: 1; appearance: none; height: 12px; border-radius: 999px; background: var(--bg); outline-offset: 6px; }
+input[type="range"].big { flex: 1; appearance: none; height: 12px; border-radius: 999px; background: var(--bg); outline-offset: 6px; touch-action: none; } /* 拖杆独占手势：竖直抖动不滚页面 */
 input[type="range"].big::-webkit-slider-thumb {
   appearance: none; width: 44px; height: 44px; border-radius: 999px; background: var(--accent);
   border: 4px solid var(--field);

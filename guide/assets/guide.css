@@ -8,6 +8,8 @@
 
 html {
   scroll-behavior: smooth;
+  overscroll-behavior: none; /* 手势契约：下拉刷新/过滚/触控板横滑翻页出局 */
+  touch-action: manipulation; /* 双击缩放出局；捏合保留给低视力 */
 }
 
 body {
@@ -15,6 +17,7 @@ body {
   font-size: var(--fs-g-body);
   line-height: 1.75;
   -webkit-text-size-adjust: 100%;
+  overscroll-behavior: none;
   background:
     radial-gradient(120% 46% at 50% -6%, rgba(232, 163, 76, 0.1) 0%, transparent 62%),
     var(--bg);
