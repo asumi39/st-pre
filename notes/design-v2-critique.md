@@ -409,3 +409,20 @@ touch-action: manipulation 是文档正解（MDN/Andy Bell），但 iOS Safari �
 - 语法检查 + 桌面冒烟（FAQ/滑杆照常）+ lint/inspect 0 FAIL
 - 附注：iOS 动了 CSS 但仍见缩放，先排除 HTML 缓存（Safari 激进；书签/恢复标签页
   常给旧 DOM），刷新方式：地址栏刷新或清 Safari 网站数据
+
+## ROUND 8c · 安卓触觉排查 + 诊断模式（用户转达安卓「无法触发震动」，2026-10-30）
+
+规范核实（Chromium issue #463717316 官方回复）：Vibration API 允许 sticky user
+activation——页面任何首交互后即可随时震。代码路径无问题（滑杆交互天然满足）。
+
+两大嫌疑与处置：
+
+1. **9ms 低于感知阈**（头号）：不少安卓马达转子启动就要 10-20ms，9ms 单脉冲
+   物理上可能不产生可感位移。→ 棘轮 9→20ms，溢出 [12,50,22]→[18,60,26]。
+2. **设备环境**：静音/勿扰/省电模式、Chrome 站点设置禁振、WebView 内核阉割。
+   → 新增诊断模式 **?haptic-test=1**：浮出自证面板（vibrate API 有无 +
+   长震 400ms/溢出节奏/棘轮 20ms 三按钮，各显示 API 返回 true/false 与
+   归因提示）。面板冒烟：按钮点击 → 日志输出 ✓；无参页面零执行 ✓。
+   （adb 本机不存在，远程自证是唯一验证通道。）
+
+门禁 0 FAIL。待反馈者在安卓设备打开 ?haptic-test=1 读结果回传。

@@ -1520,7 +1520,7 @@ html.speaker-progress .progress { height: 5px; }
   simRange.addEventListener("input", function () {
     var v = +simRange.value;
     if (v === lastVibeVal) return;
-    var over = v > CAP ? [12, 50, 22] : 9;
+    var over = v > CAP ? [18, 60, 26] : 20; /* 9ms 在不少安卓马达上低于感知阈（启动 10-20ms），提到 20ms */
     if (canVibe) haptic(over);                            /* Android/桌面：真马达 */
     else if (dragActive && dragMoved) audioTick(v > CAP); /* iPhone 拖拽：苹果 18.4+ 永不授权，听觉顶上 */
     else haptic(over);                                    /* iPhone 点按：click 授权内，合成翻转可震 */
@@ -1681,6 +1681,29 @@ html.speaker-progress .progress { height: 5px; }
       }, 150);
     });
   });
+
+  /* 触觉诊断模式（?haptic-test=1）：给报告「不震」的设备一条自证路径。
+     API 返回 true=系统已接受（若无体感：静音/勿扰/省电模式或马达弱）；
+     false=浏览器或站点设置禁振；「无 API」=非安卓或内核阉割。 */
+  if (new URLSearchParams(location.search).get("haptic-test") === "1") {
+    var dp = document.createElement("div");
+    dp.style.cssText = "position:fixed;left:10px;right:10px;bottom:10px;z-index:99;background:#241a10;border:2px solid #e8a34c;border-radius:12px;padding:14px;font:13px/1.6 -apple-system,sans-serif;color:#fff7e8;";
+    dp.innerHTML = '<b style="color:#e8a34c">触觉诊断</b> · vibrate API: '
+      + (typeof navigator.vibrate === "function" ? "有" : "无（非安卓或内核阉割）")
+      + '<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">'
+      + '<button data-p="400" style="flex:1;padding:10px;background:#e8a34c;color:#16100a;border-radius:8px;font-weight:700">长震 400ms</button>'
+      + '<button data-p="18,60,26" style="flex:1;padding:10px;background:#3a2c1c;color:#fff7e8;border-radius:8px">溢出节奏</button>'
+      + '<button data-p="20" style="flex:1;padding:10px;background:#3a2c1c;color:#fff7e8;border-radius:8px">棘轮 20ms</button>'
+      + '</div><div id="vibLog" style="margin-top:8px;color:#c9b99b">点按钮试震，结果显示在这里。顺手拖一拖上面的滑杆。</div>';
+    document.body.appendChild(dp);
+    dp.addEventListener("click", function (e) {
+      var b = e.target.closest("button[data-p]");
+      if (!b) return;
+      var ok = typeof navigator.vibrate === "function" ? navigator.vibrate(b.dataset.p.split(",").map(Number)) : false;
+      document.getElementById("vibLog").textContent = "「" + b.textContent + "」API 返回 " + ok
+        + (ok ? "（已接受。若无体感：检查系统静音/勿扰/省电模式，或马达偏弱）" : "（被拒：浏览器或站点设置禁用了振动）");
+    });
+  }
 })();
 </script>
 </body>
