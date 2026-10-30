@@ -1480,6 +1480,80 @@ body.speaker-progress .progress { height: 5px; }
     lastVibeVal = v;
   });
 
+  /* ============ iPhone 拖拽触觉：开关叠指 ============
+     点按路径（label.click）依赖 click 授权，拖拽中永远没有授权——苹果 18.4 起只认
+     「真实控件在指下被滑动」。做法（原理取自 ios-vibrator-pro-max，最小化）：
+     拖拽期剥掉滑杆的隐式指针捕获，把一颗真开关垫到指下，每个 pointermove 翻转一次
+     direction（开关滑块跳边 = 滑动切换 = 触觉），取值改由坐标驱动。仅 iOS Safari
+     激活；任何异常自动永久退回原生行为。 */
+  var dragHackOn = !canVibe
+    && (/iP(hone|od|ad)/.test(navigator.userAgent)
+      || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1));
+  if (dragHackOn) {
+    var dragPill = null, pillFlipped = false, pillMoved = false, dragPatched = false;
+    var nativeSetCap = null, nativeRelCap = null;
+    var pillStyle = function (left, top, dir) {
+      dragPill.style.left = left + "px";
+      dragPill.style.top = top + "px";
+      dragPill.style.direction = dir;
+    };
+    var sliderFromX = function (cx) {
+      var r = simRange.getBoundingClientRect();
+      var pct = Math.min(1, Math.max(0, (cx - r.left) / r.width));
+      var min = parseFloat(simRange.min) || 0, max = parseFloat(simRange.max) || 12, step = parseFloat(simRange.step) || 1;
+      var v = min + Math.round(pct * (max - min) / step) * step;
+      if (+simRange.value !== v) { simRange.value = v; simRange.dispatchEvent(new Event("input")); }
+    };
+    var endDrag = function () {
+      if (!dragPatched) return;
+      dragPatched = false;
+      window.removeEventListener("pointermove", onDragMove, true);
+      window.removeEventListener("pointerup", onDragEnd, true);
+      window.removeEventListener("pointercancel", onDragEnd, true);
+      try {
+        simRange.setPointerCapture = nativeSetCap;
+        simRange.releasePointerCapture = nativeRelCap;
+      } catch (e) { }
+      dragPill.style.left = "-999px";
+    };
+    var onDragMove = function (e) {
+      try {
+        pillFlipped = !pillFlipped;
+        pillStyle(e.clientX - 14, e.clientY - 7, pillFlipped ? "rtl" : "ltr");
+        pillMoved = true;
+        sliderFromX(e.clientX);
+      } catch (err) { dragHackOn = false; endDrag(); }
+    };
+    var onDragEnd = function (e) {
+      try {
+        if (e.type === "pointerup" && !pillMoved) sliderFromX(e.clientX); /* 纯点按：跳到落点 */
+      } catch (err) { }
+      endDrag();
+    };
+    simRange.addEventListener("pointerdown", function (e) {
+      try {
+        dragPill = dragPill || (function () {
+          var p = document.createElement("input");
+          p.type = "checkbox"; p.setAttribute("switch", "");
+          p.tabIndex = -1; p.setAttribute("aria-hidden", "true");
+          p.style.cssText = "position:fixed;width:28px;height:12.4px;margin:0;opacity:.001;z-index:60;pointer-events:auto;direction:ltr;";
+          document.body.appendChild(p);
+          return p;
+        })();
+        pillMoved = false; pillFlipped = false;
+        pillStyle(e.clientX - 14, e.clientY - 7, "ltr");
+        nativeSetCap = simRange.setPointerCapture;
+        nativeRelCap = simRange.releasePointerCapture;
+        simRange.setPointerCapture = function () { };   /* 剥掉隐式捕获：move 改由指下开关接收 */
+        simRange.releasePointerCapture = function () { };
+        dragPatched = true;
+        window.addEventListener("pointermove", onDragMove, true);
+        window.addEventListener("pointerup", onDragEnd, true);
+        window.addEventListener("pointercancel", onDragEnd, true);
+      } catch (err) { dragHackOn = false; }
+    });
+  }
+
   /* ---------- 解剖图（SVG 由脚本构建，保持页面轻） ---------- */
   var diagram = document.getElementById("diagram");
   (function buildDiagram() {

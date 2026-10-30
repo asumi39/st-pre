@@ -308,3 +308,28 @@ iOS Safari 不开放马达**（feature-detect 后静默跳过，桌面无马达�
 
 验证：开关交替翻转 ✓、屏幕外 ✓、无布局影响（scrollW 不变）✓；lint/inspect
 0 FAIL；触觉本体只有真机可证，交用户 iPhone 验收。讲义不重生成（纯 JS/DOM 尾巴）。
+
+## ROUND 7d · iPhone 拖拽触觉：开关叠指（用户实测「点按生效、拖拽永不触发」，2026-10-30）
+
+通读 ios-vibrator-pro-max 源码（click-grant/movable/inputable）找到根因：
+label.click 合成翻转依赖 click 授权，而拖拽全程既无 click 也无 touchend
+（都在松手时）——授权窗永不打开，点按路径在拖拽中必然哑火。
+
+库的拖拽解法是另一条路径（movable.js）：剥掉 range 的隐式指针捕获
+（monkey-patch setPointerCapture），把一颗真开关垫到指下，每个 pointermove
+翻转 direction（开关滑块跳边 = iOS 判为滑动切换 = 真实交互触觉），取值逻辑
+由坐标接管（inputable.updateValue 同款换算）。
+
+手工最小版（~90 行，仅 iOS Safari 激活）：
+
+- slider pointerdown：创建/定位真开关 pill（28×12.4、opacity .001、z-60）、
+  替换 set/releasePointerCapture、window 捕获段挂 move/up/cancel
+- pointermove：pill 跟指重定位 + direction 翻转 + sliderFromX 坐标驱动取值
+  （同步派发 input → renderSim/棘轮照常）
+- pointerup：无位移视为点按 → 跳到落点；恢复原生捕获、pill 停到屏外
+- 全程 try/catch，任何异常永久退回原生行为（dragHackOn=false）
+
+验证（强制激活副本 + 合成 PointerEvent）：捕获拖拽期已替换 ✓、数值跟手
+（60%→8 条、90%→11 条、readout 同步）✓、溢出 verdict/risk ✓、抬手恢复 ✓、
+pill 停屏外 ✓；桌面路径不受影响（整块门控）✓；lint/inspect 0 FAIL。
+真机体感待用户 iPhone 验收。
