@@ -212,3 +212,32 @@ HTTPS：Let's Encrypt / acme.sh；nginx 反代 ST（WebSocket upgrade）
 - 图片通道凭据：`imagegen.txt`（WawAPI 中转配置）
 - 阶段 4 前：北京服务器就绪（SSH 方式、域名解析到位、备案可用于子域名）
 - 阶段 5 前：体验站规模预期（建号数量、是否长期开放）
+
+## 14. 修订 · 交付物形态 v2：Web 原生单页（2026-10-30）
+
+> 用户裁定：HyperFrames 放映形态属「PPT 范式」——固定 16:9 舞台、按秒时间轴、键盘翻页，
+> 不满足「真正的 HTML 页面、适配多端、最大化 HTML 特性」的产品要求。交付物主体改为
+> **单页 Web 特稿**（`web/index.html`）；原 deck 归档进仓库（`slides/` 冻结保留，门禁记录不动），生产下线。
+
+### 定案（用户在方向确认页选定）
+
+- 交付形态：**单页特稿**（一页长滚动，锚点当章节导航）
+- 放映场景：**页面即课件**（投影=全屏滚动网页；讲者备注做成页面自带 `?speaker=1` 模式 / N 键切换）
+
+### 方向与母题
+
+- taste-skill 方向抽取：`one-motif`（seed 1850964516，education/warm，`--keep palette,type`）
+- 母题 = **烛焰**（品牌自身图形）：hero 巨型焰形入画、焰形 clip-path 图片蒙版、焰点列表符、焰形进度语义（章节进入视口「点灯」）
+- 品牌 palette/type 保留（烛光酒馆 tokens v4；宋体 display + system-ui body）
+
+### 铁律对照（不变）
+
+- 教室离线可放映 → 全本地资源零 CDN，file:// 直开可用；LIVE 不可达自动回退罐头剧本
+- 动效即知识点 → 上下文窗口模拟器（拖满即换场色+挤出）、请求解剖图（进视口逐区点亮）、真 SSE 流式演示；全部 IO 触发 + `prefers-reduced-motion` 降级 + 3s 安全全揭示（内容永不因脚本失败而隐藏）
+- Key 零暴露 → proxy 架构原样，页面只持 base URL 语义（https 同源 / 本地 3011 / `?liveurl=` 覆盖）
+
+### 验收口径（v2）
+
+- taste 门禁：`lint.mjs` 0 FAIL；`inspect.mjs` 三视口（1440/768/390）0 FAIL（两条 WARN 留痕：品牌羊皮纸墨色=烛光酒馆底色语言；流式 clamp 排版的插值档位）
+- 交互 QA：真 LIVE 流式（本地 proxy 实测）、模拟器挤出判定、FAQ/路径/视频切换、`?speaker=1` 讲者面板
+- 生产：nginx root 切至 `web/`，`slides/` 移出生产；`/guide/`、`/live/` 不动
