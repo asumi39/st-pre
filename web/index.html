@@ -119,6 +119,24 @@ section { padding: clamp(72px, 11vw, 170px) var(--margin); position: relative; }
   @keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 }
 
+/* ---------- 光位（A4）：滚动越深，烛光越满（进度=亮度，与页脚烛台呼应）。
+   用 body 伪元素而非真实图层：fixed 全屏层会被视为盖在所有大字上。 ---------- */
+body::before, body::after { content: ''; position: fixed; inset: 0; z-index: 45; pointer-events: none; }
+body::before { /* taste-skill-ignore: 烛光光位层 */
+  background: radial-gradient(90% 90% at 72% 28%, rgba(232,163,76,.5), rgba(232,163,76,0) 70%); /* taste-skill-ignore: 烛光光位层 */
+  opacity: var(--glow-warm, .12);
+}
+body::after { /* taste-skill-ignore: 暗角光位层 */
+  background: radial-gradient(120% 120% at 50% 50%, transparent 38%, rgba(0,0,0,.8)); /* taste-skill-ignore: 暗角光位层 */
+  opacity: var(--glow-vig, .5);
+}
+@supports (animation-timeline: scroll()) {
+  body::before { animation: warmUp linear both; animation-timeline: scroll(root); }
+  body::after { animation: vigDown linear both; animation-timeline: scroll(root); }
+  @keyframes warmUp { from { opacity: .12; } to { opacity: .6; } }
+  @keyframes vigDown { from { opacity: .5; } to { opacity: .13; } }
+}
+
 /* ---------- HERO：巨型烛焰入画 ---------- */
 .hero { min-height: 100svh; display: flex; align-items: center; overflow: hidden; padding-top: 90px; }
 .hero-flame {
@@ -126,12 +144,30 @@ section { padding: clamp(72px, 11vw, 170px) var(--margin); position: relative; }
   width: 118svh; height: 118svh; right: -34svh; top: 50%;
   transform: translateY(-46%);
   fill: var(--accent);
-  animation: breathe 5.2s ease-in-out infinite;
+  animation: heroIgnite .6s cubic-bezier(.2,.8,.3,1) .4s both, breathe 5.2s ease-in-out 1.05s infinite;
   transform-origin: 50% 78%;
 }
 @keyframes breathe {
   0%, 100% { transform: translateY(-46%) scale(1); opacity: 1; }
   50% { transform: translateY(-47.5%) scale(1.012); opacity: 0.96; }
+}
+@keyframes heroIgnite { from { transform: translateY(-46%) scale(.06); opacity: 0; } to { transform: translateY(-46%) scale(1); opacity: 1; } }
+.hero-spark {
+  position: absolute; z-index: 0; right: 26%; top: 44%; width: 10px; height: 10px; border-radius: 50%;
+  background: #ffd9a0; opacity: 0; animation: heroSpark .55s ease-out .1s both;
+}
+@keyframes heroSpark { 0% { opacity:0; transform:scale(.4); } 30% { opacity:1; transform:scale(1.3); } 100% { opacity:0; transform:scale(2.2) translateY(-8px); } }
+.hero .display, .hero .lede, .hero .btn { animation: heroRise .65s ease both; }
+.hero .display { animation-delay: .45s; }
+.hero .lede { animation-delay: .85s; }
+.hero .btn { animation-delay: 1.15s; }
+@keyframes heroRise { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:none; } }
+.scroll-cue { animation: cueIn .8s ease 1.5s both; }
+@keyframes cueIn { from { opacity:0; } to { opacity:1; } }
+body.busy .hero-flame { animation: heroBusy 1.1s ease-in-out infinite; }
+@keyframes heroBusy {
+  0%,100% { transform: translateY(-46%) rotate(-1.6deg) scale(1.01); opacity: .97; }
+  50% { transform: translateY(-47.2%) rotate(1.8deg) scale(.985); opacity: .88; }
 }
 .hero-inner { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; width: 100%; }
 .hero .display { font-size: clamp(58px, 7.2vw, 108px); max-width: 7em; }
@@ -145,6 +181,7 @@ section { padding: clamp(72px, 11vw, 170px) var(--margin); position: relative; }
 @media (max-width: 700px) {
   .hero { align-items: flex-start; padding-top: 110px; }
   .hero-flame { width: 150svw; height: 150svw; right: -50svw; top: auto; bottom: -60svw; transform: none; animation: none; }
+  .hero-spark { display: none; }
   .hero .display { font-size: 12.5vw; }
   .scroll-cue { display: none; }
 }
@@ -179,6 +216,11 @@ section { padding: clamp(72px, 11vw, 170px) var(--margin); position: relative; }
 .msg.me { align-self: flex-end; background: color-mix(in srgb, var(--accent-2) 30%, var(--bg-2)); padding: 10px 14px; border-radius: 14px 4px 14px 14px; }
 .msg .act { color: var(--muted); font-style: normal; font-size: 0.92em; }
 .msg.typing { color: var(--muted); }
+.msg.typing::after, .msg.streaming::after {
+  content: ''; display: inline-block; width: .55em; height: 1.05em; margin-left: 3px; vertical-align: -.18em;
+  background: var(--accent); animation: caretBlink 1s steps(2, start) infinite;
+}
+@keyframes caretBlink { to { visibility: hidden; } }
 .chat-foot { display: flex; gap: 10px; padding: 14px 18px; background: var(--bg-2); }
 .chat-foot input {
   flex: 1; min-width: 0; background: var(--bg); border: 0; border-radius: 999px; color: var(--ink);
@@ -188,19 +230,37 @@ section { padding: clamp(72px, 11vw, 170px) var(--margin); position: relative; }
 .chat-send { background: var(--accent); color: var(--on-accent); border-radius: 999px; font-weight: 600; padding: 0 22px; font-size: 16px; white-space: nowrap; }
 .chat-send:disabled { background: var(--bg); color: var(--muted); cursor: default; }
 .chat-modes { display: flex; gap: 4px; padding: 0 18px 14px; background: var(--bg-2); }
-.chat-modes button { font-size: 13px; color: var(--muted); padding: 5px 12px; border-radius: 999px; }
+.chat-modes button { font-size: 13px; color: var(--muted); padding: 5px 12px; border-radius: 999px; transition: color .25s ease, background .25s ease; }
 .chat-modes button[aria-pressed="true"] { background: var(--bg); color: var(--accent); font-weight: 600; }
 .chat-note { margin-top: 14px; }
 
-/* ---------- 第一幕 · 焰形大图 + 焰点清单 ---------- */
+/* ---------- 第一幕 · 焰形大图（D1：光漾+呼吸+视差） + 焰点清单 ---------- */
 #brain { overflow-x: clip; }
-.brain-photo {
-  filter: brightness(1.35) saturate(1.05);
+.drop-stage {
+  position: relative;
   width: 116%; max-width: none; margin-left: -8%;
+  aspect-ratio: 4 / 4.6;
   clip-path: url(#flameclip);
-  aspect-ratio: 4 / 4.6; object-fit: cover; height: auto;
 }
-@media (max-width: 700px) { .brain-photo { width: 112%; margin-left: -6%; } }
+.drop-inner { position: absolute; inset: -26px; isolation: isolate; will-change: transform; }
+.brain-photo { filter: brightness(1.35) saturate(1.05); width: 100%; height: 100%; object-fit: cover; }
+.drop-glow {
+  position: absolute; left: 0; top: 38%; width: 100%; height: 62%;
+  pointer-events: none; mix-blend-mode: screen;
+  background: radial-gradient(52% 46% at 45% 76%, rgba(255,176,64,.68), rgba(224,130,36,.3) 48%, transparent 72%); /* taste-skill-ignore: 水滴烛光光斑 */
+  transform-origin: 45% 76%;
+  animation: dropGlow 5.2s ease-in-out infinite;
+}
+.drop-bloom {
+  position: absolute; inset: 0; opacity: 0; pointer-events: none; mix-blend-mode: screen;
+  background: radial-gradient(52% 46% at 45% 76%, rgba(255,190,90,.7), transparent 70%); /* taste-skill-ignore: 水滴入场光漾 */
+}
+.section-lit .drop-bloom { animation: dropBloom 1.6s ease-out both; }
+@keyframes dropGlow { 0%,100% { opacity:.6; transform:scale(1); } 50% { opacity:.95; transform:scale(1.08); } }
+@keyframes dropGlowB { 0%,100% { opacity:.72; transform:scale(1.03); } 50% { opacity:.98; transform:scale(1.1); } }
+@keyframes dropBloom { 0% { opacity:0; transform:scale(.5); } 45% { opacity:.9; } 100% { opacity:0; transform:scale(1.28); } }
+body.busy .drop-glow { animation: dropGlowB 1.1s ease-in-out infinite; }
+@media (max-width: 700px) { .drop-stage { width: 112%; margin-left: -6%; } }
 .points { display: grid; grid-template-columns: 1fr 1fr; gap: 34px 40px; margin-top: 8px; }
 @media (max-width: 560px) { .points { grid-template-columns: 1fr; gap: 26px; } }
 .point h3 { font-size: 17px; font-weight: 600; display: flex; align-items: baseline; gap: 10px; color: var(--ink-strong); }
@@ -303,6 +363,11 @@ input[type="range"].big::-moz-range-thumb {
 .vid-side h3 { font-family: var(--font-display); font-size: clamp(20px, 2.2vw, 32px); color: var(--ink-strong); font-weight: 700; margin-bottom: 12px; }
 .vid-side p { font-size: 15px; color: var(--muted); }
 
+/* ---------- 上手路径切换过渡 ---------- */
+.routes button { transition: color .25s ease, background .25s ease; }
+#routeDetail { transition: opacity .28s ease, transform .28s ease; }
+#routeDetail.fade { opacity: 0; transform: translateY(6px); }
+
 /* ---------- 第四幕 · 解剖带（散→束→流） ---------- */
 .anatomy { background: var(--bg-2); }
 .anatomy svg.diagram { width: 100%; height: auto; margin-top: clamp(30px, 4vw, 52px); }
@@ -317,8 +382,17 @@ input[type="range"].big::-moz-range-thumb {
 @media (max-width: 700px) { .patches { grid-template-columns: 1fr; } }
 .patch h3 { font-size: 20px; color: var(--ink-strong); display: flex; gap: 10px; align-items: baseline; }
 .patch p { font-size: 15px; color: var(--muted); margin-top: 8px; }
-.diagram .cell { opacity: 0.55; transition: opacity 0.7s ease; }
-.section-lit .diagram .cell { opacity: 1; }
+.diagram .cell { transform-box: fill-box; transition: opacity 0.7s ease, transform 0.7s cubic-bezier(.2,.7,.3,1); }
+.diagram .sc { opacity: 0.55; }
+.section-lit .diagram .sc { opacity: 1; }
+.diagram .bd, .diagram .ot { opacity: 0; transform: translateX(14px); }
+.section-lit .diagram .bd, .section-lit .diagram .ot { opacity: 1; transform: none; }
+.diagram .ar { opacity: .55; transition: opacity 0.7s ease; }
+.section-lit .diagram .ar { opacity: 1; }
+.diagram .ar line { stroke-dasharray: 7 5; }
+.section-lit .diagram .ar line { animation: dashFlow .9s linear infinite; }
+body.busy .diagram .ar line { animation-duration: .45s; }
+@keyframes dashFlow { to { stroke-dashoffset: -12; } }
 
 /* ---------- 第五幕 · 开张（句子留白） ---------- */
 .openup-line { font-size: clamp(30px, 3.6vw, 54px); margin-bottom: 10px; }
@@ -369,11 +443,12 @@ input[type="range"].big::-moz-range-thumb {
 .fcard .tab .marker { color: var(--accent); font-size: 22px; line-height: 1; transition: transform 0.25s ease; flex: none; }
 .fcard[data-open="true"] .tab { border-radius: 12px 12px 0 0; }
 .fcard[data-open="true"] .marker { transform: rotate(45deg); }
-.fcard .answer {
+.fcard .answer { /* taste-skill-ignore: 小卡片 max-height 过渡，白名单 */ 
   background: none; overflow: hidden; max-height: 0;
+  opacity: 0; transition: max-height .5s cubic-bezier(.3,.7,.3,1), opacity .4s ease;
   transition: max-height 0.35s ease;
 }
-.fcard[data-open="true"] .answer { max-height: 400px; }
+.fcard[data-open="true"] .answer { max-height: 400px; opacity: 1; }
 .fcard .answer p { padding: 2px 22px 22px; font-size: 16px; color: var(--muted); max-width: 56ch; }
 .fcard .answer p b { color: var(--ink); }
 /* ---------- 收束 · 战利品 ---------- */
@@ -400,6 +475,19 @@ footer { background: var(--accent); color: var(--on-accent); padding: clamp(56px
 .foot-mark svg { height: 100%; width: auto; fill: var(--on-accent); }
 .foot-mark .candles { color: var(--on-accent); }
 .candles .fl { transform-box: fill-box; transform-origin: 50% 100%; animation: flick 2.8s ease-in-out infinite; }
+.candles g.fl:nth-of-type(1) { animation-duration: 2.5s; animation-delay: -.4s; }
+.candles g.fl:nth-of-type(2) { animation-duration: 3.1s; animation-delay: -1.2s; }
+.candles g.fl:nth-of-type(3) { animation-duration: 2.8s; animation-delay: -2s; }
+.candles g.fl:nth-of-type(4) { animation: gust 6.5s ease-in-out -2.1s infinite; }
+.candles g.fl:nth-of-type(5) { animation-duration: 2.7s; animation-delay: -1.6s; }
+body.busy .candles .fl { animation: flick 1.2s ease-in-out infinite; }
+@keyframes gust {
+  0%, 56%, 78%, 100% { transform: scaleY(1) rotate(0); opacity: 1; }
+  60% { transform: rotate(-14deg) scaleY(.9); opacity: .92; }
+  64% { transform: rotate(7deg) scaleY(1.05); }
+  68% { transform: rotate(-4deg); }
+  72% { transform: rotate(1deg); }
+}
 @media (max-width: 700px) { .foot-mark { height: clamp(90px, 24vw, 132px); } }
 @keyframes flick { 0%, 100% { transform: scaleY(1); opacity: 1; } 50% { transform: scaleY(1.05) scaleX(0.96); opacity: 0.9; } }
 .foot-links { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: clamp(40px, 6vw, 72px); }
@@ -424,13 +512,17 @@ footer { background: var(--accent); color: var(--on-accent); padding: clamp(56px
 body.speaker-progress .progress { height: 5px; }
 
 /* ---------- 入场动效（IO 加 .in） ---------- */
-.rise { opacity: 0; transform: translateY(26px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.rise { opacity: 0; transform: translateY(26px); transition: opacity 0.7s ease, transform 0.7s ease; transition-delay: calc(90ms * var(--i, 0)); }
 .rise.in { opacity: 1; transform: none; }
-.rise.d1 { transition-delay: 0.08s; } .rise.d2 { transition-delay: 0.16s; }
-.rise.d3 { transition-delay: 0.24s; } .rise.d4 { transition-delay: 0.32s; }
+.rise.d1 { --i: 1; } .rise.d2 { --i: 2; } .rise.d3 { --i: 3; } .rise.d4 { --i: 4; }
 @media (prefers-reduced-motion: reduce) {
   .rise { opacity: 1; transform: none; transition: none; }
   .hero-flame, .scroll-cue .flame-i, .candles .fl { animation: none; }
+  .hero-spark, .hero .display, .hero .lede, .hero .btn, .scroll-cue, .drop-bloom, .drop-glow,
+  body.busy .hero-flame, body.busy .drop-glow, body.busy .candles .fl,
+  .section-lit .diagram .ar line, .msg.typing::after, .msg.streaming::after { animation: none; }
+  .diagram .bd, .diagram .ot { opacity: 1; transform: none; }
+  .diagram .ar line { stroke-dasharray: none; }
   .section-lit .flame-i.dim, .section-lit .diagram .cell, .section-lit .spoil-words span { transition: none; }
 }
 
@@ -438,11 +530,15 @@ body.speaker-progress .progress { height: 5px; }
 @media print {
   :root { --bg: #fff; --bg-2: #f6f1e7; --bg-3: #efe7d8; --ink: #241a0e; --ink-strong: #16100a; --muted: #6b5a41; --accent: #9a6414; --accent-2: #a34a22; }
   body { font-size: 12pt; color: var(--ink); background: #fff; }
-  .topbar, .scroll-cue, .chat-foot, .chat-modes, .sim-slider-row, .progress, .spk, .routes, .btn-ghost, .vid-stage video { display: none !important; }
+  .topbar, .scroll-cue, .chat-foot, .chat-modes, .sim-slider-row, .progress, .spk, .routes, .btn-ghost, .vid-stage video, .drop-glow, .drop-bloom, .hero-spark { display: none !important; }
+  body::before, body::after { display: none; }
   section { padding: 24pt 0; page-break-inside: avoid; }
   h2.display, section[id] { page-break-before: auto; }
   .hero { min-height: auto; }
-  .hero-flame, .brain-photo { display: none; }
+  .hero-flame, .drop-stage, .brain-photo { display: none; }
+  .diagram .cell { opacity: 1 !important; transform: none !important; }
+  .diagram .ar line { stroke-dasharray: none; animation: none; }
+  .candles .fl { animation: none; }
   .fcard .answer { max-height: none; }
   a { color: inherit; }
   .faq-cards .fcard { background: var(--bg-2); }
@@ -486,6 +582,7 @@ body.speaker-progress .progress { height: 5px; }
 <!-- ================= HERO ================= -->
 <section class="hero" id="top" aria-label="封面">
   <svg class="hero-flame" viewBox="0 0 100 120" aria-hidden="true"><use href="#flame"/></svg>
+  <span class="hero-spark" aria-hidden="true"></span>
   <div class="hero-inner">
     <h1 class="display">今晚，<br/>酒馆开张</h1>
     <p class="lede">SillyTavern——一个通往无数世界的前端。一杯酒的时间，零基础玩懂大语言模型，顺手把 AI 角色扮演的全部原理带走。</p>
@@ -545,12 +642,18 @@ body.speaker-progress .progress { height: 5px; }
   <div class="wrap">
     <div class="two-col">
       <div class="rise">
-        <img class="brain-photo" src="assets/cover-hero.png" alt="深夜酒馆内景：木吧台上一点烛光" width="880" height="1012" />
+        <div class="drop-stage">
+          <div class="drop-inner">
+            <img class="brain-photo" src="assets/cover-hero.png" alt="深夜酒馆内景：木吧台上一点烛光" width="880" height="1012" />
+            <div class="drop-glow" aria-hidden="true"></div>
+            <div class="drop-bloom" aria-hidden="true"></div>
+          </div>
+        </div>
       </div>
       <div>
         <h2 class="display rise" id="h-brain">第一幕 · 接龙机器</h2>
         <p class="lede rise d1">大语言模型（LLM）只做一件事：预测下一个字。它不是在「思考」，是在玩一场规模空前的文字接龙。</p>
-        <div class="points">
+        <div class="points" data-stagger>
           <div class="point rise d1"><h3><svg class="flame-i" viewBox="0 0 100 120"><use href="#flame"/></svg>逐字生成</h3><p>「海绵宝宝去蟹堡王上」——班，路上遇到了派大星。每个字都是一个一个猜出来的。</p></div>
           <div class="point rise d2"><h3><svg class="flame-i" viewBox="0 0 100 120"><use href="#flame"/></svg>没有灵魂，只有概率</h3><p>没有神秘的「自我」。所谓人设，本质上只是喂给它的文字。</p></div>
           <div class="point rise d2"><h3><svg class="flame-i" viewBox="0 0 100 120"><use href="#flame"/></svg>它没有记忆</h3><p>每轮对话，它都把全部历史重新读一遍。忘了不是故障，是物理限制。</p></div>
@@ -676,7 +779,7 @@ body.speaker-progress .progress { height: 5px; }
     <p class="lede rise d1">酒馆能玩什么？按菜单点。每一道都是同一个原理的变体：把文字喂进去，把角色请出来。</p>
 
     <div class="menu-cat rise"><h3>桌上菜</h3><span>五道 · 全部本地</span></div>
-    <ul class="menu-list">
+    <ul class="menu-list" data-stagger>
       <li class="menu-item rise">
         <img class="bullet" src="assets/demo-card.png" alt="" style="filter:brightness(1.15)" width="128" height="128" loading="lazy" />
         <div><h4>角色卡 · 一张 PNG 的魔法<span class="tag">结构化提示词</span></h4>
@@ -705,7 +808,7 @@ body.speaker-progress .progress { height: 5px; }
     </ul>
 
     <div class="menu-cat rise"><h3>实拍实录</h3><span>三段 · 本机录制</span></div>
-    <ul class="menu-list">
+    <ul class="menu-list" data-stagger>
       <li class="menu-item"><button class="pick" data-vid="rpg" aria-pressed="true">
         <img class="bullet" src="assets/play-rpg.png" alt="" width="128" height="128" loading="lazy" />
         <div><h4>跑团 GM<span class="tag">骰子 · 剧情推进</span></h4><p>掷骰判定、状态栏、剧情推进，一个人也能开团。</p></div>
@@ -804,7 +907,7 @@ body.speaker-progress .progress { height: 5px; }
 <section class="rules" aria-labelledby="h-rules">
   <div class="wrap">
     <h2 class="display rise" id="h-rules">上桌之前 · 三条纪律</h2>
-    <div class="rule-stack">
+    <div class="rule-stack" data-stagger>
     <div class="rule rise"><svg class="flame-i" viewBox="0 0 100 120" width="18" height="22"><use href="#flame"/></svg>
       <div><b>API Key = 钱包</b><p>别提交到 GitHub，别发群里。泄漏了 = 别人拿你的钱包刷 API。</p></div></div>
     <div class="rule rise d1"><svg class="flame-i" viewBox="0 0 100 120" width="18" height="22"><use href="#flame"/></svg>
@@ -819,7 +922,7 @@ body.speaker-progress .progress { height: 5px; }
 <section id="faq" aria-labelledby="h-faq">
   <div class="wrap">
     <h2 class="display rise" id="h-faq">散场之前 · 常见问题</h2>
-    <div class="faq-cards rise d1" id="faqCards">
+    <div class="faq-cards" id="faqCards" data-stagger>
       <div class="fcard" data-open="true">
         <button class="tab" aria-expanded="true"><h3>手机能玩吗？<span class="marker" aria-hidden="true">+</span></h3></button>
         <div class="answer"><p><b>能。</b>酒馆装在电脑上，手机浏览器访问同一局域网地址即可，界面本身就是手机优先设计。整合包也有手机端方案（Termux），但推荐从电脑开始。</p></div>
@@ -874,11 +977,11 @@ body.speaker-progress .progress { height: 5px; }
     <div class="foot-mark" aria-hidden="true">
       <svg viewBox="0 0 100 120"><use href="#flame"/></svg>
       <svg class="candles" viewBox="0 0 310 206">
-        <g class="fl" style="animation-delay:0s"><path d="M23 22 C25.6 28 33 33.4 33 41 A10 10.6 0 1 1 13 41 C13 33.4 20.4 28 23 22 Z" fill="currentColor"/><rect x="10" y="50" width="26" height="150" rx="5" fill="currentColor"/></g>
-        <g class="fl" style="animation-delay:.5s"><path d="M83 48 C85.6 54 93 59.4 93 67 A10 10.6 0 1 1 73 67 C73 59.4 80.4 54 83 48 Z" fill="currentColor"/><rect x="70" y="76" width="26" height="124" rx="5" fill="currentColor"/></g>
-        <g class="fl" style="animation-delay:1.1s"><path d="M143 8 C145.6 14 153 19.4 153 27 A10 10.6 0 1 1 133 27 C133 19.4 140.4 14 143 8 Z" fill="currentColor"/><rect x="130" y="36" width="26" height="164" rx="5" fill="currentColor"/></g>
-        <g class="fl" style="animation-delay:1.7s"><path d="M203 38 C205.6 44 213 49.4 213 57 A10 10.6 0 1 1 193 57 C193 49.4 200.4 44 203 38 Z" fill="currentColor"/><rect x="190" y="66" width="26" height="134" rx="5" fill="currentColor"/></g>
-        <g class="fl" style="animation-delay:2.3s"><path d="M263 68 C265.6 74 273 79.4 273 87 A10 10.6 0 1 1 253 87 C253 79.4 260.4 74 263 68 Z" fill="currentColor"/><rect x="250" y="96" width="26" height="104" rx="5" fill="currentColor"/></g>
+        <g class="fl"><path d="M23 22 C25.6 28 33 33.4 33 41 A10 10.6 0 1 1 13 41 C13 33.4 20.4 28 23 22 Z" fill="currentColor"/><rect x="10" y="50" width="26" height="150" rx="5" fill="currentColor"/></g>
+        <g class="fl"><path d="M83 48 C85.6 54 93 59.4 93 67 A10 10.6 0 1 1 73 67 C73 59.4 80.4 54 83 48 Z" fill="currentColor"/><rect x="70" y="76" width="26" height="124" rx="5" fill="currentColor"/></g>
+        <g class="fl"><path d="M143 8 C145.6 14 153 19.4 153 27 A10 10.6 0 1 1 133 27 C133 19.4 140.4 14 143 8 Z" fill="currentColor"/><rect x="130" y="36" width="26" height="164" rx="5" fill="currentColor"/></g>
+        <g class="fl"><path d="M203 38 C205.6 44 213 49.4 213 57 A10 10.6 0 1 1 193 57 C193 49.4 200.4 44 203 38 Z" fill="currentColor"/><rect x="190" y="66" width="26" height="134" rx="5" fill="currentColor"/></g>
+        <g class="fl"><path d="M263 68 C265.6 74 273 79.4 273 87 A10 10.6 0 1 1 253 87 C253 79.4 260.4 74 263 68 Z" fill="currentColor"/><rect x="250" y="96" width="26" height="104" rx="5" fill="currentColor"/></g>
       </svg>
     </div>
     <div class="foot-links">
@@ -920,21 +1023,36 @@ body.speaker-progress .progress { height: 5px; }
   "use strict";
   var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* ---------- 进度条兜底（无 scroll-timeline 时） ---------- */
+  /* ---------- 统一滚动循环（rAF 合并：进度兜底 / 顶栏 / 光位兜底 / 大水滴视差） ---------- */
   var bar = document.getElementById("progressBar");
-  if (!CSS.supports("animation-timeline: scroll()")) {
-    addEventListener("scroll", function () {
-      var h = document.documentElement;
-      var p = h.scrollTop / (h.scrollHeight - h.clientHeight || 1);
-      bar.style.transform = "scaleX(" + p + ")";
-    }, { passive: true });
-  }
-
-  /* ---------- 顶栏状态 ---------- */
   var topbar = document.getElementById("topbar");
-  addEventListener("scroll", function () {
+  var dropInner = document.querySelector(".drop-inner");
+  var scrollTL = CSS.supports("animation-timeline: scroll()");
+  var scrollTicking = false;
+  function onScrollFrame() {
+    scrollTicking = false;
+    var h = document.documentElement;
     topbar.classList.toggle("solid", scrollY > 40);
+    var p = h.scrollTop / (h.scrollHeight - h.clientHeight || 1);
+    if (!scrollTL) {
+      bar.style.transform = "scaleX(" + p + ")";
+      document.body.style.setProperty("--glow-warm", (0.12 + 0.48 * p).toFixed(3));
+      document.body.style.setProperty("--glow-vig", (0.5 - 0.37 * p).toFixed(3));
+    }
+    if (dropInner && !reduced) {
+      var r = dropInner.parentElement.getBoundingClientRect();
+      var vh = innerHeight;
+      var t = (r.top + r.height / 2 - vh / 2) / (vh / 2 + r.height / 2);
+      t = Math.max(-1, Math.min(1, t));
+      dropInner.style.transform = "translate3d(0," + (t * 18).toFixed(1) + "px,0)";
+    }
+  }
+  addEventListener("scroll", function () {
+    if (scrollTicking) return;
+    scrollTicking = true;
+    requestAnimationFrame(onScrollFrame);
   }, { passive: true });
+  onScrollFrame();
 
   /* ---------- IO 入场 + 章节点灯 ---------- */
   var io = new IntersectionObserver(function (es) {
@@ -943,6 +1061,14 @@ body.speaker-progress .progress { height: 5px; }
     });
   }, { threshold: 0.12 });
   document.querySelectorAll(".rise").forEach(function (el) { io.observe(el); });
+  /* data-stagger：网格子项统一 90ms 错峰入场 */
+  document.querySelectorAll("[data-stagger]").forEach(function (g) {
+    Array.prototype.forEach.call(g.children, function (c, i) {
+      c.classList.add("rise");
+      c.style.setProperty("--i", i);
+      io.observe(c);
+    });
+  });
   /* 安全网：任何原因（含截图/无 IO）导致未入场的内容，3 秒后一律揭示——内容永不隐藏 */
   setTimeout(function () {
     document.querySelectorAll(".rise:not(.in)").forEach(function (el) { el.classList.add("in"); });
@@ -1015,6 +1141,8 @@ body.speaker-progress .progress { height: 5px; }
   var modeLive = document.getElementById("modeLive");
   var chatNote = document.getElementById("chatNote");
   var mode = "canned", busy = false, autoPlayed = false, userActed = false, replayGen = 0;
+  /* A3 全屋烛光同频：busy = 生成中（hero 焰 / 水滴光斑 / 页脚烛台三处读者） */
+  function setBusy(on) { busy = !!on; document.body.classList.toggle("busy", busy); }
 
   function chip(text, live) {
     chatChip.textContent = text;
@@ -1046,27 +1174,30 @@ body.speaker-progress .progress { height: 5px; }
     })();
   }
   function replayScript(idx, gen) {
-    if (gen !== replayGen) return; /* 会话已被用户接管，罐头停止 */
-    if (idx >= CANNED.length) { if (gen === replayGen) chip("离线回放 · 完", false); busy = false; chatSend.disabled = false; return; }
+    if (gen !== replayGen) { setBusy(false); return; } /* 会话已被用户接管，罐头停止 */
+    if (idx >= CANNED.length) { if (gen === replayGen) chip("离线回放 · 完", false); setBusy(false); chatSend.disabled = false; return; }
     var turn = CANNED[idx];
     addMsg("me", fmt(turn.me));
     var t = addMsg("them typing", "……");
     setTimeout(function () {
-      if (gen !== replayGen) { t.remove(); return; }
+      if (gen !== replayGen) { t.remove(); setBusy(false); return; }
       t.classList.remove("typing");
-      typeInto(t, turn.them, function () { setTimeout(function () { replayScript(idx + 1, gen); }, 500); });
+      t.classList.add("streaming");
+      typeInto(t, turn.them, function () { t.classList.remove("streaming"); setTimeout(function () { replayScript(idx + 1, gen); }, 500); });
     }, reduced ? 60 : 420);
   }
   function autoPlay() {
     if (autoPlayed || userActed) return;
     autoPlayed = true;
     var gen = ++replayGen;
+    setBusy(true);
     chip("离线回放", false);
     addMsg("them", fmt("（点亮柜台上的蜡烛）晚上好。今晚的酒馆，只讲一个东西——你手里那块发光的屏幕，背后到底发生了什么。"));
     setTimeout(function () { replayScript(0, gen); }, reduced ? 100 : 800);
   }
 
   function sendLive(text, onDone) {
+    setBusy(true);
     chip("LIVE · 生成中", true);
     var t = addMsg("them typing", "……");
     var acc = "";
@@ -1084,7 +1215,7 @@ body.speaker-progress .progress { height: 5px; }
       var reader = res.body.getReader(), dec = new TextDecoder(), buf = "";
       function pump() {
         return reader.read().then(function (r) {
-          if (r.done) { t.classList.remove("typing"); chip("回放 · LIVE", true); busy = false; chatSend.disabled = false; onDone(); return; }
+          if (r.done) { t.classList.remove("typing"); chip("回放 · LIVE", true); setBusy(false); chatSend.disabled = false; onDone(); return; }
           buf += dec.decode(r.value, { stream: true });
           var frames = buf.split("\n\n");
           buf = frames.pop();
@@ -1104,7 +1235,7 @@ body.speaker-progress .progress { height: 5px; }
       t.classList.remove("typing");
       t.innerHTML = fmt("（酒馆今夜断网——这句话是离线罐头）网络不通时，酒馆照样开门：刚才那段回放，就是证据。");
       chip("离线回退", false);
-      busy = false; chatSend.disabled = false;
+      setBusy(false); chatSend.disabled = false;
     });
   }
 
@@ -1116,17 +1247,19 @@ body.speaker-progress .progress { height: 5px; }
     chatInput.value = "";
     if (mode === "canned") {
       if (autoPlayed) { /* 追问走罐头尾句 */ }
-      busy = true; chatSend.disabled = true;
+      setBusy(true); chatSend.disabled = true;
       addMsg("me", fmt(text));
       var t = addMsg("them typing", "……");
       setTimeout(function () {
         t.classList.remove("typing");
+        t.classList.add("streaming");
         typeInto(t, "（擦杯子）好问题。等切到「接真大脑」，这句话会真的发往一颗大语言模型——离线时，我只能给你这个罐头答案。", function () {
-          busy = false; chatSend.disabled = false;
+          t.classList.remove("streaming");
+          setBusy(false); chatSend.disabled = false;
         });
       }, 400);
     } else {
-      busy = true; chatSend.disabled = true;
+      setBusy(true); chatSend.disabled = true;
       addMsg("me", fmt(text));
       sendLive(text, function () {});
     }
@@ -1214,19 +1347,19 @@ body.speaker-progress .progress { height: 5px; }
   (function buildDiagram() {
     var NS = "http://www.w3.org/2000/svg";
     /* 三区：散料 0-380 / 请求包 440-760 / 回流 820-1200 */
-    function cell(x, y, w, h, tone, delay) {
+    function cell(x, y, w, h, tone, delay, cls) {
       var r = document.createElementNS(NS, "rect");
       r.setAttribute("x", x); r.setAttribute("y", y);
       r.setAttribute("width", w); r.setAttribute("height", h);
       r.setAttribute("rx", 4);
-      r.setAttribute("class", "cell");
+      r.setAttribute("class", "cell " + (cls || "sc"));
       r.setAttribute("fill", tone);
       if (delay) r.style.transitionDelay = delay + "ms";
       diagram.appendChild(r);
     }
     function arrow(x1, y, x2, delay) {
       var g = document.createElementNS(NS, "g");
-      g.setAttribute("class", "cell");
+      g.setAttribute("class", "cell ar");
       if (delay) g.style.transitionDelay = delay + "ms";
       var ln = document.createElementNS(NS, "line");
       ln.setAttribute("x1", x1); ln.setAttribute("y1", y);
@@ -1251,12 +1384,12 @@ body.speaker-progress .progress { height: 5px; }
     arrow(394, 135, 474, 540);
     /* 请求包：紧凑束 */
     for (var j = 0; j < 18; j++) {
-      cell(500 + (j % 6) * 44, 96 + Math.floor(j / 6) * 32, 40, 26, j < 6 ? "#e8a34c" : "#c05f33", 480 + j * 35);
+      cell(500 + (j % 6) * 44, 96 + Math.floor(j / 6) * 32, 40, 26, j < 6 ? "#e8a34c" : "#c05f33", 480 + j * 35, "bd");
     }
     arrow(778, 135, 826, 1060);
     /* 回流：整齐展开 */
     for (var m = 0; m < 24; m++) {
-      cell(840 + (m % 8) * 45, 66 + Math.floor(m / 8) * 48, 30, 26, "#e8a34c", 1100 + m * 30);
+      cell(840 + (m % 8) * 45, 66 + Math.floor(m / 8) * 48, 30, 26, "#e8a34c", 1100 + m * 30, "ot");
     }
   })();
 
@@ -1304,7 +1437,13 @@ body.speaker-progress .progress { height: 5px; }
     b.addEventListener("click", function () {
       document.querySelectorAll(".routes button").forEach(function (x) { x.setAttribute("aria-pressed", "false"); });
       b.setAttribute("aria-pressed", "true");
-      document.getElementById("routeDetail").innerHTML = ROUTES[b.dataset.route].html;
+      var rd = document.getElementById("routeDetail");
+      if (reduced) { rd.innerHTML = ROUTES[b.dataset.route].html; return; }
+      rd.classList.add("fade");
+      setTimeout(function () {
+        rd.innerHTML = ROUTES[b.dataset.route].html;
+        rd.classList.remove("fade");
+      }, 150);
     });
   });
 })();

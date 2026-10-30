@@ -95,3 +95,64 @@ Caps applied: 无。
 - chrome-devtools 窗口最小宽 500 → 移动细节以 inspect 仿真截图 + Firefox set_viewport_size(390) 实测为准。
 - 罐头回放完毕的聊天（chip「离线回放·完」）、菜单标题/标签分行、开张句单行——390 下均确认。
 
+
+## ROUND 4 · 动效升级 v3.1（用户：美观优先、不为加而加；点名给大水滴做动效，2026-10-30）
+
+方案历经交互提案页（10 项全选）→ 用户反馈修订（知识点绑定降级为加分项；砍 C2 数字滚动、
+C3 指针视差）→ 大水滴 A/B 实测页（真实原图，选 B）→ 实施。最终 9 项：
+
+1. **D1 大水滴（第一幕 cover-hero 焰形大图）**：结构改为 drop-stage(clip) > drop-inner(-26px
+   外扩防露边) > img+光斑+光漾。入场光自吧台反光处漾开一次（section-lit 触发）；光斑
+   5.2s 常驻呼吸（与 hero 焰同频）；±18px 滚动视差（rAF 合并循环）。实测页阶段发现主蜡烛
+   在裁剪切外、暖光落在吧台——光效落点据此定在吧台光斑；「远处烛影」层渲染成雾球，删除。
+   强度初版被 A4 暗角压住，alpha .55→.68 / 呼吸 .6↔.95 找回存在感。
+2. **A1 开场点火**：纯 CSS 编排 spark(.1s)→焰 ignite(.4s)→标题(.45s)→lede(.85s)→按钮(1.15s)
+   →cue(1.5s)。inspect late-title 门要求标题 1.2s 可读，编排从 1.75s 压到 1.2s 内完成。
+3. **A2 解剖图方向性**：散料(sc)/装配(bd)/回流(ot) 分类，bd/ot 自 +14px 位移错峰入场；
+   箭头改虚线 + dashFlow 行进（busy 时 .45s 加速）。SVG 构建函数加 cls 参数。
+4. **A3 全屋烛光同频**：setBusy() 挂 SSE/罐头发送全路径（含中断/回退出口）；body.busy 驱动
+   三读者——hero 焰换 1.1s heroBusy、水滴光斑 dropGlowB、页脚烛台统一 1.2s。
+   真实 DeepSeek 流式回归：busy true→false、chip 状态、消息落地全部正确。
+5. **A4 滚动光位**：body::before/::after 双 fixed 层（暖光 .12→.6 / 暗角 .5→.13），
+   scroll-timeline 驱动 + rAF 兜底写 CSS 变量。**初版用真实 div 层 → inspect covered-text
+   FAIL**（强制 hit-test 下全屏层拦下一切大字取样点）；改伪元素后命中返回 body（含文本即
+   跳过），门禁恢复 0 FAIL。这是本轮唯一结构性返工。
+6. **B1 统一错峰**：.rise 固定 d1–d4 → `transition-delay: calc(90ms * var(--i))`，d1–d4 映射
+   兼容存量 HTML；data-stagger 容器（rule-stack/points/两个 menu-list/faqCards）子项 JS 统一
+   注入 --i 并入 IO 观察。3s 安全网语义不变。
+7. **B2 烛台错相+阵风**：移除五烛内联 delay，CSS 全权编排（2.5–3.4s 各异 + 负 delay），
+   第 4 烛换 6.5s gust（偶发阵风）。Firefox 截图确认五焰形态各异。
+8. **B3 流式光标**：`.typing::after/.streaming::after` 琥珀 caret steps(2) 闪烁。修正时序漏洞：
+   罐头剧本原先在打字前就摘掉 .typing → 新增 .streaming 状态跟住 typeInto 全程；伪元素
+   计算样式确证（8.8×16.8 琥珀块 + caretBlink）。
+9. **C1 切换过渡**：FAQ .answer max-height/opacity 过渡（小卡片白名单，注释留痕）；
+   routeDetail 150ms 淡入换装；chat-modes/routes 按钮颜色过渡。
+
+### 工程红线执行
+
+- Composite-only：全部 transform/opacity；白名单例外仅 A2 dashoffset（小面积 SVG）与 C1
+  max-height（小卡片），代码内注释留痕。两个 scroll listener 合并为单 rAF 循环
+  （进度兜底/顶栏/光位兜底/视差四合一）。零新依赖、零新资源、图片预算 8/8 不动。
+- reduced-motion：新增动效全部纳入 431 行块（点火/光斑/光漾/箭头/烛台/caret/视差关，
+  bd/ot 强制可见，body.busy 读者全部静止）。
+- print：光位层（body 伪元素）、水滴光效、spark 全部关闭；解剖图打印强制全亮
+  （bd/ot 否则 opacity:0 不可见——打印修复）。
+- gradient 规则：5 处烛光光效为「灯光」非装饰渐变，lint 同行注释豁免 + inspect 走
+  direction.json allow（图纸级留档）。
+
+### 复验记录
+
+- lint 0 FAIL（1 WARN 为既往 em-dash 计数）；inspect 1440/768/390 **0 FAIL**，2 WARN 与
+  Round 3 完全一致（palette-cream 羊皮纸、15 档流式字号——均已辩护）。
+- Firefox 真 390：scrollWidth=390，视差激活，hero 标题入场完成态 opacity=1。
+- Chromium 目检：点火中途/落定两帧、水滴光斑、busy 态、解剖图回流中帧、caret 确证、
+  页脚错相帧。
+- 真实 LIVE 一次（¥0.002）：busy 链路端到端正确。
+- 讲义重生成（12.0MB）与页面同批 rsync 上线；线上 grep 确认新标记 8 处。
+
+### 遗留软点（记录在案）
+
+- 大水滴光斑与 A4 暗角存在轻微互相稀释，强度已调平；若教室投影仍偏暗，可再加
+  `--glow-vig` 终值（现 .13）一档。
+- A4 光位在 NoScript/无 scroll-timeline 环境走 rAF 兜底，首屏前 0.5s 内光位为静态初值
+  （.12/.5），属预期。
