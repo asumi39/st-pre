@@ -437,6 +437,8 @@ footer .salute {
 
 footer p { margin: 8px 0 0; font-size: var(--fs-g-small); color: var(--muted); }
 footer .sig { margin-top: 18px; letter-spacing: 0.2em; font-family: var(--font-mono); font-size: 12px; }
+footer .sig a { color: inherit; }
+footer .sig a:hover { color: var(--ink-strong); }
 
 /* ---------- 动效纪律：停留态即完成态 ---------- */
 
