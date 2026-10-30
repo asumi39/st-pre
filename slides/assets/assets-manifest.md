@@ -78,3 +78,9 @@
 - 本目录 `gen/`、`qr/` 为并行会话（主线 deck）产物，不属于本批次，未纳入本次提交。
 - mock 服务已在本机 **9999 端口持续运行**（nohup，日志 `/tmp/mock-llm.log`）；主线 deck 的 LIVE 模式可直连，停掉可 `kill $(lsof -ti:9999)`。
 - ST 容器 `st-pre`（volume `st_pre_data`）保留供体验站/复拍使用；`docker rm -f st-pre` 可清理。
+
+## v2 附记（web/，2026-10-30）
+
+- `web/assets/` = 上述素材的交付拷贝（自包含单页），并新增 1 张：`worldbook.png`（imagegen 第 8 张，gemini-3-pro-image，世界书菜单特写；总额度 8/8 内）
+- 已剔除未引用：divider-ink/warm、ui-wizard-spare
+- `web/handout.pdf`：由 `@media print` 样式表直接打印生成（Firefox print 管线），讲义与页面同源
