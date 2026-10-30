@@ -999,7 +999,7 @@ body.speaker-progress .progress { height: 5px; }
   var modeCanned = document.getElementById("modeCanned");
   var modeLive = document.getElementById("modeLive");
   var chatNote = document.getElementById("chatNote");
-  var mode = "canned", busy = false, autoPlayed = false, userActed = false;
+  var mode = "canned", busy = false, autoPlayed = false, userActed = false, replayGen = 0;
 
   function chip(text, live) {
     chatChip.textContent = text;
@@ -1030,22 +1030,25 @@ body.speaker-progress .progress { height: 5px; }
       if (i < text.length) setTimeout(tick, 24); else done();
     })();
   }
-  function replayScript(idx) {
-    if (idx >= CANNED.length) { chip("离线回放 · 完", false); busy = false; chatSend.disabled = false; return; }
+  function replayScript(idx, gen) {
+    if (gen !== replayGen) return; /* 会话已被用户接管，罐头停止 */
+    if (idx >= CANNED.length) { if (gen === replayGen) chip("离线回放 · 完", false); busy = false; chatSend.disabled = false; return; }
     var turn = CANNED[idx];
-    var m = addMsg("me", fmt(turn.me));
+    addMsg("me", fmt(turn.me));
     var t = addMsg("them typing", "……");
     setTimeout(function () {
+      if (gen !== replayGen) { t.remove(); return; }
       t.classList.remove("typing");
-      typeInto(t, turn.them, function () { setTimeout(function () { replayScript(idx + 1); }, 500); });
+      typeInto(t, turn.them, function () { setTimeout(function () { replayScript(idx + 1, gen); }, 500); });
     }, reduced ? 60 : 420);
   }
   function autoPlay() {
     if (autoPlayed || userActed) return;
     autoPlayed = true;
+    var gen = ++replayGen;
     chip("离线回放", false);
     addMsg("them", fmt("（点亮柜台上的蜡烛）晚上好。今晚的酒馆，只讲一个东西——你手里那块发光的屏幕，背后到底发生了什么。"));
-    setTimeout(function () { replayScript(0); }, reduced ? 100 : 800);
+    setTimeout(function () { replayScript(0, gen); }, reduced ? 100 : 800);
   }
 
   function sendLive(text, onDone) {
@@ -1092,7 +1095,7 @@ body.speaker-progress .progress { height: 5px; }
 
   chatSend.addEventListener("click", function () {
     if (busy) return;
-    userActed = true;
+    userActed = true; replayGen++;
     var text = chatInput.value.trim();
     if (!text) { if (mode === "canned" && !autoPlayed) autoPlay(); return; }
     chatInput.value = "";
@@ -1123,7 +1126,7 @@ body.speaker-progress .progress { height: 5px; }
     chatNote.textContent = "离线回放：进页面自动播放的实录剧本，不花钱、断网也能演。";
   });
   modeLive.addEventListener("click", function () {
-    mode = "live"; userActed = true;
+    mode = "live"; userActed = true; replayGen++;
     modeLive.setAttribute("aria-pressed", "true");
     modeCanned.setAttribute("aria-pressed", "false");
     chip("LIVE · 待发", true);

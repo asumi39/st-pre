@@ -1,12 +1,12 @@
-# tavern.phuyu.cloud — 静态站（幻灯片回看 + 指南）+ LIVE proxy 反代
-# 部署版：保留 Certbot 管理的证书与 80 跳转段；替换旧的 8001 反代（旧服务已下线，经用户确认移除）
+# tavern.phuyu.cloud — Web 原生单页特稿（v2 主交付物）+ 指南站 + LIVE proxy 反代
+# v2 变更：root 切至 /opt/st-pre/web（单页特稿）；deck 放映版归档进仓库、生产下线；
+# 404 兜底不再指向 deck.html；/guide/ 与 /live/ 原样保留
 
 server {
     server_name tavern.phuyu.cloud;
 
-    root /opt/st-pre/slides;
-    index deck.html;
-    error_page 404 = /deck.html;
+    root /opt/st-pre/web;
+    index index.html;
 
     location ^~ /guide/ {
         alias /opt/st-pre/guide/;
