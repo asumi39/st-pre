@@ -500,3 +500,31 @@ tokens v2 + 警示注释留档。Firefox 重启后乱码根除，Chrome 无回�
 - Firefox 390 截图：乱码根除、60px 宋体标题、焰形标记、填充卡片全部到位；
   Chrome 无回归；scrollWidth=390
 - 上线：guide 三文件（index/tokens v2/guide v4）；主站无改动
+
+## ROUND 8 终 · Pixel 真机全链路验证 + 静音模式元凶（adb + CDP + dumpsys 三层取证，2026-10-31）
+
+用户提供 Pixel 6 Pro（Android 17，Chrome 154）+ platform-tools 接入项目。
+三层取证全通，元凶与「安卓不能震」的所有报告彻底定案：
+
+1. **系统层**：`cmd vibrator_manager synced oneshot 400/20` exit=0，用户有体感——马达/系统正常。
+2. **API 层**：CDP（usb forward + chrome_devtools_remote）Runtime.evaluate：vibrate(400/100/20)
+   全返回 true，无手势也 true（sticky activation）。
+3. **合成真实触摸拖拽**：CDP Input.dispatchTouchEvent 驱动滑杆 4→11，遥测计数累加、
+   溢出节奏 [100,70,100] 正确下发。
+4. **系统台账（dumpsys vibrator_manager）抓真凶**：静音模式下 Chrome 的调用
+   **从不进入台账**——渲染层返回 true、浏览器进程静默丢弃（Chromium：SILENT
+   铃声模式拒振）。`cmd audio set-ringer-mode NORMAL` 后，同一次调用立即进账
+   （com.android.chrome · 403ms · amplitude=1.00），合成拖拽后累计 **102 条
+   Chrome 振动记录**，拖拽棘轮端到端抵达马达。
+
+结论：**安卓侧页面代码从未有 bug**——「不能震」的设备都处于静音模式（Chromium
+故意：静音拒振但 JS 返回 true，属 API 返回值不可靠的已知怪癖）。此前 45ms 无感
+等数据来自另一台设备（真阈值 80ms），与 Pixel 无关。
+
+页面侧唯一改进维持不变：诊断面板提示语已含「检查系统静音/勿扰/省电模式」
+（网页无 API 读取铃声模式，无法自动检测）。校准机制（vibTickMs）继续覆盖
+弱马达设备（另一台真阈值 80ms）。
+
+验证工具留存：platform-tools/（adb）+ 诊断页 ?haptic-test=1 + CDP 拖拽脚本
+（tmp，未入库）。诊断流程可复现：adb forward 9222 → /json → Runtime.evaluate +
+Input.dispatchTouchEvent → dumpsys vibrator_manager 台账比对。
