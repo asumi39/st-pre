@@ -580,3 +580,48 @@ Chrome 已死。
 结论：本页已上线的「首次点击自动解锁 + 未解锁听觉兜底 + 设备校准」组合不
 逊于任何 production 实现；拖拽触觉的 click 门槛是浏览器厂商的隐私/防骚扰
 决策，网页侧无解，静待平台放宽（删一行解锁监听即回满血）。
+
+## ROUND 9 · 封面门：同文档锁定态 + 开门动画（2026-10-31）
+
+方案收敛路径：用户三连提案（幕尾按钮链优先 → 移除跨幕滚动/deck → 封面双页分离）
+逐个评估后收敛为**同文档「门」**：封面成为锁定态，唯一出口 = 推门按钮，跳转带
+开门动画。幕尾按钮链用户明确**停车**。动画方向 A「门缝透光」（复用 --glow-warm
+灯光词汇）从三个候选中胜出（B 整扇旋转易显廉价、C 淡出点火门意象弱）。
+
+实现语义（铁律全保）：**锁 = html overflow:hidden + 正文 inert，平台级状态零事件
+拦截**（scroll-jack 的性能/手势/可达性陷阱一个不沾）；单文件不动、讲义只加 print
+覆盖、下游滚动编排零改动。门序列：立面淡出 → 门缝亮起 → 双扇合拢 → 缝光泄出+
+暖光扑面（此刻 scrollTo 换景到序幕、焦点交给序幕标题、inert 释放）→ 双扇开启 →
++400ms 交还滚动（顶栏/cue 归位、封面内容淡回）→ 封面成为普通首屏，向上滚回不再锁。
+参数：sessionStorage `st-pre-door` 本会话记忆（刷新不重锁）；`?door=0` 强制跳过、
+`?door=1` 强制演示；带 hash 进入不锁；→/空格/回车 开门（讲者放映）；reduced-motion
+瞬跳。触觉：门口 click = haptic(90)，**同一击完成 Chrome Android 拖拽触觉的会话
+解锁**——叙事动作与底层机制重合。
+
+门板渐变/缝光/呼吸环按 taste-skill-ignore 逐行豁免（真实覆盖层 + 全站灯光语言）。
+inspect 三个 FAIL 的修复：**锁态标题/导语去掉入场延迟第一帧直出**（房子规则 1.2s
+可读——"no gate" 条款对真门的判决）；呼吸从 box-shadow 改 ::after 扩散圆环
+（shadow/button-fx 双消）。
+
+真机踩坑四连（Pixel 6 Pro / Android 17 / Chrome 154，全部实测定位）：
+1. **body 隐藏滚动箱**：站点 body 有 overflow-x:hidden→overflow-y 计算 auto=潜在
+   滚动容器；锁 html 后传播中断，body 成第二滚动箱——scrollIntoView 滚的是 body
+   内部，解锁传播恢复时内部 scrollTop 清零 → 门后弹回封面。修复：锁定期
+   `body { overflow: visible }`，唯一滚动箱 = 视口。
+2. **Android Chrome 锁定期忽略 scrollIntoView**（overflow:hidden root 上桌面执行、
+   真机忽略；解锁后同一调用正常）→ 换景改 `window.scrollTo(0, top+pageYOffset)`
+   显式视口滚动，真机过。
+3. **解锁布局跳变触发滚动锚定**：locked 的 padding-top:0 → unlocked 110 使
+   锚定补偿残留 110px（滚回封面标题被顶栏压住，h1.y 实测 22/-26/44 三个不稳定
+   读数全是此因）。修复：锁定期不改 padding-top（内容在含 padding 盒内居中），
+   解锁零布局变化 + 解锁时重新 scrollTo 钉位。终验 h1.y = 110.0000。
+4. **tap-highlight 蓝青块**：`* { -webkit-tap-highlight-color: transparent }` 在
+   Android 154 实测未吃住（默认 rgba(51,181,229,.4) 浮在门板上）→ 对
+   .btn/a/button/.top-cta 显式声明后消失。
+
+真机终验矩阵（adb+CDP 真实触摸+dumpsys 台账）：锁定封面（呼吸环/逃生口/无顶栏）✓；
+点击 → 台账 +1（门口 90ms tick）→ scrollY 794 落地序幕、罐头剧本自动开演 ✓；
+立即拖滑杆 → 台账 +9 全进马达（**门口 click 已完成触觉解锁，拖拽首次即是真马达**）✓；
+滚回顶部 → 封面复原、h1.y=110.0000、topbar/cue 归位 ✓；刷新 → 跳过门直达内容 ✓。
+桌面全流程（browser panel）同验 ✓。双 gates：lint 0 FAIL / inspect 0 FAIL。
+幕尾按钮链已停车；deck（v3 期权）继续挂起等教室实拍反馈。
