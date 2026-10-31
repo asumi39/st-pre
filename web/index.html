@@ -239,15 +239,19 @@ html.door-locked .scroll-cue { animation: none; opacity: 0; }
 html.door-locked .door-escape { display: inline-block; }
 
 /* ---------- 序幕 · statement + 内嵌缩略图 ---------- */
+/* 取景窗式缩略图：小框不放整图（整图缩到 83px 就是暗色矩形），zoom 进各图最有辨识度的局部 */
 .statement .thumb {
-  display: inline-block; width: 2.6em; height: 1.5em; vertical-align: -0.4em;
-  margin: 0 0.16em; border-radius: 0.14em; object-fit: cover;
-  background: var(--bg-3);
-  filter: brightness(1.45) saturate(1.08); /* 原图皆偏暗：提亮才读得出「小屏幕」 */
-  outline: 1px solid rgba(232,163,76,.3); outline-offset: -1px; /* 琥珀细边框出「屏」的轮廓 */
+  position: relative; display: inline-block; width: 2.6em; height: 1.5em; vertical-align: -0.4em;
+  margin: 0 0.16em; border-radius: 0.14em; overflow: hidden; background: var(--bg-3);
+  outline: 1px solid rgba(232,163,76,.3); outline-offset: -1px;
 }
-.statement .thumb:nth-of-type(2) { object-position: 50% 26%; } /* 角色卡对准脸+提灯 */
-.statement .thumb:nth-of-type(3) { object-position: 50% 62%; } /* 笔记本对准摊开页 */
+.statement .thumb img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  filter: brightness(1.4) saturate(1.08);
+}
+.statement .s1 img { transform: scale(3); transform-origin: 13% 40%; filter: brightness(1.6) saturate(1.15); } /* 手机UI：扎进双头像+名签+气泡；暗底图单独再提亮 */
+.statement .s2 img { transform: scale(1.8); transform-origin: 50% 22%; } /* 角色卡：脸+提灯特写 */
+.statement .s3 img { transform: scale(1.5); transform-origin: 52% 58%; } /* 笔记本：摊开书页 */
 .tw { white-space: nowrap; } /* 缩略图与后一字锁死：不落行首、不悬行尾 */
 .hook-stage { margin-top: clamp(36px, 5vw, 64px); display: grid; grid-template-columns: minmax(0, 620px) 1fr; gap: clamp(28px, 5vw, 72px); } /* stretch：侧注顶齐聊天头，指南链接钉到聊天底 */
 .chat-note { margin: 0; max-width: 36ch; }
@@ -788,7 +792,7 @@ html.speaker-progress .progress { height: 5px; }
 <section id="hook" aria-labelledby="h-hook">
   <div class="wrap">
     <h2 class="display rise" id="h-hook">序幕 · 先看一场对话</h2>
-    <p class="statement rise d1">先别解释。先看一段对话——<span class="tw"><img class="thumb" src="assets/ui-mobile.png" alt="" width="220" height="124" loading="lazy"/>它</span>像不像你手机里的聊天 App？<span class="tw"><img class="thumb" src="assets/demo-card.png" alt="" width="220" height="124" loading="lazy"/>你</span>猜，是谁在「扮演」对面那位？<span class="tw"><img class="thumb" src="assets/play-tutor.png" alt="" width="220" height="124" loading="lazy"/>答</span>案可能和你想的不一样。</p>
+    <p class="statement rise d1">先别解释。先看一段对话——<span class="tw"><span class="thumb s1"><img src="assets/ui-mobile.png" alt="" width="220" height="124" loading="lazy"></span>它</span>像不像你手机里的聊天 App？<span class="tw"><span class="thumb s2"><img src="assets/demo-card.png" alt="" width="220" height="124" loading="lazy"></span>你</span>猜，是谁在「扮演」对面那位？<span class="tw"><span class="thumb s3"><img src="assets/play-tutor.png" alt="" width="220" height="124" loading="lazy"></span>答</span>案可能和你想的不一样。</p>
     <div class="hook-stage rise d2">
       <div class="chat" id="chat" data-ui>
         <div class="chat-head">
