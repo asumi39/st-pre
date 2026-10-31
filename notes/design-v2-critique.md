@@ -669,3 +669,12 @@ inspect 三个 FAIL 的修复：**锁态标题/导语去掉入场延迟第一帧
 解锁对照 0 FAIL 证明真实路径完好——已加入 direction.json allow 并在此留档）。
 真机台账：门口 tick 1 条、拖拽 9 条（click 解锁传导）、落地 scrollY 794、封面复原
 h1.y=110.0000、刷新重锁、滑动封面零位移。handout.pdf 本轮不改（纯交互）。
+
+## ROUND 10·补 · 开门后封面退场（2026-10-31，用户裁决）
+
+「进到正文里之后，封面页不需要再滚回去看。」开门落位即退役封面：hero display:none
+（不 remove——print !important 恢复为讲义扉页）、#top 锚点（wordmark / 页尾回到顶部）
+重指 #hook、scrollTo(0,0) 让序幕成为页首、dispatch resize 让六幕烛位随文档缩短重算。
+?door=0 用户不退休封面（经典首屏保留）。真机：落位 scrollY=0、hero display none、
+页首元素=hook、强行上滚停在 0、文档缩短 ~700px。测试踩坑一笔：Chrome 刷新恢复上次
+滚动位置，CDP 量取点按坐标前必须先压回顶部（否则 tap 打空，读数全错）。
