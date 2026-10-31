@@ -528,3 +528,22 @@ tokens v2 + 警示注释留档。Firefox 重启后乱码根除，Chrome 无回�
 验证工具留存：platform-tools/（adb）+ 诊断页 ?haptic-test=1 + CDP 拖拽脚本
 （tmp，未入库）。诊断流程可复现：adb forward 9222 → /json → Runtime.evaluate +
 Input.dispatchTouchEvent → dumpsys vibrator_manager 台账比对。
+
+## ROUND 8 终 b · Chrome Android 解锁语义定案 + 双通道兜底（Pixel 真机实证，2026-10-31）
+
+Pixel 6 Pro（Android 17 / Chrome 154，adb + CDP + dumpsys 三层）对照实验：
+A 无点击直接拖 → vibrate 返回 false、马达 0 条；B 可信 click → +1；C click 后
+拖 → +7；D 6s 后拖 → +8；E 21s 后拖 → +7。**语义定案：拖拽中的 vibrate 需要
+会话里先有过一次「可信 click 内的 vibrate」；click 授权会话内长期有效（21s+
+无衰减）**。调整一次后就能震=点按钮本身就是那次 click。
+
+修复双通道：
+1. **首次点击解锁**：document click（一次性）内补发 vibrate(1)（不可感），
+   会话解锁——用户任意第一次点按（TOC/链接/任何按钮）后拖拽全程真马达
+2. **拒绝可检测 → 听觉兜底**：未解锁时 vibrate 返回 false（可编程检测！），
+   拖拽中检测到 false 自动落回 audioTick 滴答——直接拖也永远有反馈
+3. 静音模式（上一轮）：返回 true 但马达不动，网页不可检测，提示语已覆盖
+
+真机终验矩阵：清态拖=马达 0 条+音频兜底 ✓；任意点一下=解锁 ✓；再拖=马达
++7 条 ✓。三端最终形态：Android=点过一次后全程真马达（未点过=音频），
+iPhone=点按马达+拖拽音频，桌面=原生 API。诊断面板保留（?haptic-test=1）。

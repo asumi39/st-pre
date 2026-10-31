@@ -1473,6 +1473,17 @@ html.speaker-progress .progress { height: 5px; }
      网页侧无解（库的两条邪路：冻结主线程/后台弹窗，均不可接受）。
      故 iPhone 拖拽改用 12ms 轻滴答音补反馈（见 audioTick）。 */
   var canVibe = typeof navigator.vibrate === "function";
+  /* Chrome Android 语义（Pixel 6 Pro / Android 17 / Chrome 154 系统台账实证）：
+     拖拽中的 vibrate 需要会话里先有过一次「可信 click 内的 vibrate」——
+     拖拽/pointerdown 本身不算数。首次点击任意处时补一发 1ms 不可感脉冲
+     完成解锁（会话内长期有效）；未解锁时调用返回 false，拖拽自动退回听觉。 */
+  if (canVibe) {
+    var hapticUnlock = function () {
+      try { navigator.vibrate(1); } catch (e) { }
+      document.removeEventListener("click", hapticUnlock);
+    };
+    document.addEventListener("click", hapticUnlock);
+  }
   var vibeSwitch = document.getElementById("hapticSwitch");
   var vibeLabel = document.getElementById("hapticLabel");
   function haptic(pattern) {
@@ -1537,6 +1548,7 @@ html.speaker-progress .progress { height: 5px; }
       if (canVibe) ret = haptic(pat);                      /* Android/桌面：真马达 */
       else if (dragActive && dragMoved) { audioTick(v > CAP); ret = "音频"; } /* iPhone 拖拽：苹果 18.4+ 永不授权，听觉顶上 */
       else ret = haptic(pat);                              /* iPhone 点按：click 授权内，合成翻转可震 */
+      if (ret === false && dragActive && dragMoved) { audioTick(v > CAP); ret = "音频"; } /* 马达被拒（未点击解锁等）→ 听觉顶上 */
       lastVibeAt = now;
       vibCalls++;
       var lv = document.getElementById("vibLive");
