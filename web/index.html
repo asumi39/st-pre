@@ -240,15 +240,20 @@ html.door-locked .door-escape { display: inline-block; }
 
 /* ---------- 序幕 · statement + 内嵌缩略图 ---------- */
 .statement .thumb {
-  display: inline-block; width: 2.1em; height: 1.22em; vertical-align: -0.18em;
-  margin: 0 0.14em; border-radius: 0.16em; object-fit: cover;
+  display: inline-block; width: 2.6em; height: 1.5em; vertical-align: -0.4em;
+  margin: 0 0.16em; border-radius: 0.14em; object-fit: cover;
   background: var(--bg-3);
+  filter: brightness(1.45) saturate(1.08); /* 原图皆偏暗：提亮才读得出「小屏幕」 */
+  outline: 1px solid rgba(232,163,76,.3); outline-offset: -1px; /* 琥珀细边框出「屏」的轮廓 */
 }
-.hook-stage { margin-top: clamp(36px, 5vw, 64px); display: grid; grid-template-columns: minmax(0, 620px) 1fr; gap: clamp(28px, 5vw, 72px); align-items: end; }
-.chat-note { margin-top: 0; max-width: 36ch; padding-bottom: 8px; }
-.hook-side { min-width: 0; }
-.hook-exit { margin-top: 12px; }
-@media (max-width: 860px) { .hook-stage { grid-template-columns: 1fr; } .chat-note { margin-top: 14px; max-width: none; padding-bottom: 0; } }
+.statement .thumb:nth-of-type(2) { object-position: 50% 26%; } /* 角色卡对准脸+提灯 */
+.statement .thumb:nth-of-type(3) { object-position: 50% 62%; } /* 笔记本对准摊开页 */
+.tw { white-space: nowrap; } /* 缩略图与后一字锁死：不落行首、不悬行尾 */
+.hook-stage { margin-top: clamp(36px, 5vw, 64px); display: grid; grid-template-columns: minmax(0, 620px) 1fr; gap: clamp(28px, 5vw, 72px); } /* stretch：侧注顶齐聊天头，指南链接钉到聊天底 */
+.chat-note { margin: 0; max-width: 36ch; }
+.hook-side { min-width: 0; display: flex; flex-direction: column; }
+.hook-exit { margin-top: auto; padding-top: 14px; }
+@media (max-width: 860px) { .hook-stage { grid-template-columns: 1fr; } .chat-note { margin-top: 14px; max-width: none; } }
 
 /* ---------- 聊天舞台（真界面片段 data-ui） ---------- */
 .chat {
@@ -285,7 +290,6 @@ html.busy .chat-chip { animation: chipPulse 1.2s ease-in-out infinite; }
 .chat-foot input::placeholder { color: var(--muted); }
 .chat-send { background: var(--accent); color: var(--on-accent); border-radius: 999px; font-weight: 600; padding: 0 22px; font-size: 16px; white-space: nowrap; }
 .chat-send:disabled { background: var(--bg); color: var(--muted); cursor: default; }
-.chat-note { margin-top: 14px; }
 
 /* ---------- 第一幕 · 幕景横幅（C 案：整幅内景带替代水滴剪影——图不再是有轮廓的悬浮物体，
    而是你进门后看见的这间屋子；裁切瞄准烛光，幕题压图。快门揭幕/烛光呼吸/桌面视差保留） ---------- */
@@ -784,9 +788,7 @@ html.speaker-progress .progress { height: 5px; }
 <section id="hook" aria-labelledby="h-hook">
   <div class="wrap">
     <h2 class="display rise" id="h-hook">序幕 · 先看一场对话</h2>
-    <p class="statement rise d1">先别解释。先看一段对话——
-      <img class="thumb" src="assets/ui-mobile.png" alt="" width="220" height="124" loading="lazy"/>它像不像你手机里的聊天 App？<img class="thumb" src="assets/demo-card.png" alt="" width="220" height="124" loading="lazy"/>你猜，是谁在「扮演」对面那位？<img class="thumb" src="assets/play-tutor.png" alt="" width="220" height="124" loading="lazy"/>
-    </p>
+    <p class="statement rise d1">先别解释。先看一段对话——<span class="tw"><img class="thumb" src="assets/ui-mobile.png" alt="" width="220" height="124" loading="lazy"/>它</span>像不像你手机里的聊天 App？<span class="tw"><img class="thumb" src="assets/demo-card.png" alt="" width="220" height="124" loading="lazy"/>你</span>猜，是谁在「扮演」对面那位？<span class="tw"><img class="thumb" src="assets/play-tutor.png" alt="" width="220" height="124" loading="lazy"/>答</span>案可能和你想的不一样。</p>
     <div class="hook-stage rise d2">
       <div class="chat" id="chat" data-ui>
         <div class="chat-head">
