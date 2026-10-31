@@ -285,39 +285,48 @@ html.busy .chat-chip { animation: chipPulse 1.2s ease-in-out infinite; }
 .chat-send:disabled { background: var(--bg); color: var(--muted); cursor: default; }
 .chat-note { margin-top: 14px; }
 
-/* ---------- 第一幕 · 焰形大图（D1：光漾+呼吸+视差） + 焰点清单 ---------- */
-#brain { overflow-x: clip; }
+/* ---------- 第一幕 · 幕景横幅（C 案：整幅内景带替代水滴剪影——图不再是有轮廓的悬浮物体，
+   而是你进门后看见的这间屋子；裁切瞄准烛光，幕题压图。快门揭幕/烛光呼吸/桌面视差保留） ---------- */
+#brain { overflow-x: clip; padding: 0; } /* 幕景带全幅顶到幕首（电影章节卡）；水平内距交给 wrap */
+#brain .wrap { padding: clamp(40px, 6vw, 72px) var(--margin) 0; }
 .drop-stage {
   position: relative;
-  width: 116%; max-width: none; margin-left: -8%;
-  aspect-ratio: 4 / 4.6;
-  clip-path: url(#flameclip);
+  width: 100%; max-width: none; margin: 0;
+  height: clamp(320px, 46svh, 500px); overflow: hidden;
 }
 .drop-shutter { clip-path: inset(100% 0 0 0); transition: clip-path .95s cubic-bezier(.65,0,.25,1) .1s; }
 .drop-shutter.open { clip-path: inset(0 0 0 0); }
-.drop-inner { position: absolute; inset: -34px; isolation: isolate; will-change: transform; }
+.drop-inner { position: absolute; inset: 0; isolation: isolate; will-change: transform; }
 .brain-photo {
-  filter: brightness(1.35) saturate(1.05); width: 100%; height: 100%; object-fit: cover;
-  transform: scale(1.12); transform-origin: 50% 88%; transition: transform 1.5s cubic-bezier(.22,.7,.2,1) .1s;
+  filter: brightness(1.3) saturate(1.05); width: 100%; height: 100%; object-fit: cover; object-position: 50% 68%;
+  transform: scale(1.18); transform-origin: 50% 60%; transition: transform 1.5s cubic-bezier(.22,.7,.2,1) .1s;
 }
-.drop-shutter.open .brain-photo { transform: scale(1); }
+.drop-shutter.open .brain-photo { transform: scale(1.1); } /* 落定仍留 10% 余量：视差 ±18px 不露边 */
+.band-scrim { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, rgba(22,16,10,.55), rgba(22,16,10,.12) 55%, rgba(22,16,10,0)), linear-gradient(180deg, var(--bg) 0%, rgba(22,16,10,0) 34%, rgba(22,16,10,0) 56%, var(--bg) 100%); } /* taste-skill-ignore: 照片上的中性护暗幕布（上下融入底色+左下幕题护暗），lint 唯一豁免类 */
+.band-caption {
+  position: absolute; left: calc(max((100% - 1200px) / 2, 0px) + var(--margin)); right: calc(max((100% - 1200px) / 2, 0px) + var(--margin)); /* 与 .wrap 内容栏同缘 */
+  bottom: clamp(20px, 4.5svh, 46px);
+  opacity: 0; transform: translateY(14px); transition: opacity .8s ease .5s, transform .8s cubic-bezier(.22,.7,.2,1) .5s;
+}
+.drop-shutter.open .band-caption { opacity: 1; transform: none; }
+.band-caption h2 { margin-bottom: 10px; text-shadow: 0 2px 26px rgba(0,0,0,.6); } /* taste-skill-ignore: 幕题压在照片上，投影是可读性必需 */
+.band-caption .lede { text-shadow: 0 1px 16px rgba(0,0,0,.65); } /* taste-skill-ignore: 同上 */
 .drop-glow {
-  position: absolute; left: 0; top: 38%; width: 100%; height: 62%;
+  position: absolute; left: 0; top: 6%; width: 100%; height: 88%;
   pointer-events: none; mix-blend-mode: screen;
-  background: radial-gradient(58% 52% at 45% 76%, rgba(255,176,64,.78), rgba(224,130,36,.34) 50%, transparent 72%); /* taste-skill-ignore: 水滴烛光光斑 */
-  transform-origin: 45% 76%;
+  background: radial-gradient(40% 40% at 12% 52%, rgba(255,176,64,.5), rgba(224,130,36,.16) 55%, transparent 75%); /* taste-skill-ignore: 烛光光斑，瞄准原图烛位 */
+  transform-origin: 12% 52%;
   animation: dropGlow 5.2s ease-in-out infinite;
 }
 .drop-bloom {
   position: absolute; inset: 0; opacity: 0; pointer-events: none; mix-blend-mode: screen;
-  background: radial-gradient(58% 52% at 45% 76%, rgba(255,190,90,.85), transparent 70%); /* taste-skill-ignore: 水滴入场光漾 */
+  background: radial-gradient(42% 46% at 12% 52%, rgba(255,190,90,.75), transparent 72%); /* taste-skill-ignore: 入场光漾 */
 }
 .section-lit .drop-bloom { animation: dropBloom 2s ease-out both; }
 @keyframes dropGlow { 0%,100% { opacity:.45; transform:scale(1); } 50% { opacity:1; transform:scale(1.14); } }
 @keyframes dropGlowB { 0%,100% { opacity:.5; transform:scale(1); } 50% { opacity:1; transform:scale(1.16); } }
 @keyframes dropBloom { 0% { opacity:0; transform:scale(.45); } 40% { opacity:1; } 100% { opacity:0; transform:scale(1.5); } }
 html.busy .drop-glow { animation: dropGlowB 1.1s ease-in-out infinite; }
-@media (max-width: 700px) { .drop-stage { width: 112%; margin-left: -6%; } }
 .points { display: grid; grid-template-columns: 1fr 1fr; gap: 34px 40px; margin-top: 8px; }
 @media (max-width: 560px) { .points { grid-template-columns: 1fr; gap: 26px; } }
 .point h3 { font-size: 17px; font-weight: 600; display: flex; align-items: baseline; gap: 10px; color: var(--ink-strong); }
@@ -633,6 +642,7 @@ html.speaker-progress .progress { height: 5px; }
   .diagram .bd, .diagram .ot { opacity: 1; transform: none; }
   .drop-shutter { clip-path: none; transition: none; }
   .brain-photo { transform: none; transition: none; }
+  .band-caption { opacity: 1; transform: none; transition: none; }
   .diagram .ar line { stroke-dasharray: none; }
   body::before, body::after { animation: none; }
   body::before { opacity: .3; } body::after { opacity: .25; }
@@ -654,7 +664,14 @@ html.speaker-progress .progress { height: 5px; }
   html.door-locked .hero { height: auto; }
   .door-l, .door-r, .door-seam, .door-bloom, .doorway, .door-spark, .door-escape { display: none !important; }
   html.door-locked .hero-inner, html.door-locked .hero .display, html.door-locked .hero .lede, html.door-locked .hero .btn { opacity: 1 !important; animation: none !important; filter: none !important; transform: none !important; }
-  .hero-flame, .drop-stage, .brain-photo { display: none; }
+  .hero-flame, .drop-inner, .band-scrim { display: none; } /* 幕景带只留幕题做章节标题 */
+  #brain { padding-top: 24pt; }
+  #brain .wrap { padding: 0; }
+  #brain .drop-shutter { clip-path: none; transition: none; }
+  #brain .drop-stage { height: auto; overflow: visible; }
+  #brain .band-caption { position: static; opacity: 1; transform: none; transition: none; }
+  #brain .band-caption h2, #brain .band-caption .lede { text-shadow: none; } /* taste-skill-ignore: 打印重置 */
+  #brain .band-caption .lede { margin-bottom: 8pt; }
   .diagram .cell { opacity: 1 !important; transform: none !important; }
   .diagram .ar line { stroke-dasharray: none; animation: none; }
   .candles .fl { animation: none; }
@@ -801,31 +818,28 @@ html.speaker-progress .progress { height: 5px; }
 
 <!-- ================= 第一幕 · 大脑 ================= -->
 <section id="brain" aria-labelledby="h-brain">
-  <div class="wrap">
-    <div class="two-col">
-      <div class="rise">
-        <div class="drop-shutter">
-        <div class="drop-stage">
-          <div class="drop-inner">
-            <img class="brain-photo" src="assets/cover-hero.png" alt="深夜酒馆内景：木吧台上一点烛光" width="880" height="1012" />
-            <div class="drop-glow" aria-hidden="true"></div>
-            <div class="drop-bloom" aria-hidden="true"></div>
-          </div>
-        </div>
-        </div>
+    <div class="drop-shutter">
+    <div class="drop-stage">
+      <div class="drop-inner">
+        <img class="brain-photo" src="assets/cover-hero.png" alt="深夜酒馆内景：木吧台上一点烛光" width="1536" height="1024" />
+        <div class="drop-glow" aria-hidden="true"></div>
+        <div class="drop-bloom" aria-hidden="true"></div>
       </div>
-      <div>
-        <h2 class="display rise" id="h-brain">第一幕 · 接龙机器</h2>
-        <p class="lede rise d1">大语言模型（LLM）只做一件事：预测下一个字。它不是在「思考」，是在玩一场规模空前的文字接龙。</p>
-        <div class="points" data-stagger>
+      <div class="band-scrim" aria-hidden="true"></div>
+      <div class="band-caption">
+        <h2 class="display" id="h-brain">第一幕 · 接龙机器</h2>
+        <p class="lede">大语言模型（LLM）只做一件事：预测下一个字。它不是在「思考」，是在玩一场规模空前的文字接龙。</p>
+      </div>
+    </div>
+    </div>
+  <div class="wrap">
+    <div class="points" data-stagger>
           <div class="point rise d1"><h3><svg class="flame-i" viewBox="0 0 100 120"><use href="#flame"/></svg>逐字生成</h3><p>「海绵宝宝去蟹堡王上」——班，路上遇到了派大星。每个字都是一个一个猜出来的。</p></div>
           <div class="point rise d2"><h3><svg class="flame-i" viewBox="0 0 100 120"><use href="#flame"/></svg>没有灵魂，只有概率</h3><p>没有神秘的「自我」。所谓人设，本质上只是喂给它的文字。</p></div>
           <div class="point rise d2"><h3><svg class="flame-i" viewBox="0 0 100 120"><use href="#flame"/></svg>它没有记忆</h3><p>每轮对话，它都把全部历史重新读一遍。忘了不是故障，是物理限制。</p></div>
           <div class="point rise d3"><h3><svg class="flame-i" viewBox="0 0 100 120"><use href="#flame"/></svg>上下文窗口</h3><p>窗口 = 它一次能「看见」的字数上限。后面所有功能，都是在给这扇窗打补丁。</p></div>
         </div>
-        <p class="sim-callout rise d3"><a class="btn" href="#simulator">拖一拖那扇窗</a></p>
-      </div>
-    </div>
+    <p class="sim-callout rise d3"><a class="btn" href="#simulator">拖一拖那扇窗</a></p>
     <aside class="spk" aria-hidden="true">
       <h3>第一幕 · 讲者备注</h3>
       <ul>
@@ -1183,7 +1197,7 @@ html.speaker-progress .progress { height: 5px; }
   </div>
 </footer>
 
-<noscript><style>.rise,.drop-shutter{opacity:1;transform:none;clip-path:none}</style></noscript>
+<noscript><style>.rise,.drop-shutter,.band-caption{opacity:1;transform:none;clip-path:none}</style></noscript>
 <!-- iOS 触觉替代（iOS 17.4+ 系统对 switch 开合有触觉反馈）：隐形开关 + 合成翻转，
      借马达给模拟器滑杆。避开正文 DOM，pointer-events:none 防误触。 -->
 <input type="checkbox" switch id="hapticSwitch" aria-hidden="true" tabindex="-1"
@@ -1200,7 +1214,7 @@ html.speaker-progress .progress { height: 5px; }
   "use strict";
   var reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* ---------- 统一滚动循环（rAF 合并：进度兜底 / 顶栏 / 光位兜底 / 大水滴视差） ---------- */
+  /* ---------- 统一滚动循环（rAF 合并：进度兜底 / 顶栏 / 光位兜底 / 幕景视差） ---------- */
   var bar = document.getElementById("progressBar");
   var topbar = document.getElementById("topbar");
   var dropInner = document.querySelector(".drop-inner");
@@ -1227,7 +1241,7 @@ html.speaker-progress .progress { height: 5px; }
       var vh = innerHeight;
       var t = (r.top + r.height / 2 - vh / 2) / (vh / 2 + r.height / 2);
       t = Math.max(-1, Math.min(1, t));
-      dropInner.style.transform = "translate3d(0," + (t * 30).toFixed(1) + "px,0)";
+      dropInner.style.transform = "translate3d(0," + (t * 18).toFixed(1) + "px,0)"; /* 幕景带视差 ±18px：照片落定 scale 1.1 恰好盖住 */
     } else if (dropInner && dropInner.style.transform) {
       dropInner.style.transform = "";
     }
