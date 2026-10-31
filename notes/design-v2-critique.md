@@ -714,3 +714,24 @@ noscript/reduced-motion/打印三处补 caption 直落。
 测试坑再录两条：①openchamber_web 面板多 tab 时 scroll/capture 落不同 tab（localhost≠
 127.0.0.1），截图全是假象——单 tab 串行仍是铁律；②真机冷网直落 #brain 时锚点跳转晚于
 3s 安全网，截图会拍到「未揭幕的空带」——先查运行态再判断，勿当产品 bug。
+
+## ROUND 12 · 全站焰形重绘：水滴贝塞尔退役 → 烛焰 A 案（2026-10-31，用户裁定）
+
+用户裁定：焰形太像水滴。病因：`#flame` symbol 就是对称水滴贝塞尔（尖顶 M50 0 + 鼓肚
+C58 22 92 44 92 76 + 底弧 A42 44），页脚五支小蜡烛是同款公式微缩，菜单照片裁切
+flameclip-sm 同款。三候选离线目检（多尺寸渲染：hero 230px / icon 17px / 页脚蜡烛
+26px 奶油 on 琥珀）→ 用户选 **A 烛焰**（微侧倾+腰部内收+内焰挖孔）。
+
+实施（一次替换全站 29 处 use 引用自动生效）：
+① symbol#flame 换新路径，fill-rule="evenodd" 内焰挖孔（孔透底色=烛芯暗核，hero 纯色
+  填充/页脚 on-accent 填充两种场景都成立）；
+② 页脚蜡烛五条微缩水滴路径 → defs#cfl + use + translate/scale（s=.27，焰底与烛顶
+  重叠 2px 与旧版一致；flick/gust 摆动 transform-origin 50% 100% 不受影响）；
+③ flameclip-sm 换焰形实心剪影（照片裁切不带挖孔——64px 菜单图打孔像渲染 bug）；
+④ 删除已无引用的大号 #flameclip（幕景横幅改造后退役）；
+⑤ guide/index.html 的同款 symbol 同步替换（guid 页保持同一母题）。
+侧倾方向朝右：封面焰在右栏，尖锋向右上角开放，与左栏文字平衡。
+
+验证：lint 0 FAIL / inspect 0 FAIL；桌面封面大焰（1200×1200 级）烛感成立、暗核透底；
+菜单焰形照片裁切 ✓；页脚大焰+五支小焰（奶油挖孔透琥珀）✓；Pixel 真机门全流程回归 ✓
+（tick 1 / scrollY 0 / 拖拽 9）。本次纯形状替换，零 JS、零布局、零新图。
