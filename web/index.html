@@ -196,7 +196,9 @@ html.busy .hero-flame { animation: heroBusy 1.1s ease-in-out infinite; }
 @keyframes cue { 0%,100% { transform: translateY(0); } 50% { transform: translateY(7px); } }
 @media (max-width: 700px) {
   .hero { align-items: flex-start; padding-top: 110px; }
-  .hero-flame { width: 150svw; height: 150svw; right: -50svw; top: auto; bottom: -60svw; transform: none; animation: none; }
+  /* 焰形改瘦身后回正（旧 150svw/-50/-60 是给胖水滴的，瘦焰沿用会被挤出屏）：缩到 110svw，
+     尖锋+焰心完整入画、右缘基本贴边，烛尾裁于屏底——像蜡烛从屏幕下缘升起来 */
+  .hero-flame { width: 110svw; height: 110svw; right: -34svw; top: auto; bottom: -16svw; transform: none; animation: none; }
   .hero-spark { display: none; }
   .hero .display { font-size: 12.5vw; }
   .scroll-cue { display: none; }
