@@ -625,3 +625,47 @@ inspect 三个 FAIL 的修复：**锁态标题/导语去掉入场延迟第一帧
 滚回顶部 → 封面复原、h1.y=110.0000、topbar/cue 归位 ✓；刷新 → 跳过门直达内容 ✓。
 桌面全流程（browser panel）同验 ✓。双 gates：lint 0 FAIL / inspect 0 FAIL。
 幕尾按钮链已停车；deck（v3 期权）继续挂起等教室实拍反馈。
+
+## ROUND 10 · 门四连修：必锁 / 恰好一屏 / 烛火可退 / 门动画重做（2026-10-31）
+
+用户实测反馈四条，逐条真机收口：
+
+1. **每次进入必锁**：删除 sessionStorage `st-pre-door` 记忆（用户裁决：开门是仪式，
+   不是障碍）。`?door=0` 保留为测试/回访逃生口；带 hash 进入不锁、→/空格/回车开门、
+   reduced-motion 瞬跳均不变。真机同标签刷新 → 重新锁门 ✓，session 残留 null ✓。
+
+2. **封面恰好一屏、锁死内滚**：病灶是上一轮留的 `html.door-locked .hero { overflow:
+   hidden auto }`「安全阀」——hero 内容超出视口时成了内部滚动箱，滑动封面会在内部
+   上下移。改为 `overflow: hidden` + `height: 100svh → 100dvh`（dvh 跟随地址栏当前
+   状态，恰好等于视口）；短屏（≤560px 高）压缩 padding 的媒体查询对锁定/解锁同时
+   生效，解锁零布局变化、滚动锚定无从触发。真机实滑 260px：window.scrollY=0 且
+   hero.scrollTop=0，hero 高 794.0000 == 视口 794 ✓。
+
+3. **顶栏六烛只进不退**：旧 actIO 是单向闩（isIntersecting 只加 lit，litActs 永不复
+   位）。重写为缓存六幕 offset + 滚动帧按「视口 42% 行进线」重算（量取只在 resize/
+   load 时做，滚动帧零布局读取），classList.toggle 双向联动。桌面 1440 实测：滚到
+   第一幕 2 亮 4 灭 ✓，滚回封面全灭 ✓。跨阈值往复时 nflPop 重放，读作烛火明灭。
+
+4. **门动画重做（方向 A 不变，实现升级）**：
+   - 门扇材质：defs 新增 #doorface SVG（四拼板木色微差 + 上下铁箍铆钉 + 门环 +
+     缝侧暗影/暖光渐变边），右扇 scaleX(-1) 镜像后缝侧细节自动对位；替换平移滑块
+     的纯色板。
+   - 3D 铰链开合：perspective(1100px) + rotateY ±64°，transform-origin 在外缘
+     （铰链），内合/内开都往屏幕深处转——门往酒馆里开；合拢带 -2.5° 过冲落位，
+     缝光在门逼近时预亮、落位时爆亮 scaleX 2.6。
+   - 门洞空面 .doorway（z4）：垫在门扇后的暗色 plane，吃掉透视梯形缺口（旋转门扇
+     上下角原本漏出底后巨焰的橙色楔形）；门合拢换景时撤除，开门缺口直通真场景。
+   - **关键结构性修复——门组全程 position:fixed**：absolute 门扇是 hero 子元素，
+     jumpBehind 瞬移到序幕的瞬间整个第二幕（爆亮/内开/火星）跟着 hero 滚出屏幕，
+     真机上从来没人看见过——用户看到的其实是「门合上→硬切」。fixed 钉住视口后，
+     内开时室内光扑上扇面（brightness 1→1.18）+ bloom + 七粒火星迸散 + 缝隙里
+     窥见序幕文字，「门后是酒馆」的镜头第一次真实存在。
+   - 时序：立面淡出 280 → 缝光预亮 320(delay 120) → 合拢 640(delay 300) → 爆亮
+     170 + 换景 + bloom 140/1000 → 内开 820(delay 60) → +400ms 交还滚动 → 1820
+     清场。
+
+双 gates：lint 0 FAIL / inspect 0 FAIL（inspect 新增 empty-screens FAIL 为锁态错配
+——逐屏滚动式截图在锁定页滚不动、全页快照落在 3s 揭示网之前，幕下 .rise 尚未揭开；
+解锁对照 0 FAIL 证明真实路径完好——已加入 direction.json allow 并在此留档）。
+真机台账：门口 tick 1 条、拖拽 9 条（click 解锁传导）、落地 scrollY 794、封面复原
+h1.y=110.0000、刷新重锁、滑动封面零位移。handout.pdf 本轮不改（纯交互）。

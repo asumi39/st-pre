@@ -204,12 +204,17 @@ html.busy .hero-flame { animation: heroBusy 1.1s ease-in-out infinite; }
 
 /* ---------- 封面门：锁定态 + 开门（方向 A 门缝透光） ----------
    锁定 = overflow:hidden + inert（平台级状态，零事件拦截；滚轮/触摸/键盘/进度条全部统一被拦）。
-   开门 = 立面淡出 → 门缝亮起 → 双扇合拢 → 缝光泄出+暖光扑面 → 双扇开启，门后已是序幕。
-   仅 JS 在场且无 hash 时上锁；?door=0 强制跳过，?door=1 强制演示；本会话开过门不再锁。 */
+   每次进入页面必锁（?door=0 可跳过）；开门 = 立面淡出 → 缝光预亮 → 双扇绕外缘铰链
+   向内合拢（3D）→ 缝光爆亮+换景 → 双扇内开露出序幕+暖光扑面+火星 → 交还滚动。
+   门板材质见 defs #doorface；右扇镜像后缝侧细节自动对位。 */
 .door-l, .door-r, .door-seam, .door-bloom { display: none; }
-.door-l, .door-r { position: absolute; top: 0; bottom: 0; width: 50.5%; z-index: 5; background: linear-gradient(180deg, #1a1208, #0f0a06); /* taste-skill-ignore: 门扇材质——门是全屏真实覆盖层，立面需要纵深 */ }
-.door-l { left: 0; transform: translateX(-102%); box-shadow: inset -18px 0 30px -18px rgba(0,0,0,.8); } /* taste-skill-ignore: 门缝内侧暗影塑门板厚度——覆盖层阴影 */
-.door-r { right: 0; transform: translateX(102%); box-shadow: inset 18px 0 30px -18px rgba(0,0,0,.8); } /* taste-skill-ignore: 同上，覆盖层阴影 */
+.doorway { display: none; position: absolute; inset: 0; z-index: 4; background: #0c0805; } /* 门洞空面：垫在门扇后，合拢过程的透视缺口露暗色门洞而非底后巨焰 */
+.door-l, .door-r { position: absolute; top: 0; bottom: 0; width: 50.5%; z-index: 5; background: #1c1207; will-change: transform; }
+.door-l { left: 0; transform-origin: 0 50%; }
+.door-r { right: 0; transform-origin: 100% 50%; }
+.door-skin { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.door-r .door-skin { transform: scaleX(-1); }
+.door-spark { position: fixed; left: 50%; top: 50%; width: 5px; height: 5px; margin: -2.5px 0 0 -2.5px; border-radius: 50%; background: #ffd9a0; z-index: 8; pointer-events: none; }
 .door-bloom { position: absolute; inset: 0; z-index: 6; pointer-events: none; opacity: 0; background: radial-gradient(60% 80% at 50% 50%, rgba(255,223,158,.30), transparent 72%); } /* taste-skill-ignore: 开门暖光扑面——全站灯光语言（--glow-warm 同源），非装饰渐变 */
 .door-seam { position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; z-index: 7; transform: translateX(-50%) scaleX(0); opacity: 0; background: linear-gradient(180deg, rgba(255,223,158,.95), var(--accent) 55%, rgba(232,163,76,.05)); box-shadow: 0 0 26px 6px rgba(232,163,76,.45); } /* taste-skill-ignore: 门缝光=灯光发光体（烛光同词汇），光晕是发光不是投影 */
 .door-escape { display: none; position: absolute; top: 18px; right: clamp(16px, 4vw, 44px); z-index: 8; color: var(--muted); font-size: 13px; text-decoration: none; letter-spacing: .02em; }
@@ -221,7 +226,10 @@ html.door-locked .hero .btn::after { content: ""; position: absolute; inset: -3p
 @keyframes doorBreath { 0% { opacity: 0; transform: scale(.92); } 30% { opacity: .55; } 100% { opacity: 0; transform: scale(1.22); } }
 html.door-locked { overflow: hidden; }
 html.door-locked body { overflow: visible; } /* 站点 body 有 overflow-x:hidden→y 计算 auto=潜在第二滚动箱；锁定期强制 visible，唯一滚动箱=视口 */
-html.door-locked .hero { height: 100svh; min-height: 0; align-items: center; overflow: hidden auto; } /* padding-top 保持不变：解锁时布局零跳变，滚动锚定无从触发 */
+/* 封面恰好一屏：dvh 跟随当前视口（地址栏状态），绝不出现内滚——封面内容若超出即被裁剪，
+   故配短屏压缩（对锁定/解锁同时生效，解锁零布局变化，滚动锚定无从触发） */
+html.door-locked .hero { height: 100svh; height: 100dvh; min-height: 0; align-items: center; overflow: hidden; }
+@media (max-height: 560px) { .hero { padding-top: 48px; padding-bottom: 20px; } }
 html.door-locked .topbar { opacity: 0; visibility: hidden; }
 .topbar { transition: opacity .3s ease, visibility .3s ease; }
 html.door-locked .scroll-cue { animation: none; opacity: 0; }
@@ -643,7 +651,7 @@ html.speaker-progress .progress { height: 5px; }
   .hero { min-height: auto; }
   html.door-locked { overflow: visible; }
   html.door-locked .hero { height: auto; }
-  .door-l, .door-r, .door-seam, .door-bloom, .door-escape { display: none !important; }
+  .door-l, .door-r, .door-seam, .door-bloom, .doorway, .door-spark, .door-escape { display: none !important; }
   html.door-locked .hero-inner, html.door-locked .hero .display, html.door-locked .hero .lede, html.door-locked .hero .btn { opacity: 1 !important; animation: none !important; filter: none !important; transform: none !important; }
   .hero-flame, .drop-stage, .brain-photo { display: none; }
   .diagram .cell { opacity: 1 !important; transform: none !important; }
@@ -665,6 +673,35 @@ html.speaker-progress .progress { height: 5px; }
   <defs>
     <symbol id="flame" viewBox="0 0 100 120">
       <path d="M50 0 C58 22 92 44 92 76 A42 44 0 1 1 8 76 C8 44 42 22 50 0 Z"/>
+    </symbol>
+    <!-- 门扇材质：木板拼条 + 铁箍铆钉 + 门环 + 缝侧暗影/暖光边。左扇原样使用；右扇 scaleX(-1) 镜像后缝侧细节自动对位 -->
+    <linearGradient id="doorShade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#000000" stop-opacity="0"/><stop offset="1" stop-color="#000000" stop-opacity=".5"/>
+    </linearGradient>
+    <linearGradient id="doorWarm" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ffd9a0" stop-opacity="0"/><stop offset="1" stop-color="#ffd9a0" stop-opacity=".3"/>
+    </linearGradient>
+    <symbol id="doorface" viewBox="0 0 200 420" preserveAspectRatio="none">
+      <rect width="200" height="420" fill="#231608"/>
+      <rect width="49" height="420" fill="#2a1a0a"/>
+      <rect x="50" width="49" height="420" fill="#241708"/>
+      <rect x="100" width="49" height="420" fill="#2b1b0b"/>
+      <rect x="150" width="50" height="420" fill="#1f1407"/>
+      <rect x="48.5" width="2" height="420" fill="#110a04"/>
+      <rect x="98.5" width="2" height="420" fill="#110a04"/>
+      <rect x="148.5" width="2" height="420" fill="#110a04"/>
+      <rect y="118" width="200" height="1.5" fill="#180f06" opacity=".55"/>
+      <rect y="186" width="200" height="1.5" fill="#180f06" opacity=".4"/>
+      <rect y="248" width="200" height="1.5" fill="#180f06" opacity=".5"/>
+      <rect y="296" width="200" height="1.5" fill="#180f06" opacity=".35"/>
+      <rect y="62" width="200" height="13" fill="#131009"/>
+      <rect y="338" width="200" height="13" fill="#131009"/>
+      <circle cx="18" cy="68.5" r="2.6" fill="#0a0805"/><circle cx="58" cy="68.5" r="2.6" fill="#0a0805"/><circle cx="98" cy="68.5" r="2.6" fill="#0a0805"/><circle cx="138" cy="68.5" r="2.6" fill="#0a0805"/><circle cx="178" cy="68.5" r="2.6" fill="#0a0805"/>
+      <circle cx="18" cy="344.5" r="2.6" fill="#0a0805"/><circle cx="58" cy="344.5" r="2.6" fill="#0a0805"/><circle cx="98" cy="344.5" r="2.6" fill="#0a0805"/><circle cx="138" cy="344.5" r="2.6" fill="#0a0805"/><circle cx="178" cy="344.5" r="2.6" fill="#0a0805"/>
+      <rect x="164" y="192" width="26" height="36" rx="5" fill="#16120c"/>
+      <circle cx="177" cy="210" r="9.5" fill="none" stroke="#0e0b07" stroke-width="4"/>
+      <rect x="182" width="18" height="420" fill="url(#doorShade)"/>
+      <rect x="194" width="6" height="420" fill="url(#doorWarm)"/>
     </symbol>
     <clipPath id="flameclip" clipPathUnits="objectBoundingBox">
       <path d="M0.5 0 C0.58 0.183 0.92 0.367 0.92 0.633 A0.42 0.367 0 1 1 0.08 0.633 C0.08 0.367 0.42 0.183 0.5 0 Z"/>
@@ -710,7 +747,8 @@ html.speaker-progress .progress { height: 5px; }
     <a class="btn" href="#hook">推门而入</a>
   </div>
   <div class="scroll-cue" aria-hidden="true"><span class="flame-i"><svg viewBox="0 0 100 120" width="14" height="17"><use href="#flame"/></svg></span>往下滚</div>
-  <span class="door-l" aria-hidden="true"></span><span class="door-r" aria-hidden="true"></span>
+  <span class="doorway" aria-hidden="true"></span>
+  <span class="door-l" aria-hidden="true"><svg class="door-skin"><use href="#doorface"/></svg></span><span class="door-r" aria-hidden="true"><svg class="door-skin"><use href="#doorface"/></svg></span>
   <span class="door-seam" aria-hidden="true"></span><span class="door-bloom" aria-hidden="true"></span>
   <a class="door-escape" href="https://tavern.phuyu.cloud/guide/" target="_blank" rel="noopener">上手指南 ↗</a>
   <aside class="spk" aria-hidden="true">
@@ -1248,18 +1286,29 @@ html.speaker-progress .progress { height: 5px; }
   }, secLitOpts);
   document.querySelectorAll("section").forEach(function (s) { secIO.observe(s); });
 
-  /* 章节点烛：六幕各一支，读到哪亮到哪（进度=烛数） */
+  /* 章节点烛：六幕各一支，烛光跟随行进线（视口 42% 高度线）双向联动——
+     旧实现是单向闩（isIntersecting 只加不减），向下滚永远亮着；现按缓存的位置每帧重算，倒退即熄。 */
   var flames = document.querySelectorAll("#navFlames .nfl");
   if (flames.length) {
-    var ACTS = ["hook", "brain", "tavern", "menu", "anatomy", "openup"], litActs = {};
-    var actIO = new IntersectionObserver(function (es) {
-      es.forEach(function (e) {
-        if (!e.isIntersecting) return;
-        var i = ACTS.indexOf(e.target.id);
-        if (i > -1 && !litActs[i]) { litActs[i] = 1; flames[i].classList.add("lit"); }
+    var ACTS = ["hook", "brain", "tavern", "menu", "anatomy", "openup"], actTops = [], flameTick = false;
+    function measureActs() {               /* 只在尺寸变化时量一次（gBCR+pageYOffset），滚动帧零布局读取 */
+      actTops = ACTS.map(function (id) {
+        var s = document.getElementById(id);
+        return s ? s.getBoundingClientRect().top + (window.pageYOffset || 0) : Infinity;
       });
-    }, { threshold: 0.12 });
-    ACTS.forEach(function (id) { var sec = document.getElementById(id); if (sec) actIO.observe(sec); });
+    }
+    measureActs();
+    addEventListener("resize", measureActs);
+    addEventListener("load", measureActs); /* 图片/字体落定会挪动章节位置 */
+    function updateFlames() {
+      flameTick = false;
+      var reach = (window.pageYOffset || 0) + innerHeight * .42;
+      flames.forEach(function (f, i) { f.classList.toggle("lit", reach >= actTops[i]); });
+    }
+    addEventListener("scroll", function () {
+      if (!flameTick) { flameTick = true; requestAnimationFrame(updateFlames); }
+    }, { passive: true });
+    updateFlames();
   }
 
   /* ---------- 讲者模式 ---------- */
@@ -1789,18 +1838,17 @@ html.speaker-progress .progress { height: 5px; }
   }
 
   /* ---------- 封面门：同文档锁定态（overflow:hidden + inert，零事件拦截） ----------
-     开门这次可信 click 顺带完成 Chrome Android 拖拽触觉的会话解锁——门口一声嗒，全站触觉上线。
-     ?door=0 强制跳过（测试/回访）；?door=1 强制演示；带 hash 进入或本会话已开过门则不锁。 */
+     每次进入必锁（用户要求：开门是仪式，不是障碍）；?door=0 跳过（测试/回访）、?door=1 强制演示、带 hash 进入不锁。
+     开门这次可信 click 顺带完成 Chrome Android 拖拽触觉的会话解锁——门口一声嗒，全站触觉上线。 */
   var doorBtn = document.querySelector(".hero .btn");
   if (doorBtn && document.querySelector(".door-l")) {
     var doorBusy = false;
     var doorL = document.querySelector(".door-l"), doorR = document.querySelector(".door-r");
     var doorSeam = document.querySelector(".door-seam"), doorBloom = document.querySelector(".door-bloom");
+    var doorWay = document.querySelector(".doorway");
     var heroInnerEl = document.querySelector(".hero-inner");
     var doorDoc = document.documentElement;
     var doorQS = new URLSearchParams(location.search);
-    var doorSeen = false;
-    try { doorSeen = sessionStorage.getItem("st-pre-door") === "1"; } catch (e) { }
     var doorInert = [];
     Array.prototype.forEach.call(document.body.children, function (el) {
       if (el.classList && (el.classList.contains("hero") || el.classList.contains("topbar"))) return;
@@ -1809,19 +1857,14 @@ html.speaker-progress .progress { height: 5px; }
     function doorLockedNow() { return doorDoc.classList.contains("door-locked"); }
     function doorInertSet(on) { doorInert.forEach(function (el) { try { el.inert = on; } catch (e) { } }); }
     function doorSetLocked(on) { doorDoc.classList.toggle("door-locked", on); doorInertSet(on); }
-    function doorUnlockAll() {
-      try { sessionStorage.setItem("st-pre-door", "1"); } catch (e) { }
-      doorSetLocked(false);
-      doorBusy = false;
-    }
-    if (doorQS.get("door") === "1" || (!doorSeen && doorQS.get("door") !== "0" && !location.hash)) doorSetLocked(true);
+    function doorUnlockAll() { doorSetLocked(false); doorBusy = false; }
+    if (doorQS.get("door") === "1" || (doorQS.get("door") !== "0" && !location.hash)) doorSetLocked(true);
 
     doorBtn.addEventListener("click", function (e) {
       if (!doorLockedNow()) return;          /* 门已开过：按钮回归普通锚点，平滑滚到序幕 */
       e.preventDefault();
       if (doorBusy) return;
       doorBusy = true;
-      try { sessionStorage.setItem("st-pre-door", "1"); } catch (e) { }
       haptic(90);
       var hookSec = document.getElementById("hook");
       function jumpBehind() {                /* 门后换景：合拢的瞬间瞬移到序幕（临时压掉 CSS smooth）。
@@ -1835,25 +1878,57 @@ html.speaker-progress .progress { height: 5px; }
         if (hh) { hh.setAttribute("tabindex", "-1"); try { hh.focus({ preventScroll: true }); } catch (err) { } }
       }
       if (reduced || !doorDoc.animate) { jumpBehind(); doorInertSet(false); doorUnlockAll(); return; }
+      /* 门组全程 fixed：换景瞬移后第二幕（爆亮/内开/火星）必须发生在视口内——
+         absolute 门扇是 hero 子元素，跳到序幕那一刻会跟着 hero 滚出屏幕，开门半场从不可见 */
+      if (doorWay) { doorWay.style.display = "block"; doorWay.style.position = "fixed"; }
+      doorSeam.style.position = doorBloom.style.position = "fixed";
       doorL.style.display = doorR.style.display = "block";
+      doorL.style.position = doorR.style.position = "fixed";
       doorSeam.style.display = doorBloom.style.display = "block";
-      var EZ = "cubic-bezier(.72,0,.3,1)";
+      var P = "perspective(1100px) ", OPEN = 64, EZS = "cubic-bezier(.5,.05,.28,1)", EZO = "cubic-bezier(.62,0,.24,1)";
+      function doorSwing(leaf, dir, phase) { /* 铰链在外缘：内合/内开都往屏幕深处转（门往酒馆里开）。dir=1 左扇 / -1 右扇 */
+        var kf = phase === "shut"
+          ? [{ transform: P + "rotateY(" + dir * OPEN + "deg)", filter: "brightness(.72)" },
+             { transform: P + "rotateY(" + dir * -2.5 + "deg)", offset: .84 },
+             { transform: P + "rotateY(0deg)", filter: "brightness(1)" }]
+          : [{ transform: P + "rotateY(0deg)", filter: "brightness(1)" },
+             { transform: P + "rotateY(" + dir * OPEN + "deg)", filter: "brightness(1.18)" }]; /* 内开时室内光扑上扇面 */
+        return leaf.animate(kf, { duration: phase === "shut" ? 640 : 820, delay: phase === "shut" ? 300 : 60, easing: phase === "shut" ? EZS : EZO, fill: "forwards" });
+      }
+      function doorSparks() {                /* 开门瞬间：缝口迸出的火星（fixed 于视口，复用 hero-spark 词汇） */
+        for (var i = 0; i < 7; i++) {
+          var s = document.createElement("span");
+          s.className = "door-spark";
+          document.body.appendChild(s);
+          var ang = Math.random() * 1.6 - .8, r = 90 + Math.random() * 230;
+          s.animate([
+            { transform: "translate(0,0) scale(1)", opacity: .95 },
+            { transform: "translate(" + (Math.sin(ang) * r).toFixed(0) + "px," + (-Math.abs(Math.cos(ang)) * r * .8 - 30).toFixed(0) + "px) scale(.25)", opacity: 0 }
+          ], { duration: 620 + Math.random() * 480, delay: Math.random() * 240, easing: "cubic-bezier(.2,.6,.3,1)", fill: "forwards" })
+            .finished.then(function (el) { return function () { el.remove(); }; }(s));
+        }
+      }
       var fFade = heroInnerEl.animate(
         [{ opacity: 1, transform: "none", filter: "none" }, { opacity: 0, transform: "translateY(-8px)", filter: "blur(2px)" }],
         { duration: 280, easing: "ease-out", fill: "forwards" });
-      var fSeam = doorSeam.animate(
-        [{ transform: "translateX(-50%) scaleX(0)", opacity: 0 }, { transform: "translateX(-50%) scaleX(1)", opacity: 1 }],
-        { duration: 300, delay: 180, easing: "ease-out", fill: "forwards" });
-      var fLc = doorL.animate([{ transform: "translateX(-102%)" }, { transform: "translateX(0)" }], { duration: 360, delay: 320, easing: EZ, fill: "forwards" });
-      var fRc = doorR.animate([{ transform: "translateX(102%)" }, { transform: "translateX(0)" }], { duration: 360, delay: 320, easing: EZ, fill: "forwards" });
-      Promise.all([fFade.finished, fSeam.finished, fLc.finished, fRc.finished]).then(function () {
+      var fSeam = doorSeam.animate(          /* 缝光预亮：门还在逼近，光已从缝里漏出 */
+        [{ transform: "translateX(-50%) scaleX(0)", opacity: 0 }, { transform: "translateX(-50%) scaleX(1)", opacity: .9 }],
+        { duration: 320, delay: 120, easing: "ease-out", fill: "forwards" });
+      var shutL = doorSwing(doorL, 1, "shut"), shutR = doorSwing(doorR, -1, "shut");
+      Promise.all([fFade.finished, fSeam.finished, shutL.finished, shutR.finished]).then(function () {
+        if (doorWay) doorWay.style.display = "none"; /* 门已合拢盖住门洞空面：此刻撤掉，开门缺口直通真场景 */
+        doorSeam.animate(                    /* 落位：缝光爆亮一瞬 */
+          [{ transform: "translateX(-50%) scaleX(1)", opacity: .9 }, { transform: "translateX(-50%) scaleX(2.6)", opacity: 1 }],
+          { duration: 170, easing: "ease-out", fill: "forwards" });
+        doorBloom.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 140, easing: "ease-out", fill: "forwards" })
+          .finished.then(function () {
+            doorBloom.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 1000, easing: "ease-out", fill: "forwards" });
+          });
         jumpBehind();                        /* 门后已是序幕；焦点交给序幕标题 */
         doorInertSet(false);
-        doorBloom.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 150, easing: "ease-out", fill: "forwards" });
-        var fLo = doorL.animate([{ transform: "translateX(0)" }, { transform: "translateX(-102%)" }], { duration: 660, easing: EZ, fill: "forwards" });
-        var fRo = doorR.animate([{ transform: "translateX(0)" }, { transform: "translateX(102%)" }], { duration: 660, easing: EZ, fill: "forwards" });
-        doorSeam.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 320, easing: "ease-out", fill: "forwards" });
-        doorBloom.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 950, delay: 120, easing: "ease-out", fill: "forwards" });
+        var openL = doorSwing(doorL, 1, "open"), openR = doorSwing(doorR, -1, "open");
+        doorSeam.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 360, delay: 200, easing: "ease-out", fill: "forwards" });
+        doorSparks();
         setTimeout(function () {             /* 门开过半：交还滚动；顶栏与「往下滚」在门后归位 */
           doorDoc.classList.remove("door-locked");
           var prev = doorDoc.style.scrollBehavior;
@@ -1864,7 +1939,7 @@ html.speaker-progress .progress { height: 5px; }
             [{ opacity: 0, transform: "translateY(-8px)", filter: "blur(2px)" }, { opacity: 1, transform: "none", filter: "none" }],
             { duration: 420, easing: "ease-out", fill: "forwards" });
         }, 400);
-        Promise.all([fLo.finished, fRo.finished]).then(function () {
+        Promise.all([openL.finished, openR.finished]).then(function () {
           doorL.style.display = doorR.style.display = "none";
           doorSeam.style.display = doorBloom.style.display = "none";
           doorBusy = false;
