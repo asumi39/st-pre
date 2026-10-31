@@ -238,23 +238,16 @@ html.door-locked .topbar { opacity: 0; visibility: hidden; }
 html.door-locked .scroll-cue { animation: none; opacity: 0; }
 html.door-locked .door-escape { display: inline-block; }
 
-/* ---------- 序幕 · statement + 图证条（C 案：图从句中撤出成排作「证物」——83px 读不清的
-   图，120px 配微注才读得清；zoom 进各图最有辨识度的局部） ---------- */
-.proof-strip { display: flex; gap: clamp(12px, 1.6vw, 20px); margin-top: clamp(16px, 2.4vw, 26px); }
-.proof-strip figure { margin: 0; }
-.proof-strip .thumb {
-  position: relative; display: block; width: clamp(96px, 10vw, 132px); aspect-ratio: 12 / 7;
-  border-radius: 8px; overflow: hidden; background: var(--bg-3);
+/* ---------- 序幕 · statement + 右栏真机图（用户方案：真机截图放右栏空档——尺寸够大，
+   不 zoom 不裁切，整图完整示人；同时填掉注释与指南链接之间的空档） ---------- */
+.hook-shot { margin: 22px 0 0; }
+.hook-shot .shot {
+  position: relative; display: block; aspect-ratio: 55 / 31; /* 与 ui-mobile 原图同比：object-fit 零裁切 */
+  border-radius: 10px; overflow: hidden; background: var(--bg-3);
   outline: 1px solid rgba(232,163,76,.3); outline-offset: -1px;
 }
-.proof-strip .thumb img {
-  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
-  filter: brightness(1.4) saturate(1.08);
-}
-.proof-strip .s1 img { transform: scale(2.2); transform-origin: 16% 42%; filter: brightness(1.6) saturate(1.15); } /* 真机实录：头像+名签+橙引文 */
-.proof-strip .s2 img { transform: scale(1.9); transform-origin: 50% 24%; } /* 角色卡：脸+提灯 */
-.proof-strip .s3 img { transform: scale(1.6); transform-origin: 52% 58%; } /* 世界书：摊开书页 */
-.proof-strip figcaption { font-size: 12px; color: var(--muted); margin-top: 6px; }
+.hook-shot img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: brightness(1.35) saturate(1.08); }
+.hook-shot figcaption { font-size: 12px; color: var(--muted); margin-top: 6px; }
 .hook-stage { margin-top: clamp(36px, 5vw, 64px); display: grid; grid-template-columns: minmax(0, 620px) 1fr; gap: clamp(28px, 5vw, 72px); } /* stretch：侧注顶齐聊天头，指南链接钉到聊天底 */
 .chat-note { margin: 0; max-width: 36ch; }
 .hook-side { min-width: 0; display: flex; flex-direction: column; }
@@ -795,11 +788,6 @@ html.speaker-progress .progress { height: 5px; }
   <div class="wrap">
     <h2 class="display rise" id="h-hook">序幕 · 先看一场对话</h2>
     <p class="statement rise d1">先别解释。先看一段对话——它像不像你手机里的聊天 App？你猜，是谁在「扮演」对面那位？答案可能和你想的不一样。</p>
-    <div class="proof-strip rise d1">
-      <figure><span class="thumb s1"><img src="assets/ui-mobile.png" alt="" width="220" height="124" loading="lazy"></span><figcaption>真机实录</figcaption></figure>
-      <figure><span class="thumb s2"><img src="assets/demo-card.png" alt="" width="220" height="124" loading="lazy"></span><figcaption>角色卡</figcaption></figure>
-      <figure><span class="thumb s3"><img src="assets/play-tutor.png" alt="" width="220" height="124" loading="lazy"></span><figcaption>世界书</figcaption></figure>
-    </div>
     <div class="hook-stage rise d2">
       <div class="chat" id="chat" data-ui>
         <div class="chat-head">
@@ -815,6 +803,10 @@ html.speaker-progress .progress { height: 5px; }
       </div>
       <div class="hook-side">
         <p class="note chat-note" id="chatNote">老板有两副嗓子：开场是离线罐头——不花钱、断网也能演；你发一句话，他就去接一颗真大脑，每个字都是此刻生成的。断了网？自动回到罐头，酒馆照常开门。同一副界面，换一颗大脑——这就是前端。</p>
+        <figure class="hook-shot">
+          <span class="shot"><img src="assets/ui-mobile.png" alt="" width="220" height="124" loading="lazy"></span>
+          <figcaption>真机实录 · SillyTavern 手机端</figcaption>
+        </figure>
         <p class="note hook-exit">想边看边装？<a href="https://tavern.phuyu.cloud/guide/" target="_blank" rel="noopener">上手指南</a>五分钟入门，先看离线回放不用花一分钱。</p>
       </div>
     </div>
