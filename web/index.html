@@ -204,12 +204,12 @@ html.busy .hero-flame { animation: heroBusy 1.1s ease-in-out infinite; }
 
 /* ---------- 封面门：锁定态 + 开门（方向 A 门缝透光） ----------
    锁定 = overflow:hidden + inert（平台级状态，零事件拦截；滚轮/触摸/键盘/进度条全部统一被拦）。
-   每次进入页面必锁（?door=0 可跳过）；开门 = 立面淡出 → 缝光预亮 → 双扇绕外缘铰链
-   向内合拢（3D）→ 缝光爆亮+换景 → 双扇内开露出序幕+暖光扑面+火星 → 交还滚动，封面
-   随即退场（正文里不再回头，序幕即页首；print 覆盖仍保留封面当扉页）。
+   每次进入页面必锁（?door=0 可跳过）；开门 = 立面淡入为合拢的门扇（门本就关着）→ 缝光
+   漏出 → 缝光爆亮+门后换景 → 双扇绕外缘铰链内开（往酒馆里开）露出序幕+暖光扑面+火星
+   → 交还滚动，封面随即退场（正文里不再回头，序幕即页首；print 覆盖仍保留封面当扉页）。
    门板材质见 defs #doorface；右扇镜像后缝侧细节自动对位。 */
 .door-l, .door-r, .door-seam, .door-bloom { display: none; }
-.doorway { display: none; position: absolute; inset: 0; z-index: 4; background: #0c0805; } /* 门洞空面：垫在门扇后，合拢过程的透视缺口露暗色门洞而非底后巨焰 */
+.doorway { display: none; position: absolute; inset: 0; z-index: 4; background: #0c0805; } /* 门洞空面：垫在门扇后，开门过程的透视缺口露暗色门洞而非底后巨焰 */
 .door-l, .door-r { position: absolute; top: 0; bottom: 0; width: 50.5%; z-index: 5; background: #1c1207; will-change: transform; }
 .door-l { left: 0; transform-origin: 0 50%; }
 .door-r { right: 0; transform-origin: 100% 50%; }
@@ -1841,7 +1841,9 @@ html.speaker-progress .progress { height: 5px; }
   /* ---------- 封面门：同文档锁定态（overflow:hidden + inert，零事件拦截） ----------
      每次进入必锁（用户要求：开门是仪式，不是障碍）；?door=0 跳过（测试/回访）、?door=1 强制演示、带 hash 进入不锁。
      开门这次可信 click 顺带完成 Chrome Android 拖拽触觉的会话解锁——门口一声嗒，全站触觉上线。
-     开过门即封面退场：正文里不再回头（用户要求），#top 锚点重指序幕，打印讲义例外（print 恢复封面扉页）。 */
+     开过门即封面退场：正文里不再回头（用户要求），#top 锚点重指序幕，打印讲义例外（print 恢复封面扉页）。
+     时序：立面淡入为合拢的门扇（门本就关着）→ 缝光漏出 → 缝光爆亮 + 门后换景 → 双扇绕
+     外缘铰链内开 + 暖光扑面 + 火星 → +400ms 交还滚动，同时封面退场（序幕即页首）。 */
   var doorBtn = document.querySelector(".hero .btn");
   if (doorBtn && document.querySelector(".door-l")) {
     var doorBusy = false;
@@ -1900,15 +1902,12 @@ html.speaker-progress .progress { height: 5px; }
       doorL.style.display = doorR.style.display = "block";
       doorL.style.position = doorR.style.position = "fixed";
       doorSeam.style.display = doorBloom.style.display = "block";
-      var P = "perspective(1100px) ", OPEN = 64, EZS = "cubic-bezier(.5,.05,.28,1)", EZO = "cubic-bezier(.62,0,.24,1)";
-      function doorSwing(leaf, dir, phase) { /* 铰链在外缘：内合/内开都往屏幕深处转（门往酒馆里开）。dir=1 左扇 / -1 右扇 */
-        var kf = phase === "shut"
-          ? [{ transform: P + "rotateY(" + dir * OPEN + "deg)", filter: "brightness(.72)" },
-             { transform: P + "rotateY(" + dir * -2.5 + "deg)", offset: .84 },
-             { transform: P + "rotateY(0deg)", filter: "brightness(1)" }]
-          : [{ transform: P + "rotateY(0deg)", filter: "brightness(1)" },
-             { transform: P + "rotateY(" + dir * OPEN + "deg)", filter: "brightness(1.18)" }]; /* 内开时室内光扑上扇面 */
-        return leaf.animate(kf, { duration: phase === "shut" ? 640 : 820, delay: phase === "shut" ? 300 : 60, easing: phase === "shut" ? EZS : EZO, fill: "forwards" });
+      var P = "perspective(1100px) ", OPEN = 64, EZO = "cubic-bezier(.62,0,.24,1)";
+      function doorSwing(leaf, dir) {        /* 铰链在外缘，往屏幕深处内开——你推开门走进酒馆。dir=1 左扇 / -1 右扇 */
+        return leaf.animate(
+          [{ transform: P + "rotateY(0deg)", filter: "brightness(1)" },
+           { transform: P + "rotateY(" + dir * OPEN + "deg)", filter: "brightness(1.18)" }], /* 内开时室内光扑上扇面 */
+          { duration: 820, easing: EZO, fill: "forwards" });
       }
       function doorSparks() {                /* 开门瞬间：缝口迸出的火星（fixed 于视口，复用 hero-spark 词汇） */
         for (var i = 0; i < 7; i++) {
@@ -1926,28 +1925,29 @@ html.speaker-progress .progress { height: 5px; }
       var fFade = heroInnerEl.animate(
         [{ opacity: 1, transform: "none", filter: "none" }, { opacity: 0, transform: "translateY(-8px)", filter: "blur(2px)" }],
         { duration: 280, easing: "ease-out", fill: "forwards" });
-      var fSeam = doorSeam.animate(          /* 缝光预亮：门还在逼近，光已从缝里漏出 */
+      var fInL = doorL.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 220, easing: "ease-out", fill: "forwards" }); /* 立面淡入为门扇：门本就关着，你正站在门前 */
+      var fInR = doorR.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 220, easing: "ease-out", fill: "forwards" });
+      var fSeam = doorSeam.animate(          /* 缝光预亮：门还关着，光已从缝里漏出 */
         [{ transform: "translateX(-50%) scaleX(0)", opacity: 0 }, { transform: "translateX(-50%) scaleX(1)", opacity: .9 }],
-        { duration: 320, delay: 120, easing: "ease-out", fill: "forwards" });
-      var shutL = doorSwing(doorL, 1, "shut"), shutR = doorSwing(doorR, -1, "shut");
-      Promise.all([fFade.finished, fSeam.finished, shutL.finished, shutR.finished]).then(function () {
-        if (doorWay) doorWay.style.display = "none"; /* 门已合拢盖住门洞空面：此刻撤掉，开门缺口直通真场景 */
-        doorSeam.animate(                    /* 落位：缝光爆亮一瞬 */
+        { duration: 320, delay: 250, easing: "ease-out", fill: "forwards" });
+      Promise.all([fInL.finished, fInR.finished, fSeam.finished]).then(function () {
+        if (doorWay) doorWay.style.display = "none"; /* 门扇已就位盖住门洞空面：撤掉，开门缺口直通真场景 */
+        doorSeam.animate(                    /* 光涌：门将动，缝光先爆亮 */
           [{ transform: "translateX(-50%) scaleX(1)", opacity: .9 }, { transform: "translateX(-50%) scaleX(2.6)", opacity: 1 }],
           { duration: 170, easing: "ease-out", fill: "forwards" });
-        doorBloom.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 140, easing: "ease-out", fill: "forwards" })
+        var fBloom = doorBloom.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 140, easing: "ease-out", fill: "forwards" })
           .finished.then(function () {
-            doorBloom.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 1000, easing: "ease-out", fill: "forwards" });
+            return doorBloom.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 680, easing: "ease-out", fill: "forwards" }).finished;
           });
-        jumpBehind();                        /* 门后已是序幕；焦点交给序幕标题 */
+        jumpBehind();                        /* 门还合着，幕后已换成序幕；焦点交给序幕标题 */
         doorInertSet(false);
-        var openL = doorSwing(doorL, 1, "open"), openR = doorSwing(doorR, -1, "open");
+        var openL = doorSwing(doorL, 1), openR = doorSwing(doorR, -1);
         doorSeam.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 360, delay: 200, easing: "ease-out", fill: "forwards" });
         doorSparks();
         setTimeout(function () {             /* 门开过半：交还滚动 + 封面退场（序幕即页首，顶栏归位） */
           doorRetireCover();
         }, 400);
-        Promise.all([openL.finished, openR.finished]).then(function () {
+        Promise.all([openL.finished, openR.finished, fBloom]).then(function () {
           doorL.style.display = doorR.style.display = "none";
           doorSeam.style.display = doorBloom.style.display = "none";
           doorBusy = false;
