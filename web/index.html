@@ -1640,6 +1640,18 @@ html.speaker-progress .progress { height: 5px; }
     storedMs = parseInt(localStorage.getItem("vibTickMs"), 10);
     if (storedMs >= 20 && storedMs <= 300) VIB_MS = storedMs;
   } catch (e) { }
+  /* 全站触感档（用户可校准）：默认=门口 90 单发；?haptic-test=1 面板逐个试选，本机记忆。
+     手感是逐设备+握持姿态的事，远程猜不如把候选摆到用户手上。 */
+  var netPat = 90, netStored = false;
+  try {
+    var rawPat = localStorage.getItem("vibNetPat");
+    if (rawPat !== null) {
+      netStored = true;
+      netPat = rawPat.indexOf(",") >= 0 ? rawPat.split(",").map(Number) : +rawPat;
+      var patOk = netPat instanceof Array ? (netPat.length >= 2 && netPat.length <= 9 && netPat.every(function (n) { return n >= 5 && n <= 400; })) : (netPat >= 20 && netPat <= 400);
+      if (!patOk) netPat = 90;
+    }
+  } catch (e) { }
   var lastVibeAt = 0;
   simRange.addEventListener("input", function () {
     var v = +simRange.value;
@@ -1673,7 +1685,7 @@ html.speaker-progress .progress { height: 5px; }
     if (t.id === "simRange") return;                 /* 滑杆：棘轮自有节拍（同为门口档） */
     if (t.closest(".hero .btn")) return;             /* 封面门：专属重嗒 */
     if (t.closest("[data-hap-skip]")) return;        /* 诊断面板：自带试震 */
-    haptic(90);
+    haptic(netPat);
   };
   if (canVibe) document.addEventListener("pointerdown", hapNet, { passive: true });
   else document.addEventListener("click", hapNet, { passive: true });
@@ -1856,10 +1868,38 @@ html.speaker-progress .progress { height: 5px; }
       + '</div>'
       + '<div id="vibLog" style="margin-top:8px;color:#c9b99b">从 20ms 往右拖，找到第一个「能感觉到」的档位。当前生效 ' + VIB_MS + 'ms' + (storedMs ? '（已校准）' : '（默认）') + '。</div>'
       + '<div id="vibLive" style="margin-top:6px;padding:6px 8px;background:#16100a;border-radius:8px;color:#e8a34c;font-weight:600">震动调用 0 次 · 拖动滑杆实时计数</div>'
+      + '<div style="margin-top:12px"><b style="color:#e8a34c">全站触感</b>（点一下 = 试震并设为全站，本机记忆）'
+      + '<div id="netRow" style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"></div>'
+      + '<div id="netLog" style="margin-top:6px;color:#c9b99b">当前全站触感：' + (typeof netPat === "number" ? netPat + "ms 单发" : netPat.join("/")) + (netStored ? "（已校准）" : "（默认=门口档）") + '</div></div>'
       + '<div style="margin-top:6px;color:#8a7a5f;font-size:11px">' + navigator.userAgent.slice(0, 90) + '</div>';
     document.body.appendChild(dp);
     var vr = dp.querySelector("#vibRange"), vms = dp.querySelector("#vibMs");
     vr.addEventListener("input", function () { vms.textContent = vr.value + "ms"; });
+    /* 全站触感候选：点一下=试震+设为全站（netPat 即时生效+本机记忆） */
+    var NETS = [[90, "门口 90"], [60, "单发 60"], [45, "单发 45"], [12, 30, 12], [14, 24, 14, 24, 14], [20, 40, 20]];
+    var netRow = dp.querySelector("#netRow"), netLog = dp.querySelector("#netLog");
+    NETS.forEach(function (pat) {
+      var b = document.createElement("button");
+      b.textContent = pat instanceof Array ? pat.join("/") : pat + " 单发";
+      b.style.cssText = "padding:8px 12px;background:#3a2c1c;color:#fff7e8;border-radius:8px";
+      b.addEventListener("click", function () {
+        netPat = pat;
+        try { localStorage.setItem("vibNetPat", pat instanceof Array ? pat.join(",") : String(pat)); } catch (e) { }
+        navigator.vibrate(pat);
+        netLog.textContent = "已设为「" + (pat instanceof Array ? pat.join("/") : pat + " 单发") + "」——去点任何链接/按钮，全站都是这个手感。";
+      });
+      netRow.appendChild(b);
+    });
+    var netReset = document.createElement("button");
+    netReset.textContent = "恢复门口 90";
+    netReset.style.cssText = "padding:8px 12px;background:#16100a;color:#c9b99b;border-radius:8px";
+    netReset.addEventListener("click", function () {
+      netPat = 90;
+      try { localStorage.removeItem("vibNetPat"); } catch (e) { }
+      navigator.vibrate(90);
+      netLog.textContent = "已恢复门口 90 单发。";
+    });
+    netRow.appendChild(netReset);
     dp.querySelector("#vibTry").addEventListener("click", function () {
       var ok = navigator.vibrate(+vr.value);
       document.getElementById("vibLog").textContent = "试震 " + vr.value + "ms · API 返回 " + ok
@@ -1872,8 +1912,8 @@ html.speaker-progress .progress { height: 5px; }
     });
     dp.querySelector("#vibReset").addEventListener("click", function () {
       try { localStorage.removeItem("vibTickMs"); } catch (e) { }
-      VIB_MS = 100; vr.value = VIB_MS; vms.textContent = VIB_MS + "ms";
-      document.getElementById("vibLog").textContent = "已恢复默认 100ms（此前若被低档位校准锁死，现在已解开）。";
+      VIB_MS = 90; vr.value = VIB_MS; vms.textContent = VIB_MS + "ms";
+      document.getElementById("vibLog").textContent = "已恢复默认 90ms（门口档，此前若被校准锁死，现在已解开）。";
     });
   }
 
