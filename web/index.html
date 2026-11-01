@@ -1631,18 +1631,10 @@ html.speaker-progress .progress { height: 5px; }
       }
     } catch (e) { }
   }
-  /* 真机实证：阈值 80ms（405ms 可感、45/80 以下无感）。默认 100ms 留余量；
-     ?haptic-test=1 面板可现场校准，localStorage 按设备记忆覆盖默认。
-     storedMs 提升作用域：面板需展示「已校准/默认」状态。 */
-  var storedMs = null;
-  var VIB_MS = 90; /* 统一门口档：与封面门/全站触觉网同力度（用户裁定） */
-  try {
-    storedMs = parseInt(localStorage.getItem("vibTickMs"), 10);
-    if (storedMs >= 20 && storedMs <= 300) VIB_MS = storedMs;
-  } catch (e) { }
   /* 全站触感档（用户可校准）：默认=门口 90 单发；?haptic-test=1 面板逐个试选，本机记忆。
-     手感是逐设备+握持姿态的事，远程猜不如把候选摆到用户手上。 */
-  var netPat = 90, netStored = false;
+     手感是逐设备+握持姿态的事，远程猜不如把候选摆到用户手上。
+     全站唯一触感语言：门/滑杆/交互网共用 netPat——校准一处，处处生效。 */
+  var netPat = 90, netStored = false, asArr = function (p) { return p instanceof Array ? p : [p]; };
   try {
     var rawPat = localStorage.getItem("vibNetPat");
     if (rawPat !== null) {
@@ -1652,13 +1644,14 @@ html.speaker-progress .progress { height: 5px; }
       if (!patOk) netPat = 90;
     }
   } catch (e) { }
+  /* 棘轮脉冲=全站触感档 netPat（面板校准一处，全站含滑杆同步）；节流 130ms 防连发。 */
   var lastVibeAt = 0;
   simRange.addEventListener("input", function () {
     var v = +simRange.value;
     if (v === lastVibeVal) return;
     var now = Date.now(), over = v > CAP;
-    if (over || now - lastVibeAt > VIB_MS + 30) {
-      var pat = over ? [VIB_MS, 70, VIB_MS] : VIB_MS;
+    if (over || now - lastVibeAt > 130) {
+      var pat = over ? asArr(netPat).concat([70], asArr(netPat)) : netPat;
       var ret;
       if (canVibe) ret = haptic(pat);                      /* Android/桌面：真马达 */
       else if (dragActive && dragMoved) { audioTick(v > CAP); ret = "音频"; } /* iPhone 拖拽：苹果 18.4+ 永不授权，听觉顶上 */
@@ -1674,16 +1667,14 @@ html.speaker-progress .progress { height: 5px; }
 
 
   /* ---------- 全站触觉网：凡可交互，落指即嗒（用户裁定「所有能交互的地方都加震动」）。
-     力度全站统一=门口档：haptic(90) 单发（用户三轮实测定稿——PWM 三连踢的马达重启
-     瞬态相互叠加反而更冲，弃用；playHaptics 语义化触感未落地，不引入）。
+     全站唯一触感语言=netPat（门口 90 单发起步，面板可校准）：门/滑杆/交互网共用，
+     校准一处处处生效——「不同按钮触感不一样」的根因就是它们各留了专属节拍。
      一张网按平台分挂：安卓有 vibrate → pointerdown 落指即嗒；iPhone 无 API → 合成翻转
      只认可信 click 授权（18.4+ pointerdown 永不授权，见上）→ click 落网点嗒。
-     三处例外自带专属节拍，勿双震：封面门 90ms / 滑杆棘轮（已同步统一 90）/ 触觉诊断面板。 */
+     例外仅触觉诊断面板（data-hap-skip，自带试震）。 */
   var hapNet = function (e) {
     var t = e.target.closest("a, button, input[type='range']");
     if (!t || t.disabled) return;
-    if (t.id === "simRange") return;                 /* 滑杆：棘轮自有节拍（同为门口档） */
-    if (t.closest(".hero .btn")) return;             /* 封面门：专属重嗒 */
     if (t.closest("[data-hap-skip]")) return;        /* 诊断面板：自带试震 */
     haptic(netPat);
   };
@@ -1857,24 +1848,12 @@ html.speaker-progress .progress { height: 5px; }
       + '<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">'
       + '<button data-p="400" style="flex:1;padding:10px;background:#e8a34c;color:#16100a;border-radius:8px;font-weight:700">长震 400ms</button>'
       + '</div>'
-      + '<div style="display:flex;align-items:center;gap:10px;margin-top:10px">'
-      + '<input type="range" id="vibRange" min="20" max="300" step="10" value="' + VIB_MS + '" style="flex:1;accent-color:#e8a34c">'
-      + '<b id="vibMs" style="min-width:52px;text-align:right;color:#e8a34c">' + VIB_MS + 'ms</b>'
-      + '<button id="vibTry" style="padding:8px 14px;background:#3a2c1c;color:#fff7e8;border-radius:8px">试震</button>'
-      + '</div>'
-      + '<div style="display:flex;gap:8px;margin-top:10px">'
-      + '<button id="vibSet" style="flex:1;padding:10px;background:#e8a34c;color:#16100a;border-radius:8px;font-weight:700">把这档设为滑杆触觉（本机记忆）</button>'
-      + '<button id="vibReset" style="padding:10px 14px;background:#3a2c1c;color:#fff7e8;border-radius:8px">恢复默认</button>'
-      + '</div>'
-      + '<div id="vibLog" style="margin-top:8px;color:#c9b99b">从 20ms 往右拖，找到第一个「能感觉到」的档位。当前生效 ' + VIB_MS + 'ms' + (storedMs ? '（已校准）' : '（默认）') + '。</div>'
-      + '<div id="vibLive" style="margin-top:6px;padding:6px 8px;background:#16100a;border-radius:8px;color:#e8a34c;font-weight:600">震动调用 0 次 · 拖动滑杆实时计数</div>'
+      + '<div id="vibLive" style="margin-top:8px;padding:6px 8px;background:#16100a;border-radius:8px;color:#e8a34c;font-weight:600">震动调用 0 次 · 拖动滑杆实时计数</div>'
       + '<div style="margin-top:12px"><b style="color:#e8a34c">全站触感</b>（点一下 = 试震并设为全站，本机记忆）'
       + '<div id="netRow" style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"></div>'
       + '<div id="netLog" style="margin-top:6px;color:#c9b99b">当前全站触感：' + (typeof netPat === "number" ? netPat + "ms 单发" : netPat.join("/")) + (netStored ? "（已校准）" : "（默认=门口档）") + '</div></div>'
       + '<div style="margin-top:6px;color:#8a7a5f;font-size:11px">' + navigator.userAgent.slice(0, 90) + '</div>';
     document.body.appendChild(dp);
-    var vr = dp.querySelector("#vibRange"), vms = dp.querySelector("#vibMs");
-    vr.addEventListener("input", function () { vms.textContent = vr.value + "ms"; });
     /* 全站触感候选：点一下=试震+设为全站（netPat 即时生效+本机记忆） */
     var NETS = [[90, "门口 90"], [60, "单发 60"], [45, "单发 45"], [12, 30, 12], [14, 24, 14, 24, 14], [20, 40, 20]];
     var netRow = dp.querySelector("#netRow"), netLog = dp.querySelector("#netLog");
@@ -1900,21 +1879,8 @@ html.speaker-progress .progress { height: 5px; }
       netLog.textContent = "已恢复门口 90 单发。";
     });
     netRow.appendChild(netReset);
-    dp.querySelector("#vibTry").addEventListener("click", function () {
-      var ok = navigator.vibrate(+vr.value);
-      document.getElementById("vibLog").textContent = "试震 " + vr.value + "ms · API 返回 " + ok
-        + (ok ? "。有感就往低拖一档找下限，没感就往右加。" : "（被拒：浏览器或站点设置禁用了振动）");
-    });
-    dp.querySelector("#vibSet").addEventListener("click", function () {
-      VIB_MS = +vr.value;
-      try { localStorage.setItem("vibTickMs", String(VIB_MS)); } catch (e) { }
-      document.getElementById("vibLog").textContent = "已设为 " + VIB_MS + "ms 并记忆在本机——去拖上面的滑杆试试手感。";
-    });
-    dp.querySelector("#vibReset").addEventListener("click", function () {
-      try { localStorage.removeItem("vibTickMs"); } catch (e) { }
-      VIB_MS = 90; vr.value = VIB_MS; vms.textContent = VIB_MS + "ms";
-      document.getElementById("vibLog").textContent = "已恢复默认 90ms（门口档，此前若被校准锁死，现在已解开）。";
-    });
+    var p400 = dp.querySelector("[data-p]"); /* 长震试震（此按钮此前无处理器，补上） */
+    p400.addEventListener("click", function () { navigator.vibrate(400); });
   }
 
   /* ---------- 封面门：同文档锁定态（overflow:hidden + inert，零事件拦截） ----------
@@ -1948,7 +1914,7 @@ html.speaker-progress .progress { height: 5px; }
       e.preventDefault();
       if (doorBusy) return;
       doorBusy = true;
-      haptic(90);
+      /* 触感由全站触觉网在 pointerdown 落嗒（netPat，与全站同档）；此处不再自带，防双震 */
       var hookSec = document.getElementById("hook");
       function jumpBehind() {                /* 门后换景：合拢的瞬间瞬移到序幕（临时压掉 CSS smooth）。
          必须用 scrollTo 而非 scrollIntoView：锁定期 html overflow:hidden 时，
