@@ -1662,17 +1662,26 @@ html.speaker-progress .progress { height: 5px; }
 
 
   /* ---------- 全站触觉网：凡可交互，落指即嗒（用户裁定「所有能交互的地方都加震动」）。
-     一张网按平台分挂：安卓有 vibrate → pointerdown 落指即嗒（真马达，最跟手）；iPhone
-     无 API → 合成翻转只认可信 click 授权（18.4+ pointerdown 永不授权，见上）→ click 落网点嗒。
-     嗒长 90ms 与门口重嗒同档——真机实证该马达 80ms 以下无感，更短的「轻嗒」等于没震。
-     三处例外自带专属节拍，勿双震：封面门 90ms / 滑杆棘轮 100ms+溢出双击 / 触觉诊断面板。 */
+     触感裁定（ROUND 14 补2）：单发长嗡=通知式轰鸣（vibrate 只有时长没有振幅，90ms 全幅
+     起转撞壳出声），改用 PWM 脉冲串合成「轻而可感」——三记短踢总通能减半，马达保持微
+     振不撞壳，双/三连踢在感知上也比单发更清晰。navigator.playHaptics（语义化 tick，自带
+     强度）落地即优先启用，feature-detect 前向兼容。
+     一张网按平台分挂：安卓有 vibrate → pointerdown 落指即嗒；iPhone 无 API → 合成翻转
+     只认可信 click 授权（18.4+ pointerdown 永不授权，见上）→ click 落网点嗒。
+     三处例外自带专属节拍，勿双震：封面门 90ms / 滑杆棘轮 / 触觉诊断面板。 */
+  var hapTick = function () {
+    try {
+      if (typeof navigator.playHaptics === "function") { navigator.playHaptics("tick", 0.4); return; }
+    } catch (err) { }
+    haptic([14, 24, 14, 24, 14]); /* PWM 轻嗒：3×14ms 通、总 90ms，能量≈长嗡一半 */
+  };
   var hapNet = function (e) {
     var t = e.target.closest("a, button, input[type='range']");
     if (!t || t.disabled) return;
     if (t.id === "simRange") return;                 /* 滑杆：棘轮自有节拍 */
-    if (t.closest(".hero .btn")) return;             /* 封面门：专属 90ms 重嗒 */
+    if (t.closest(".hero .btn")) return;             /* 封面门：专属重嗒 */
     if (t.closest("[data-hap-skip]")) return;        /* 诊断面板：自带试震 */
-    haptic(90);
+    hapTick();
   };
   if (canVibe) document.addEventListener("pointerdown", hapNet, { passive: true });
   else document.addEventListener("click", hapNet, { passive: true });

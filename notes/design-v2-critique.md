@@ -823,3 +823,15 @@ lint/inspect 0 FAIL，1440+390 目检 ✓。
 验证：临时副本删 vibrate API 模拟 iPhone（canVibe=undefined）→ click .tab/.wordmark
 各翻转隐藏 switch 一次（合成触感触发，checked 交替）✓；安卓分支照旧 pointerdown 嗒 +
 slider 排除 + 首次 click 解锁脉冲 1ms ✓。lint 0 FAIL，已部署。
+
+## ROUND 14·补3 · 触感质感重调：通知长嗡 → PWM 轻嗒（2026-11-01，用户裁定）
+
+用户裁定：90ms 单发长嗡是「通知类大嗡」（全幅起转撞壳出声），要的是「手能感觉到的
+明确触感」。查证：navigator.vibrate 只有时长无振幅（MDN/Chrome 官方样例确认），
+「轻而可感」的业界做法是 **PWM 脉冲串合成强度**（SWMansion/Pulsar、Flarum 同款）：
+短脉冲串维持马达微振不撞壳，总通能减半，双/三连踢感知上比单发更清晰。
+实施：触觉网嗒改为 hapTick()——三记 14ms 短踢（[14,24,14,24,14]，总 90ms、通能≈
+长嗡一半）；navigator.playHaptics（WICG 语义化触感提案，tick 可带强度、映射安卓
+EFFECT_TICK）feature-detect 优先启用，Chrome 落地即自动升级为原生轻嗒。
+门（仪式重嗒）与滑杆（已标定棘轮）维持原样；若体验后想同改 PWM，改一处常量即可。
+lint 0 FAIL，已部署。真机手感待用户实测（per-device 马达差异只能上手定）。
