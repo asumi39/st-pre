@@ -1661,6 +1661,20 @@ html.speaker-progress .progress { height: 5px; }
   });
 
 
+  /* ---------- 全站触觉网：凡可交互，落指即嗒（用户裁定「所有能交互的地方都加震动」）。
+     pointerdown 一层委托覆盖全部链接/按钮/滑杆抓取。嗒长取 90ms 与门口重嗒同档——
+     真机实证该马达 80ms 以下无感（见滑杆标定），更短的「轻嗒」等于没震。
+     三处例外自带专属节拍，勿双震：封面门 90ms / 滑杆棘轮 100ms+溢出双击 / 触觉诊断面板。 */
+  document.addEventListener("pointerdown", function (e) {
+    var t = e.target.closest("a, button, input[type='range']");
+    if (!t || t.disabled) return;
+    if (t.id === "simRange") return;                 /* 滑杆：棘轮自有节拍 */
+    if (t.closest(".hero .btn")) return;             /* 封面门：专属 90ms 重嗒 */
+    if (t.closest("[data-hap-skip]")) return;        /* 诊断面板：自带试震 */
+    haptic(90);
+  }, { passive: true });
+
+
   /* ---------- 解剖图（SVG 由脚本构建，保持页面轻） ---------- */
   var diagram = document.getElementById("diagram");
   (function buildDiagram() {
@@ -1820,6 +1834,7 @@ html.speaker-progress .progress { height: 5px; }
      false=浏览器或站点设置禁振；「无 API」=非安卓或内核阉割。 */
   if (new URLSearchParams(location.search).get("haptic-test") === "1") {
     var dp = document.createElement("div");
+    dp.setAttribute("data-hap-skip", "1"); /* 面板按钮自带试震：排除在全站触觉网外 */
     dp.style.cssText = "position:fixed;left:10px;right:10px;bottom:10px;z-index:99;background:#241a10;border:2px solid #e8a34c;border-radius:12px;padding:14px;font:13px/1.6 -apple-system,sans-serif;color:#fff7e8;";
     dp.innerHTML = '<b style="color:#e8a34c">触觉诊断</b> · vibrate API: '
       + (typeof navigator.vibrate === "function" ? "有" : "无（非安卓或内核阉割）")
