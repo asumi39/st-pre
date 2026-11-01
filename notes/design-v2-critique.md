@@ -812,3 +812,14 @@ lint/inspect 0 FAIL，1440+390 目检 ✓。
 验证：布线用合成 PointerEvent 逐点验（wordmark/发送/选卡/页签/回到顶部 → 各一刀
 90；门/滑杆正确静默）。真机触摸台账脚本 pixel-hap.js 已就绪（本轮 Pixel 掉线待跑，
 马达路径与已真机验证的门完全同代码）。已部署。
+
+## ROUND 14·补 · iPhone 侧网修复（2026-11-01，用户反馈「iOS 上新加触控没反应」）
+
+病因两层：①iOS Safari 从未实现 vibrate API（真马达路径在 iPhone 不存在）；②新触觉网
+挂 pointerdown，而 iOS 18.4+ 合成翻转（switch 借道）只认可信 click 授权——pointerdown
+永不授权 → iPhone 上全静默。站内 ROUND 8 的真机实证早就写着这条，挂网时没算进去。
+修法：一张网按平台分挂——canVibe（安卓）保持 pointerdown 落指即嗒；无 API（iPhone）
+改挂 click 落网点嗒（合成翻转的授权代价：嗒落在松手而非按下）。例外三处两网同删。
+验证：临时副本删 vibrate API 模拟 iPhone（canVibe=undefined）→ click .tab/.wordmark
+各翻转隐藏 switch 一次（合成触感触发，checked 交替）✓；安卓分支照旧 pointerdown 嗒 +
+slider 排除 + 首次 click 解锁脉冲 1ms ✓。lint 0 FAIL，已部署。

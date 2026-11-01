@@ -1662,17 +1662,20 @@ html.speaker-progress .progress { height: 5px; }
 
 
   /* ---------- 全站触觉网：凡可交互，落指即嗒（用户裁定「所有能交互的地方都加震动」）。
-     pointerdown 一层委托覆盖全部链接/按钮/滑杆抓取。嗒长取 90ms 与门口重嗒同档——
-     真机实证该马达 80ms 以下无感（见滑杆标定），更短的「轻嗒」等于没震。
+     一张网按平台分挂：安卓有 vibrate → pointerdown 落指即嗒（真马达，最跟手）；iPhone
+     无 API → 合成翻转只认可信 click 授权（18.4+ pointerdown 永不授权，见上）→ click 落网点嗒。
+     嗒长 90ms 与门口重嗒同档——真机实证该马达 80ms 以下无感，更短的「轻嗒」等于没震。
      三处例外自带专属节拍，勿双震：封面门 90ms / 滑杆棘轮 100ms+溢出双击 / 触觉诊断面板。 */
-  document.addEventListener("pointerdown", function (e) {
+  var hapNet = function (e) {
     var t = e.target.closest("a, button, input[type='range']");
     if (!t || t.disabled) return;
     if (t.id === "simRange") return;                 /* 滑杆：棘轮自有节拍 */
     if (t.closest(".hero .btn")) return;             /* 封面门：专属 90ms 重嗒 */
     if (t.closest("[data-hap-skip]")) return;        /* 诊断面板：自带试震 */
     haptic(90);
-  }, { passive: true });
+  };
+  if (canVibe) document.addEventListener("pointerdown", hapNet, { passive: true });
+  else document.addEventListener("click", hapNet, { passive: true });
 
 
   /* ---------- 解剖图（SVG 由脚本构建，保持页面轻） ---------- */
