@@ -338,6 +338,19 @@ html.busy .drop-glow { animation: dropGlowB 1.1s ease-in-out infinite; }
 .point p { font-size: 15px; color: var(--muted); margin-top: 6px; line-height: 1.65; }
 .keystmt { margin: clamp(40px, 6vw, 72px) 0 clamp(28px, 4vw, 44px); }
 .sim-callout { margin-top: 8px; }
+/* 接龙现场：第一幕逐字演示。静态全文写在 HTML 里，JS 只负责重演（安全网语义：脚本失败=全文直出） */
+.chain {
+  display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 12px; row-gap: 6px;
+  background: var(--bg-2); border-radius: var(--radius); padding: 16px 20px;
+  margin: clamp(22px, 3vw, 36px) 0 clamp(18px, 2.5vw, 30px);
+  font-size: clamp(16px, 1.5vw, 20px); line-height: 1.6;
+}
+.chain-label { color: var(--accent); font-weight: 600; font-size: 13px; letter-spacing: .1em; display: inline-flex; align-items: center; gap: 7px; flex: none; }
+.chain-label .flame-i { width: 12px; height: 14px; }
+.chain-in { color: var(--muted); }
+.chain-out { color: var(--ink-strong); font-weight: 500; }
+.chain-out.typing::after { content: ""; display: inline-block; width: 2px; height: 1em; background: var(--accent); margin-left: 3px; vertical-align: -0.15em; animation: caretBlink 1s steps(2, start) infinite; }
+.sim-reality { margin-top: 12px; font-size: 13px; color: var(--muted); }
 
 /* ---------- showcase · 上下文窗口模拟器 ---------- */
 .sim { background: var(--field); color: var(--ink); }
@@ -537,6 +550,9 @@ input[type="range"].big::-moz-range-thumb {
 .fcard:nth-child(3) { background: #2a1f12; }
 .fcard:nth-child(4) { background: #302415; }
 .fcard:nth-child(5) { background: #362a17; }
+.fcard:nth-child(6) { background: #3c2f19; }
+.fcard:nth-child(7) { background: #42341b; }
+.fcard:nth-child(8) { background: #48391d; }
 .fcard .tab {
   display: block; width: 100%; text-align: left;
   background: none; border-radius: 12px 12px 0 0; padding: 16px 22px;
@@ -643,7 +659,7 @@ html.speaker-progress .progress { height: 5px; }
   .hero-flame, .scroll-cue .flame-i, .candles .fl { animation: none; }
   .hero-spark, .hero .display, .hero .lede, .hero .btn, .scroll-cue, .drop-bloom, .drop-glow,
   html.busy .hero-flame, html.busy .drop-glow, html.busy .candles .fl,
-  .msg.typing::after, .msg.streaming::after, html.busy .chat-chip { animation: none; }
+  .msg.typing::after, .msg.streaming::after, .chain-out.typing::after, html.busy .chat-chip { animation: none; }
   .diagram .bd, .diagram .ot { opacity: 1; transform: none; }
   .drop-shutter { clip-path: none; transition: none; }
   .brain-photo { transform: none; transition: none; }
@@ -681,6 +697,7 @@ html.speaker-progress .progress { height: 5px; }
   .diagram .ar line { stroke-dasharray: none; animation: none; }
   .candles .fl { animation: none; }
   .fcard .answer { max-height: none; }
+  .chain-out.typing::after { display: none; }
   a { color: inherit; }
   .faq-cards .fcard { background: var(--bg-2); }
   footer { background: none; color: var(--ink); }
@@ -764,7 +781,7 @@ html.speaker-progress .progress { height: 5px; }
   <span class="hero-spark" aria-hidden="true"></span>
   <div class="hero-inner">
     <h1 class="display">今晚，<br/>酒馆开张</h1>
-    <p class="lede">SillyTavern——一个通往无数世界的前端。一杯酒的时间，零基础玩懂大语言模型，顺手把 AI 角色扮演的全部原理带走。</p>
+    <p class="lede">SillyTavern，中文圈叫它「酒馆」——一个开源的 AI 角色扮演前端。一杯酒的时间，零基础玩懂大语言模型，顺手把全部原理带走。</p>
     <a class="btn" href="#hook">推门而入</a>
   </div>
   <div class="scroll-cue" aria-hidden="true"><span class="flame-i"><svg viewBox="0 0 100 120" width="14" height="17"><use href="#flame"/></svg></span>往下滚</div>
@@ -838,8 +855,12 @@ html.speaker-progress .progress { height: 5px; }
     </div>
     </div>
   <div class="wrap">
+    <div class="chain rise" id="chain">
+      <span class="chain-label"><svg class="flame-i" viewBox="0 0 100 120"><use href="#flame"/></svg>接龙现场</span>
+      <span class="chain-in">「海绵宝宝去蟹堡王上」——</span><span class="chain-out" id="chainOut">班，路上遇到了派大星……</span>
+    </div>
     <div class="points" data-stagger>
-          <div class="point rise d1"><h3><svg class="flame-i" viewBox="0 0 100 120"><use href="#flame"/></svg>逐字生成</h3><p>「海绵宝宝去蟹堡王上」——班，路上遇到了派大星。每个字都是一个一个猜出来的。</p></div>
+          <div class="point rise d1"><h3><svg class="flame-i" viewBox="0 0 100 120"><use href="#flame"/></svg>逐字生成</h3><p>上面这句就是这么蹦出来的——每个字都是一个一个猜出来的，猜完一个，再猜下一个。</p></div>
           <div class="point rise d2"><h3><svg class="flame-i" viewBox="0 0 100 120"><use href="#flame"/></svg>没有灵魂，只有概率</h3><p>没有神秘的「自我」。所谓人设，本质上只是喂给它的文字。</p></div>
           <div class="point rise d2"><h3><svg class="flame-i" viewBox="0 0 100 120"><use href="#flame"/></svg>它没有记忆</h3><p>每轮对话，它都把全部历史重新读一遍。忘了不是故障，是物理限制。</p></div>
           <div class="point rise d3"><h3><svg class="flame-i" viewBox="0 0 100 120"><use href="#flame"/></svg>上下文窗口</h3><p>窗口 = 它一次能「看见」的字数上限。后面所有功能，都是在给这扇窗打补丁。</p></div>
@@ -874,6 +895,7 @@ html.speaker-progress .progress { height: 5px; }
           <span class="sim-readout" id="simReadout">4 条消息</span>
         </div>
         <p class="sim-verdict" id="simVerdict">窗口还很宽裕，一切都记得。</p>
+        <p class="sim-reality">教学用了 6 条的小窗；真实模型的窗口动辄十几万字——但挤出即忘，机制一模一样。</p>
       </div>
     </div>
     <aside class="spk" aria-hidden="true">
@@ -902,7 +924,7 @@ html.speaker-progress .progress { height: 5px; }
       <div>
         <div class="block">
           <h3>身世</h3>
-          <p>2023 年从 TavernAI 分叉，社区接管至今。当前版本 v1.19.0（2026 年 9 月），AGPL-3.0 开源，仍在活跃更新。中文圈给它起了个诨名——「酒馆」，今晚我们就这么叫。</p>
+          <p>2023 年 2 月从 TavernAI 分叉，社区接管至今：300 多名贡献者、三年多独立开发，官方承诺永远免费开源。当前版本 v1.19.0（2026 年 9 月，AGPL-3.0），仍在活跃更新。</p>
         </div>
         <div class="block">
           <h3>你的数据在你手里</h3>
@@ -1030,15 +1052,15 @@ html.speaker-progress .progress { height: 5px; }
     <p class="lede rise d1">你在酒馆里按下「发送」的那几秒，其实发生了什么。左边的散料，被装配成一包，发往大脑——回复再逐字流回来。</p>
     <svg class="diagram" viewBox="0 0 1200 270" role="img" aria-label="示意图：散落的材料被装配成一个请求包，再展开为逐字回复" id="diagram"></svg>
     <div class="d-labels">
-      <div class="rise"><h3>收集</h3><p>角色卡、世界书（提到「酒馆」才醒来的那条）、预设参数、聊天记录——四种散料。</p></div>
+      <div class="rise"><h3>收集</h3><p>角色卡、世界书（提到「酒馆」才醒来的那条）、预设（社区调好的「说话风格」参数包）、聊天记录——四种散料。</p></div>
       <div class="rise d1"><h3>装配</h3><p>按真实拼装顺序压成一包。<b style="color:var(--ink)">这一包，就是模型看到的全世界。</b></p></div>
-      <div class="rise d2"><h3>回流</h3><p>大脑逐字接龙，回复流回聊天窗口。你看到「它在思考」，其实它在猜下一个字。</p></div>
+      <div class="rise d2"><h3>回流</h3><p>大脑逐字接龙，回复流回聊天窗口。你看到「它在思考」，其实它在猜下一个字。序幕的问题到这里也揭晓了：<b style="color:var(--ink)">没有谁在「扮演」老板——只有一包字，和一台读完它、猜下一个字的接龙机器。</b></p></div>
     </div>
     <h3 class="display rag-head rise">这个动作，有个学名</h3>
     <p class="lede rag-lede rise d1">检索增强生成（RAG）：企业客服机器人、知识库助手，底层思想和世界书一模一样。你在酒馆里玩懂的这个机制，就是工业界 RAG 的最小模型。</p>
     <div class="patches">
       <div class="patch rise"><h3><svg class="flame-i" viewBox="0 0 100 120"><use href="#flame"/></svg>补丁一 · 总结</h3><p>窗口又满了？把旧对话压缩成一段摘要塞回去——细节没了，脉络还在。</p></div>
-      <div class="patch rise d1"><h3><svg class="flame-i" viewBox="0 0 100 120"><use href="#flame"/></svg>补丁二 · 向量检索</h3><p>按语义（而不是关键词）把相关的旧片段找回来，重新塞进窗口。ST 的记忆扩展，就是这两条民间土方。</p></div>
+      <div class="patch rise d1"><h3><svg class="flame-i" viewBox="0 0 100 120"><use href="#flame"/></svg>补丁二 · 向量检索</h3><p>按语义（而不是关键词）把相关的旧片段找回来，重新塞进窗口。ST 的记忆扩展和内置的 Data Bank，就是这两条土方的实现。</p></div>
     </div>
     <aside class="spk" aria-hidden="true">
       <h3>第四幕 · 讲者备注</h3>
@@ -1103,6 +1125,15 @@ html.speaker-progress .progress { height: 5px; }
     <div class="rule rise d2"><svg class="flame-i" viewBox="0 0 100 120" width="18" height="22"><use href="#flame"/></svg>
       <div><b>内容有分寸</b><p>模型有护栏，违法有害内容别碰。体验站会记日志——互联网没有真正「删除」。</p></div></div>
     </div>
+    <aside class="spk" aria-hidden="true">
+      <h3>纪律 · 讲者备注</h3>
+      <ul>
+        <li>三条逐条过：Key=钱包、云端看得到全部对话、内容有分寸。</li>
+        <li>语气认真但不吓人——这是真实世界的使用纪律，不是免责套话。</li>
+        <li>「体验站会记日志」务必说到：互联网没有真正删除。</li>
+        <li>串场：有疑问的，散场前几个高频问题。</li>
+      </ul>
+    </aside>
   </div>
 </section>
 
@@ -1129,9 +1160,30 @@ html.speaker-progress .progress { height: 5px; }
       </div>
       <div class="fcard" data-open="false">
         <button class="tab" aria-expanded="false"><h3>卡住了找谁？<span class="marker" aria-hidden="true">+</span></h3></button>
-        <div class="answer"><p>指南站（页尾二维码）覆盖 90% 的问题；剩下 10%，<b>社团群里喊一声</b>。官方文档在 GitHub 仓库的 docs 目录，适合查细节。</p></div>
+        <div class="answer"><p>指南站（页尾二维码）覆盖 90% 的问题；剩下 10%，<b>社团群里喊一声</b>。官方中文文档在 sillytavern.wiki，安装之外的问题先查它。</p></div>
+      </div>
+      <div class="fcard" data-open="false">
+        <button class="tab" aria-expanded="false"><h3>需要会编程吗？<span class="marker" aria-hidden="true">+</span></h3></button>
+        <div class="answer"><p><b>不用。</b>一键整合包下载、解压、双击，全程图形界面；git 和 Docker 两条路才碰命令行，而且是复制粘贴级别。装好之后的一切操作，都在界面里点选完成。</p></div>
+      </div>
+      <div class="fcard" data-open="false">
+        <button class="tab" aria-expanded="false"><h3>它一本正经地胡说八道怎么办？<span class="marker" aria-hidden="true">+</span></h3></button>
+        <div class="answer"><p>这叫<b>幻觉</b>：接龙机器只负责「像」，不负责「真」——它没有事实核查，只是把下一个字猜得连贯。角色扮演里读作「出戏」，用示例对话和世界书能纠住大半；拿它查资料，就要留个心眼。</p></div>
+      </div>
+      <div class="fcard" data-open="false">
+        <button class="tab" aria-expanded="false"><h3>角色卡去哪找？<span class="marker" aria-hidden="true">+</span></h3></button>
+        <div class="answer"><p>酒馆自带默认角色，内置的「下载扩展和资源」菜单里有精选社区卡；Reddit、Discord 社区是主产地。指南站整理了入口——导入就是拖一张 PNG 的事。</p></div>
       </div>
     </div>
+    <aside class="spk" aria-hidden="true">
+      <h3>FAQ · 讲者备注</h3>
+      <ul>
+        <li>按观众提问展开对应卡片，其余跳过——本页就是 Q&A 弹药库。</li>
+        <li>「胡说八道」一问大概率出现：幻觉 = 接龙只管像、不管真。</li>
+        <li>「需要会编程吗」给犹豫的人吃定心丸：整合包零命令行。</li>
+        <li>串场：最后，盘点今晚的战利品。</li>
+      </ul>
+    </aside>
   </div>
 </section>
 
@@ -1145,7 +1197,17 @@ html.speaker-progress .progress { height: 5px; }
       <span><svg class="flame-i dim" viewBox="0 0 100 120"><use href="#flame"/></svg>上下文窗口</span>
       <span><svg class="flame-i dim" viewBox="0 0 100 120"><use href="#flame"/></svg>检索增强生成</span>
       <span><svg class="flame-i dim" viewBox="0 0 100 120"><use href="#flame"/></svg>前后端分离</span>
+      <span><svg class="flame-i dim" viewBox="0 0 100 120"><use href="#flame"/></svg>Token · 令牌</span>
     </div>
+    <aside class="spk" aria-hidden="true">
+      <h3>收束 · 讲者备注</h3>
+      <ul>
+        <li>词条逐个点亮，各回扣一幕：提示词=角色卡、窗口=模拟器、RAG=世界书、前后端=酒馆本体、Token=逐字生成的计量。</li>
+        <li>「酒馆最好玩的地方……」慢读，停两拍。</li>
+        <li>提醒扫码；体验站开放后此处加第二张码。</li>
+        <li>收尾句：「今晚，酒馆永远开张。」留在屏上直到散场。</li>
+      </ul>
+    </aside>
     <p class="last-line rise">今晚，酒馆永远开张。</p>
     <div class="spoil-grid">
       <figure class="qr-card rise">
@@ -1187,6 +1249,7 @@ html.speaker-progress .progress { height: 5px; }
         <h3>出门右转</h3>
         <a href="https://tavern.phuyu.cloud/guide/">上手指南</a>
         <a href="https://github.com/SillyTavern/SillyTavern" target="_blank" rel="noopener">SillyTavern · GitHub</a>
+        <a href="https://sillytavern.wiki/" target="_blank" rel="noopener">SillyTavern · 中文文档</a>
         <a href="https://aihorde.net/" target="_blank" rel="noopener">AI Horde · 免费算力</a>
         <span>体验站 · 筹备中</span>
       </div>
@@ -1306,6 +1369,30 @@ html.speaker-progress .progress { height: 5px; }
     es.forEach(function (e) { if (e.isIntersecting) e.target.classList.add("section-lit"); });
   }, secLitOpts);
   document.querySelectorAll("section").forEach(function (s) { secIO.observe(s); });
+
+  /* ---------- 第一幕 · 接龙现场：滚入视口逐字重演。静态全文本就在 HTML，脚本失败=全文直出 ---------- */
+  var chainEl = document.getElementById("chain"), chainOut = document.getElementById("chainOut");
+  if (chainEl && chainOut) {
+    var CHAIN_TXT = chainOut.textContent, chainPlayed = !!reduced;
+    function chainFinish() { chainOut.textContent = CHAIN_TXT; chainOut.classList.remove("typing"); }
+    addEventListener("beforeprint", chainFinish); /* 同源讲义：打印时立刻落定全文 */
+    if (!reduced) {
+      var chainIO = new IntersectionObserver(function (es) {
+        es.forEach(function (e) {
+          if (!e.isIntersecting || chainPlayed) return;
+          chainPlayed = true; chainIO.disconnect();
+          chainOut.classList.add("typing"); chainOut.textContent = "";
+          var i = 0;
+          (function tick() {
+            i = Math.min(CHAIN_TXT.length, i + 1);
+            chainOut.textContent = CHAIN_TXT.slice(0, i);
+            if (i < CHAIN_TXT.length) setTimeout(tick, 85); else chainOut.classList.remove("typing");
+          })();
+        });
+      }, { threshold: 0.5 });
+      chainIO.observe(chainEl);
+    }
+  }
 
   /* 章节点烛：六幕各一支，烛光跟随行进线（视口 42% 高度线）双向联动——
      旧实现是单向闩（isIntersecting 只加不减），向下滚永远亮着；现按缓存的位置每帧重算，倒退即熄。 */
