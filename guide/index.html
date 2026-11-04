@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#16100a" />
-  <meta name="description" content="SillyTavern 社团分享伴学指南：三条上手路径、模型接入、Key 安全、角色卡与 FAQ。零基础照着做，10 分钟上手。" />
+  <meta name="description" content="SillyTavern 社团分享上手指南：涵盖三条上手路径、模型接入、Key 安全、角色卡导入与 FAQ。零基础照着做，10 分钟开张自己的酒馆。" />
   <title>酒馆上手指南 · SillyTavern 社团分享</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath d='M24 6c3.4 4.2 5.4 7.2 5.4 10.2 0 3.2-2.4 5.6-5.4 5.6s-5.4-2.4-5.4-5.6C18.6 13.2 20.6 10.2 24 6Z' fill='%23e8a34c'/%3E%3Crect x='16.5' y='24' width='15' height='18' rx='3' fill='%233a2c1c'/%3E%3C/svg%3E" />
   <link rel="stylesheet" href="assets/tokens.css?v=2" />
@@ -23,7 +23,7 @@
       </svg>
       <span class="hero-mark"><svg class="fi" aria-hidden="true"><use href="#flame"/></svg>AI 社团 · 分享现场配套</span>
       <h1>酒馆上手指南</h1>
-      <p class="sub">今晚酒馆开张了。这一页照着做，把 <b>SillyTavern</b>（开源免费的角色扮演前端）搬回自己的电脑上——<b>10 分钟够用</b>。卡住了？社团群里有我们。</p>
+      <p class="sub">今晚酒馆开张。照着这一页一步步做，把 <b>SillyTavern</b>（开源免费的 AI 角色扮演前端）搬进你自己电脑——<b>10 分钟准能开张</b>。哪步卡住了？群里喊一声，我们在。</p>
       <div class="hero-meta">
         <span class="meta-chip">零基础友好</span>
         <span class="meta-chip">软件永久免费</span>
@@ -49,47 +49,47 @@
     <!-- ========== ① 三条上手路径 ========== -->
     <section id="paths">
       <div class="sec-head">
-        <h2><span class="sec-mark"><svg class="fi" aria-hidden="true"><use href="#flame"/></svg>第一步 · 装酒馆</span>三条上手路径，任选一条</h2>
-        <p class="lede">装的是同一个软件。三条路殊途同归：装完都会在浏览器打开 <code>http://localhost:8000</code>。<b>推荐从「最快」开始</b>，玩起来之后再考虑换路。</p>
+        <h2><span class="sec-mark"><svg class="fi" aria-hidden="true"><use href="#flame"/></svg>第一步 · 装酒馆</span>三条上手路径，挑一条走</h2>
+        <p class="lede">三条路装的是同一间酒馆，殊途同归——装好都在浏览器打开 <code>http://localhost:8000</code>。<b>新手直接走「最快」那条</b>，先玩上手，以后随时能换。</p>
       </div>
 
       <div class="card">
         <span class="lvl">最快 · 10 分钟</span>
         <h3>一键整合包</h3>
-        <p>下载 → 解压 → 双击。零命令行，适合先玩起来。</p>
+        <p>下载 → 解压 → 双击。全程零命令行，落地就能跑。</p>
         <ol class="steps">
-          <li>打开 <a class="link-out" href="https://github.com/SillyTavern/SillyTavern/releases/latest" target="_blank" rel="noopener">SillyTavern 官方 GitHub Releases</a>，在最新版本的 <b>Assets</b> 里下载 ZIP 压缩包。</li>
-          <li>解压到任意文件夹。</li>
-          <li>双击 <code>Start.bat</code>（Windows）；macOS / Linux 在终端运行 <code>Start.sh</code>。</li>
-          <li>浏览器打开 <code>http://localhost:8000</code>，酒馆开张。</li>
+          <li>打开 <a class="link-out" href="https://github.com/SillyTavern/SillyTavern/releases/latest" target="_blank" rel="noopener">SillyTavern 官方 GitHub Releases</a>，展开最新版的 <b>Assets</b>，下载里面的 ZIP 压缩包。</li>
+          <li>解压到顺手的文件夹。</li>
+          <li>直接双击 <code>Start.bat</code>（Windows）；macOS / Linux 打开终端跑 <code>Start.sh</code>。</li>
+          <li>浏览器打开 <code>http://localhost:8000</code>，你的酒馆正式开张。</li>
         </ol>
       </div>
 
       <div class="card">
         <span class="lvl">正统 · 5 分钟</span>
         <h3>git clone + Node（社区推荐姿势）</h3>
-        <p>先装 <a class="link-out" href="https://nodejs.org/" target="_blank" rel="noopener">Node.js</a>（18 或更新版本），然后一条命令：</p>
+        <p>先装好 <a class="link-out" href="https://nodejs.org/" target="_blank" rel="noopener">Node.js</a>（18 或更高版本），再跑这一条命令：</p>
         <div class="codeblock">
           <pre><code>git clone https://github.com/SillyTavern/SillyTavern.git &amp;&amp; cd SillyTavern &amp;&amp; npm install &amp;&amp; node server.js</code></pre>
         </div>
-        <p>浏览器打开 <code>http://localhost:8000</code>。好处：以后更新只要 <code>git pull</code> 一行命令。</p>
+        <p>浏览器打开 <code>http://localhost:8000</code>。甜头在后头：日后升级只要 <code>git pull</code> 一行命令。</p>
       </div>
 
       <div class="card">
         <span class="lvl">极客 · Docker</span>
         <h3>自托管（我们体验站的跑法）</h3>
-        <p>装好 Docker 后，官方镜像一条命令常驻——社团体验站就是这么部署的，多人共用一个酒馆。</p>
+        <p>装好 Docker，官方镜像一条命令后台常驻——今晚的社团体验站就是这么跑的，一间酒馆多人同坐。</p>
         <div class="codeblock" data-copy="docker pull ghcr.io/sillytavern/sillytavern:latest
 docker run -p 8000:8000 ghcr.io/sillytavern/sillytavern:latest">
           <pre><code>docker pull ghcr.io/sillytavern/sillytavern:latest
 docker run -p 8000:8000 ghcr.io/sillytavern/sillytavern:latest</code></pre>
         </div>
-        <p>浏览器打开 <code>http://localhost:8000</code>。想长期玩、数据留在容器外，按<a class="link-out" href="https://docs.sillytavern.app/installation/docker/" target="_blank" rel="noopener">官方 Docker 文档</a>挂载数据目录。</p>
+        <p>浏览器打开 <code>http://localhost:8000</code>。打算长住、想把存档留在容器外，照着<a class="link-out" href="https://docs.sillytavern.app/installation/docker/" target="_blank" rel="noopener">官方 Docker 文档</a>把数据目录挂出来。</p>
       </div>
 
       <div class="callout">
         <span class="tag"><svg class="fi" aria-hidden="true"><use href="#flame"/></svg>装好 ≠ 玩起来</span>
-        <p>装好只是有了「酒馆」这个界面，它还不会说话——下一步给它<b>接一个大脑（模型）</b>。</p>
+        <p>装好这步，只是搭起了「酒馆」的吧台，它还不会开口——下一步，给它<b>接一颗大脑（模型）</b>。</p>
       </div>
     </section>
 
@@ -97,12 +97,12 @@ docker run -p 8000:8000 ghcr.io/sillytavern/sillytavern:latest</code></pre>
     <section id="model">
       <div class="sec-head">
         <h2><span class="sec-mark"><svg class="fi" aria-hidden="true"><use href="#flame"/></svg>第二步 · 接大脑</span>模型接入：三件套</h2>
-        <p class="lede">酒馆自己不带模型，说话的「大脑」由你接进来。最通用的接法是 <b>OpenAI 兼容自定义端点</b>——填三件套即可。推荐 <b>DeepSeek</b>：注册即得，Flash 档一次对话<b>不到一分钱</b>。</p>
+        <p class="lede">酒馆本身不带模型，负责接话的「大脑」由你任选接入。最通用的接法是 <b>OpenAI 兼容自定义端点</b>——填齐三件套就行。首推 <b>DeepSeek</b>：注册即用，Flash 档聊一轮<b>不到一分钱</b>。</p>
       </div>
 
       <div class="card">
         <h3>DeepSeek 三件套（推荐）</h3>
-        <p>先去 <a class="link-out" href="https://platform.deepseek.com/" target="_blank" rel="noopener">DeepSeek 开放平台</a>注册，创建一个 API Key。</p>
+        <p>先去 <a class="link-out" href="https://platform.deepseek.com/" target="_blank" rel="noopener">DeepSeek 开放平台</a>注册账号，新建一把 API Key。</p>
         <dl class="trio">
           <div class="row">
             <dt>API 地址</dt>
@@ -111,56 +111,56 @@ docker run -p 8000:8000 ghcr.io/sillytavern/sillytavern:latest</code></pre>
           <div class="row">
             <dt>API Key</dt>
             <dd><code class="val">sk-xxxx</code>
-              <span class="note">用你自己注册生成的那串（也是 sk- 开头）。Key = 钱包，别外传，见下方三条纪律。</code></dd>
+              <span class="note">用你自己注册生成的那串（也是 sk- 开头）。Key = 钱包，别外传，见下方三条纪律。</span></dd>
           </div>
           <div class="row">
             <dt>模型名</dt>
             <dd><code class="val">deepseek-flash</code></dd>
           </div>
         </dl>
-        <p>在酒馆里的位置：左上角<b>插头图标</b>（API 连接）→ API 类型选 <b>Chat Completion</b> → 来源选 <b>Custom (OpenAI-compatible)</b> → 依次填 API 地址和 Key → 点连接，模型列表里选 <code>deepseek-flash</code>。</p>
+        <p>进酒馆照着点：点左上角<b>插头图标</b>（API 连接）→ API 类型选 <b>Chat Completion</b> → 来源选 <b>Custom (OpenAI-compatible)</b> → 填入上方的 API 地址和 Key → 点连接，模型列表选 <code>deepseek-flash</code>。</p>
       </div>
 
       <div class="callout warn">
         <span class="tag"><svg class="fi" aria-hidden="true"><use href="#flame"/></svg>模型名避坑</span>
-        <p>SillyTavern 官方文档的 DeepSeek 条目里写的还是 <b>deepseek-chat / deepseek-reasoner</b>，<b>已过时</b>。以 DeepSeek 官方文档（<a class="link-out" href="https://api-docs.deepseek.com/" target="_blank" rel="noopener">api-docs.deepseek.com</a>）为准：现行填 <b>deepseek-flash</b>。</p>
+        <p>SillyTavern 官方文档的 DeepSeek 词条里还印着 <b>deepseek-chat / deepseek-reasoner</b>，<b>已经过时</b>。请以 DeepSeek 官方文档（<a class="link-out" href="https://api-docs.deepseek.com/" target="_blank" rel="noopener">api-docs.deepseek.com</a>）为准，现在一律填 <b>deepseek-flash</b>。</p>
       </div>
 
       <div class="card">
         <h3>不想花钱？两条免费路</h3>
-        <p><b>① 内置免费档</b>——AI Horde / Pollinations：酒馆开箱即用，无需注册 Key，代价是共享算力要排队、速度看运气。第一次打开酒馆时按引导选「免费」就能试。</p>
-        <p><b>② 本地 Ollama</b>——去 <a class="link-out" href="https://ollama.com/" target="_blank" rel="noopener">ollama.com</a> 装好后，<code>ollama pull 模型名</code> 拉一个本地模型，酒馆里 API 来源选 Ollama、地址保持 <code>http://localhost:11434</code> 即可。断网也能玩，隐私最强，代价是吃你笔记本的性能。</p>
+        <p><b>① 内置免费档</b>——AI Horde / Pollinations：开箱即用，不用注册 Key；代价是蹭公共算力得排队，快慢看运气。首次进酒馆按引导选「免费」就能直接试。</p>
+        <p><b>② 本地 Ollama</b>——去 <a class="link-out" href="https://ollama.com/" target="_blank" rel="noopener">ollama.com</a> 装好软件，终端跑 <code>ollama pull 模型名</code> 拉一颗模型到本地；回酒馆把 API 来源设为 Ollama，地址留默认的 <code>http://localhost:11434</code> 就成。断网照样聊，隐私最稳，代价是烧你笔记本的显卡和内存。</p>
       </div>
     </section>
 
     <!-- ========== ③ Key 安全三条 ========== -->
     <section id="safety">
       <div class="sec-head">
-        <h2><span class="sec-mark"><svg class="fi" aria-hidden="true"><use href="#flame"/></svg>纪律 · 安全与避坑</span>Key 安全：三条纪律</h2>
-        <p class="lede">不是免责套话，是<b>真实世界的使用纪律</b>——和幻灯片第 20 页一致。</p>
+        <h2><span class="sec-mark"><svg class="fi" aria-hidden="true"><use href="#flame"/></svg>纪律 · 安全与避坑</span>Key 安全：三条铁律</h2>
+        <p class="lede">这三条不是免责套话，是<b>真金白银换来的铁律</b>——和幻灯片第 20 页一致。</p>
       </div>
 
       <div class="card rule-card">
         <span class="no">纪律 01 · KEY</span>
         <h3>API Key = 钱包</h3>
-        <p>别提交到 <code>GitHub</code>，别发群里，别贴截图。泄漏 = 别人拿你的钱包刷 API。本页教程里的 <code>sk-xxxx</code> 只是占位符，真 Key 只能是你自己注册的那串。</p>
+        <p>别传上 <code>GitHub</code>，别发群里，别截进图里。Key 一旦漏出去，等于把钱包递给别人刷。本页写的 <code>sk-xxxx</code> 只是占位符，真 Key 必须去平台自己领。</p>
       </div>
 
       <div class="card rule-card">
         <span class="no">纪律 02 · 隐私</span>
         <h3>云端 API 看得到你的全部对话</h3>
-        <p>发出去的每个字都会经过别人服务器——隐私内容想清楚再发。想要隐私最强档，用本地模型（Ollama）。</p>
+        <p>你发出的每个字都会过一遍云端服务器——涉及个人隐私，落笔前先掂量。真想把话锁死在屋里，跑本地模型（Ollama）。</p>
       </div>
 
       <div class="card rule-card">
         <span class="no">纪律 03 · 分寸</span>
         <h3>内容有护栏，底线要自己守</h3>
-        <p>违法有害内容别碰。社团体验站<b>有日志</b>——互联网没有真正 deleted。</p>
+        <p>违法有害内容别碰。社团体验站后台<b>留有日志</b>——互联网上没有真正的 deleted。</p>
       </div>
 
       <div class="callout warn">
         <span class="tag"><svg class="fi" aria-hidden="true"><use href="#flame"/></svg>自托管要清楚</span>
-        <p>SillyTavern 官方明示：多用户密码是<b>「非安全特性」</b>，全部数据<b>明文存储</b>。它只是门禁，不是保险箱——多人共用一台酒馆时，别把敏感内容放上去。</p>
+        <p>SillyTavern 官方把话挑得很明：多用户密码属于<b>「非安全特性」</b>，后台数据一律<b>明文存储</b>。那道密码只是虚掩的店门，不是保险柜——多人拼桌共用酒馆时，敏感话别往上放。</p>
       </div>
     </section>
 
@@ -168,18 +168,18 @@ docker run -p 8000:8000 ghcr.io/sillytavern/sillytavern:latest</code></pre>
     <section id="cards">
       <div class="sec-head">
         <h2><span class="sec-mark"><svg class="fi" aria-hidden="true"><use href="#flame"/></svg>加菜 · 角色卡</span>角色卡：拿来即玩</h2>
-        <p class="lede">不会写提示词没关系——角色卡里藏的就是现成提示词（名字、人设、开场白的结构化设定），<b>导入即玩</b>。V2 / V3 规范的 PNG 卡直接拖进酒馆窗口就完成导入，JSON 卡在角色管理里点导入。</p>
+        <p class="lede">不会写提示词？完全不耽误——角色卡肚子里装的就是写好的全套设定（名字、人设、开场白一应俱全），<b>导入即玩</b>。V2 / V3 规范的 PNG 卡，抓过来往酒馆窗口里一拖就进去了；JSON 卡在角色管理面板里点导入。</p>
       </div>
 
       <div class="card">
         <h3>最干净的起点：官方自带示例卡</h3>
-        <p>SillyTavern 仓库自带几张示例角色卡，随软件一起分发，<b>版权干净</b>（开放源码许可）：</p>
+        <p>SillyTavern 官方仓库自带几张示例角色卡，随安装包一起发，<b>版权干净</b>（开源许可，放心拿来试手）：</p>
         <ol class="steps">
-          <li>打开<a class="link-out" href="https://github.com/SillyTavern/SillyTavern/tree/release/default/content" target="_blank" rel="noopener">官方仓库 <code>default/content/</code> 目录</a>（Seraphina、Eldoria 等都在这里）。</li>
-          <li>点开 <code>default_Seraphina.png</code>，右上角「下载原始文件」保存 PNG；或直接用<a class="link-out" href="https://raw.githubusercontent.com/SillyTavern/SillyTavern/release/default/content/default_Seraphina.png" target="_blank" rel="noopener">这张直链</a>。</li>
-          <li>把 PNG 文件<b>直接拖进酒馆窗口</b>（角色面板）——完成导入，开聊。</li>
+          <li>打开<a class="link-out" href="https://github.com/SillyTavern/SillyTavern/tree/release/default/content" target="_blank" rel="noopener">官方仓库 <code>default/content/</code> 目录</a>（Seraphina、Eldoria 等看板角色都在里头）。</li>
+          <li>点开 <code>default_Seraphina.png</code>，点右上角「下载原始文件」存好 PNG；嫌麻烦直接点<a class="link-out" href="https://raw.githubusercontent.com/SillyTavern/SillyTavern/release/default/content/default_Seraphina.png" target="_blank" rel="noopener">这张直链</a>。</li>
+          <li>把存好的 PNG 图<b>直接拖进酒馆窗口</b>（角色面板）——人就落座了，开聊。</li>
         </ol>
-        <p>玩多了自然会看懂卡里的门道：从<b>改一张现成的卡</b>开始，比从零写快得多。</p>
+        <p>聊上几轮，卡里的门道自然就摸清了：先从<b>改一张现成的卡</b>下手，比对着白纸硬憋快得多。</p>
       </div>
     </section>
 
@@ -191,29 +191,29 @@ docker run -p 8000:8000 ghcr.io/sillytavern/sillytavern:latest</code></pre>
 
       <details>
         <summary>手机能玩吗？</summary>
-        <p>能。电脑上跑酒馆，手机浏览器访问同一个局域网地址即可——界面本来就是竖屏聊天 App 的样子。也有 Termux 全手机方案，属于进阶折腾；社团分享现场，扫码用我们的体验站最省事。</p>
+        <p>能。电脑后台挂着酒馆，手机连同一局域网，用浏览器敲地址就能进——酒馆做出来本来就是竖屏聊天软件的模样。硬核玩家还能用 Termux 把整套塞进安卓机；今晚在分享现场，直接扫码进社团体验站最省事。</p>
       </details>
 
       <details>
         <summary>要花钱吗？</summary>
-        <p>软件本身<b>永久免费开源</b>。大脑：AI Horde / Pollinations 免费开箱即用；想要质量，DeepSeek Flash 档一次对话<b>不到一分钱</b>；本地模型 = 电费。</p>
+        <p>酒馆软件本身<b>永久免费开源</b>。至于接进来的「大脑」：AI Horde / Pollinations 免费开箱即用；追求质量，DeepSeek Flash 档聊一轮<b>不到一分钱</b>；跑本地模型只花你家那点电费。</p>
       </details>
 
       <details>
         <summary>和 Character.AI 什么区别？</summary>
-        <p>C.AI 是<b>捆绑套餐</b>：模型、界面、数据都在别人服务器。酒馆只拆出「界面」这一层——大脑随便换、数据在你手里、提示词全透明可改。</p>
+        <p>C.AI 卖的是<b>捆绑套餐</b>：模型、界面、聊天记录全攥在别人手里。酒馆只做纯粹的「吧台界面」——大脑随你换，存档留本地，底层提示词每一行都摊开任你改。</p>
       </details>
 
       <details>
         <summary>不会写提示词怎么办？</summary>
-        <p>从现成角色卡开始（见上一节），<b>导入即玩</b>。玩多了自然会看懂卡里的门道——从改一张卡开始，比从零写快得多。</p>
+        <p>往上翻一节，先拿现成的角色卡上手，<b>拖进来就能聊</b>。等拆过几张好卡，写法自然就通了——踩着现成模板改，永远比硬憋快。</p>
       </details>
     </section>
 
     <!-- ========== 页脚 ========== -->
     <footer>
       <div class="salute">今晚，酒馆永远开张。</div>
-      <p>Q&amp;A 弹药提示：卡住了<b style="color:var(--ink)">社团群里有我们</b>——群里喊一声就行。</p>
+      <p>Q&amp;A 兜底提示：哪步卡住了，<b style="color:var(--ink)">社团群里有我们</b>——随时群里招呼一声。</p>
       <p class="sig"><a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">晋ICP备2025069595号-2</a></p>
     </footer>
 

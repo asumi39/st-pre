@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#16100a" />
-<meta name="description" content="SillyTavern 社团分享 · 单页特稿：以深夜烛光酒馆为隐喻，零基础玩懂 LLM 原理与本地 AI 前端。含真实流式对话演示。" />
+<meta name="description" content="SillyTavern 社团分享 · 单页特稿：借一间深夜烛光酒馆，带你零基础玩透 LLM 原理与本地 AI 前端。内含真实流式对话演示。" />
 <title>今晚，酒馆开张 · SillyTavern 社团分享</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath d='M24 4c4.4 5.6 7 9.6 7 13.4 0 4.2-3 7.2-7 7.2s-7-3-7-7.2C17 13.6 19.6 9.6 24 4Z' fill='%23e8a34c'/%3E%3Crect x='16.5' y='27' width='15' height='17' rx='3' fill='%23c05f33'/%3E%3C/svg%3E" />
 <meta property="og:title" content="今晚，酒馆开张 · SillyTavern 社团分享" />
@@ -781,7 +781,7 @@ html.speaker-progress .progress { height: 5px; }
   <span class="hero-spark" aria-hidden="true"></span>
   <div class="hero-inner">
     <h1 class="display">今晚，<br/>酒馆开张</h1>
-    <p class="lede">SillyTavern，中文圈叫它「酒馆」——一个开源的 AI 角色扮演前端。一杯酒的时间，零基础玩懂大语言模型，顺手把全部原理带走。</p>
+    <p class="lede">SillyTavern，中文圈叫它「酒馆」——一个开源的 AI 角色扮演前端。花一杯酒的工夫，零基础把大语言模型玩透，顺手将整套底层原理揣进兜里。</p>
     <a class="btn" href="#hook">推门而入</a>
   </div>
   <div class="scroll-cue" aria-hidden="true"><span class="flame-i"><svg viewBox="0 0 100 120" width="14" height="17"><use href="#flame"/></svg></span>往下滚</div>
@@ -792,10 +792,10 @@ html.speaker-progress .progress { height: 5px; }
   <aside class="spk" aria-hidden="true">
     <h3>开场 · 讲者备注</h3>
     <ul>
-      <li>开场白：「今晚不讲 PPT，讲一个能玩的东西。」</li>
-      <li>举手互动：听过「酒馆」这个词的请举手，30 秒。</li>
-      <li>今晚结束时：看懂 AI 角色扮演全部原理 + 自己搭一个。</li>
-      <li>串场：先别解释，直接看。</li>
+      <li>亮屏开场：「今晚不念 PPT，带大家玩个真家伙。」</li>
+      <li>举手摸底：之前听过「酒馆」这词的同学举个手，留 30 秒。</li>
+      <li>立下目标：散场前看透 AI 角色扮演全部原理 + 亲手搭起一间。</li>
+      <li>串场：少废话，直接上第一杯。</li>
     </ul>
   </aside>
 </section>
@@ -804,7 +804,7 @@ html.speaker-progress .progress { height: 5px; }
 <section id="hook" aria-labelledby="h-hook">
   <div class="wrap">
     <h2 class="display rise" id="h-hook">序幕 · 先看一场对话</h2>
-    <p class="statement rise d1">先别解释。先看一段对话——它像不像你手机里的聊天 App？你猜，是谁在「扮演」对面那位？答案可能和你想的不一样。</p>
+    <p class="statement rise d1">理论先放一放，看段对话——像不像你手机里的聊天 App？猜猜看，对面那位是谁在「扮演」？答案八成和你想的不一样。</p>
     <div class="hook-stage rise d2">
       <div class="chat" id="chat" data-ui>
         <div class="chat-head">
@@ -814,25 +814,25 @@ html.speaker-progress .progress { height: 5px; }
         </div>
         <div class="chat-body" id="chatBody" aria-live="polite"></div>
         <div class="chat-foot">
-          <input id="chatInput" type="text" placeholder="跟老板说点什么……" aria-label="对话输入" />
+          <input id="chatInput" type="text" placeholder="跟老板搭句话试试……" aria-label="对话输入" />
           <button class="chat-send" id="chatSend">发送</button>
         </div>
       </div>
       <div class="hook-side">
-        <p class="note chat-note" id="chatNote">老板有两副嗓子：开场是离线罐头——不花钱、断网也能演；你发一句话，他就去接一颗真大脑，每个字都是此刻生成的。断了网？自动回到罐头，酒馆照常开门。同一副界面，换一颗大脑——这就是前端。</p>
+        <p class="note chat-note" id="chatNote">这位老板有两副嗓子：开场是离线罐头——不花钱，断网照样演；你回他一句，他立马接上真大脑，字字都是当场现编的。断了网？秒切回罐头，酒馆照常迎客。同一副面孔，随时换大脑——这就叫前端。</p>
         <figure class="hook-shot">
           <span class="shot"><img src="assets/ui-mobile.png" alt="" width="220" height="124" loading="lazy"></span>
           <figcaption>真机实录 · SillyTavern 手机端</figcaption>
         </figure>
-        <p class="note hook-exit">想边看边装？<a href="https://tavern.phuyu.cloud/guide/" target="_blank" rel="noopener">上手指南</a>五分钟入门，先看离线回放不用花一分钱。</p>
+        <p class="note hook-exit">手痒想边看边装？<a href="https://tavern.phuyu.cloud/guide/" target="_blank" rel="noopener">上手指南</a>五分钟进门，先看离线回放一分钱不花。</p>
       </div>
     </div>
     <aside class="spk" aria-hidden="true">
       <h3>序幕 · 讲者备注</h3>
       <ul>
-        <li>放完提问：这段对话是谁在「扮演」？它读过设定吗？</li>
-        <li>「答案可能和你想的不一样。」停两拍。</li>
-        <li>串场：要懂酒馆，得先懂它后面那颗大脑。</li>
+        <li>演示完抛问题：对面是谁在「扮演」？它真读懂设定了吗？</li>
+        <li>念出「答案八成和你想的不一样」，停两拍。</li>
+        <li>串场：想摸透酒馆，先去后厨看看那颗大脑。</li>
       </ul>
     </aside>
   </div>
@@ -843,14 +843,14 @@ html.speaker-progress .progress { height: 5px; }
     <div class="drop-shutter">
     <div class="drop-stage">
       <div class="drop-inner">
-        <img class="brain-photo" src="assets/cover-hero.png" alt="深夜酒馆内景：木吧台上一点烛光" width="1536" height="1024" />
+        <img class="brain-photo" src="assets/cover-hero.png" alt="深夜酒馆内景：旧木吧台上摇曳的烛光" width="1536" height="1024" />
         <div class="drop-glow" aria-hidden="true"></div>
         <div class="drop-bloom" aria-hidden="true"></div>
       </div>
       <div class="band-scrim" aria-hidden="true"></div>
       <div class="band-caption">
         <h2 class="display" id="h-brain">第一幕 · 接龙机器</h2>
-        <p class="lede">大语言模型（LLM）只做一件事：预测下一个字。它不是在「思考」，是在玩一场规模空前的文字接龙。</p>
+        <p class="lede">大语言模型（LLM）平生只干一件事：猜下一个字。它压根不会「思考」，只是在玩一场规模空前的文字接龙。</p>
       </div>
     </div>
     </div>
@@ -860,18 +860,18 @@ html.speaker-progress .progress { height: 5px; }
       <span class="chain-in">「海绵宝宝去蟹堡王上」——</span><span class="chain-out" id="chainOut">班，路上遇到了派大星……</span>
     </div>
     <div class="points" data-stagger>
-          <div class="point rise d1"><h3><svg class="flame-i" viewBox="0 0 100 120"><use href="#flame"/></svg>逐字生成</h3><p>上面这句就是这么蹦出来的——每个字都是一个一个猜出来的，猜完一个，再猜下一个。</p></div>
-          <div class="point rise d2"><h3><svg class="flame-i" viewBox="0 0 100 120"><use href="#flame"/></svg>没有灵魂，只有概率</h3><p>没有神秘的「自我」。所谓人设，本质上只是喂给它的文字。</p></div>
-          <div class="point rise d2"><h3><svg class="flame-i" viewBox="0 0 100 120"><use href="#flame"/></svg>它没有记忆</h3><p>每轮对话，它都把全部历史重新读一遍。忘了不是故障，是物理限制。</p></div>
-          <div class="point rise d3"><h3><svg class="flame-i" viewBox="0 0 100 120"><use href="#flame"/></svg>上下文窗口</h3><p>窗口 = 它一次能「看见」的字数上限。后面所有功能，都是在给这扇窗打补丁。</p></div>
+          <div class="point rise d1"><h3><svg class="flame-i" viewBox="0 0 100 120"><use href="#flame"/></svg>逐字生成</h3><p>上面那句话就是这么蹦出来的——字字都是当场现猜的，猜中一个，顺着再猜下一个。</p></div>
+          <div class="point rise d2"><h3><svg class="flame-i" viewBox="0 0 100 120"><use href="#flame"/></svg>没有灵魂，只有概率</h3><p>哪有什么神秘的「自我」。所谓人设，不过是你提前喂给它的字。</p></div>
+          <div class="point rise d2"><h3><svg class="flame-i" viewBox="0 0 100 120"><use href="#flame"/></svg>它没有记忆</h3><p>每聊一轮，它都得把全部旧账从头重读一遍。忘事不是出了故障，是物理限制。</p></div>
+          <div class="point rise d3"><h3><svg class="flame-i" viewBox="0 0 100 120"><use href="#flame"/></svg>上下文窗口</h3><p>窗口 = 它一眼能「看见」的字数上限。往后讲的所有功能，全是在给这扇窗打补丁。</p></div>
         </div>
     <p class="sim-callout rise d3"><a class="btn" href="#simulator">拖一拖那扇窗</a></p>
     <aside class="spk" aria-hidden="true">
       <h3>第一幕 · 讲者备注</h3>
       <ul>
-        <li>「文字接龙」类比贯穿全场，反复回扣。</li>
-        <li>没有神秘「灵魂」，只有概率。</li>
-        <li>串场：接龙机器有个天生的毛病——记性差。</li>
+        <li>咬死「文字接龙」这个比方，全场反复回扣。</li>
+        <li>挑明底牌：没有「灵魂」，只有概率。</li>
+        <li>串场：这台接龙机器有个胎里带的毛病——记性差。</li>
       </ul>
     </aside>
   </div>
@@ -881,7 +881,7 @@ html.speaker-progress .progress { height: 5px; }
 <section class="sim" id="simulator" aria-labelledby="h-sim" data-ui>
   <div class="sim-inner">
     <h2 class="display rise" id="h-sim">它没有记忆</h2>
-    <p class="sim-lede rise d1">这是整场分享的地基：每发一条消息，全部历史都要重新装进那扇窗。拖动滑块，看对话变长——直到最早的记忆被挤出窗外。</p>
+    <p class="sim-lede rise d1">这是今晚整场分享的地基：你每发一句话，全部旧账都得重新塞进那扇窗。拉动滑块，看对话越聊越长——直到最早的记忆被硬生生挤出窗外。</p>
     <div class="sim-rig">
       <div class="sim-chat rise d1" id="simChat" aria-hidden="true"></div>
       <div class="rise d2">
@@ -894,16 +894,16 @@ html.speaker-progress .progress { height: 5px; }
                  aria-label="对话轮数" />
           <span class="sim-readout" id="simReadout">4 条消息</span>
         </div>
-        <p class="sim-verdict" id="simVerdict">窗口还很宽裕，一切都记得。</p>
-        <p class="sim-reality">教学用了 6 条的小窗；真实模型的窗口动辄十几万字——但挤出即忘，机制一模一样。</p>
+        <p class="sim-verdict" id="simVerdict">窗口还宽裕，桩桩件件都记得。</p>
+        <p class="sim-reality">演示故意用了 6 条的小窗；真模型的窗口动辄装下十几万字——但挤出窗外照样失忆，机制一模一样。</p>
       </div>
     </div>
     <aside class="spk" aria-hidden="true">
       <h3>模拟器 · 讲者备注</h3>
       <ul>
-        <li>失忆不是故障，是物理限制：每次请求都重发全部历史。</li>
-        <li>记住这页：世界书、总结、向量检索全是在这扇窗上打补丁。</li>
-        <li>串场：大脑有了毛病，就需要一个懂它的管家——酒馆登场。</li>
+        <li>点透：失忆不是故障，是物理限制，每次请求都得重发全部历史。</li>
+        <li>敲黑板：往后的世界书、总结、向量检索，全是在这扇窗上打补丁。</li>
+        <li>串场：大脑天生忘性大，就得配个懂它的掌柜——酒馆这就开张。</li>
       </ul>
     </aside>
   </div>
@@ -916,7 +916,7 @@ html.speaker-progress .progress { height: 5px; }
     <div class="panel rise d1">
       <div>
         <p class="statement">界面 ≠ 智能。</p>
-        <p class="lede" style="margin-top:14px; max-width:26em">酒馆把界面拆出来单卖：大脑随你换，改一个接口地址就行。</p>
+        <p class="lede" style="margin-top:14px; max-width:26em">酒馆把吧台界面单独拆了出来：后厨的大脑随你换，改一行接口地址就行。</p>
         <figure class="shot shutter" id="shutterShot">
           <img src="assets/ui-desktop.png" alt="SillyTavern 桌面端真实界面：深色主题的聊天窗口" width="1460" height="900" loading="lazy" />
         </figure>
@@ -924,15 +924,15 @@ html.speaker-progress .progress { height: 5px; }
       <div>
         <div class="block">
           <h3>身世</h3>
-          <p>2023 年 2 月从 TavernAI 分叉，社区接管至今：300 多名贡献者、三年多独立开发，官方承诺永远免费开源。当前版本 v1.19.0（2026 年 9 月，AGPL-3.0），仍在活跃更新。</p>
+          <p>2023 年 2 月从 TavernAI 分家出来，由社区接管至今：300 多名贡献者、三年多独立打磨，官方铁口承诺永远免费开源。当前版本 v1.19.0（2026 年 9 月，AGPL-3.0），至今仍在高频更新。</p>
         </div>
         <div class="block">
           <h3>你的数据在你手里</h3>
-          <p>它跑在你自己的电脑上：聊天记录、角色卡、设定全是本地文件。可备份、可分享、可搬家，换电脑打包就走。ChatGPT 是界面和大脑焊死的捆绑套餐；酒馆反过来——大脑随你换，改一个接口地址就行。</p>
+          <p>它就跑在你自己电脑上：聊天记录、角色卡、设定全是本地文件。能备份、能分享、能搬家，换台电脑打包就能走。ChatGPT 是把界面和大脑焊死的捆绑套餐；酒馆偏要反着来——大脑随你挑，换个接口地址就接上。</p>
         </div>
         <div class="block">
           <h3>它适合谁</h3>
-          <p>为「折腾党」而生：官方给自己的定位是 LLM Frontend for Power Users。想要开箱即用的轻量聊天，RisuAI 之类更合适——门槛本身就是今晚要拆掉的东西。</p>
+          <p>专为「折腾党」而生：官方给自己的定位就是 LLM Frontend for Power Users。若只想开箱即用随便聊聊，RisuAI 之类更对胃口——至于酒馆这道门槛，正是咱们今晚要亲手拆掉的东西。</p>
         </div>
         <p style="margin-top:34px"><a class="btn" href="https://github.com/SillyTavern/SillyTavern" target="_blank" rel="noopener">GitHub 仓库</a></p>
       </div>
@@ -942,17 +942,17 @@ html.speaker-progress .progress { height: 5px; }
       <div class="rise">
         <h3><svg class="flame-i" viewBox="0 0 100 120"><use href="#flame"/></svg>适合你，如果——</h3>
         <ul>
-          <li>你想掌控细节：提示词、参数、记忆策略全可调</li>
-          <li>你想真的理解 LLM：每个功能都是一层原理</li>
-          <li>你是创作者、跑团党、语言陪练党</li>
+          <li>你想把控全局细节：提示词、参数、记忆策略全可调</li>
+          <li>你想摸透 LLM 的底细：每项功能都是一层原理</li>
+          <li>你是创作者、跑团党或语言陪练党</li>
         </ul>
       </div>
       <div class="nay rise d1">
         <h3><svg class="flame-i dim" viewBox="0 0 100 120"><use href="#flame"/></svg>先别折腾，如果——</h3>
         <ul>
-          <li>只想开箱即用聊个天（轻量替代更合适）</li>
-          <li>不愿意花 10 分钟做一次安装</li>
-          <li>期待它「自己什么都会」——它只是个前端</li>
+          <li>只想开箱即用随便聊个天（轻量替代更省心）</li>
+          <li>懒得花 10 分钟动手装一回软件</li>
+          <li>指望它「自己什么都会」——它只是个前端</li>
         </ul>
       </div>
     </div>
@@ -960,18 +960,18 @@ html.speaker-progress .progress { height: 5px; }
     <div class="backends">
       <h3 class="display rag-head" style="margin-top:0">万能插头：能接的大脑</h3>
       <div style="margin-top:18px">
-        <div class="backend-row rise"><svg class="flame-i" viewBox="0 0 100 120"><use href="#flame"/></svg><b>云端 API</b><span>DeepSeek / GLM / Qwen / Claude / Gemini / OpenRouter……质量最好，按量付费，DeepSeek 一次对话不到一分钱</span></div>
-        <div class="backend-row rise d1"><svg class="flame-i" viewBox="0 0 100 120"><use href="#flame"/></svg><b>本地模型</b><span>KoboldCpp / llama.cpp / Ollama，笔记本就能跑小模型——断网也能玩，宿舍里就行</span></div>
-        <div class="backend-row rise d2"><svg class="flame-i" viewBox="0 0 100 120"><use href="#flame"/></svg><b>完全免费</b><span>AI Horde 众包算力、Pollinations——开箱即用，零成本体验全部功能</span></div>
+        <div class="backend-row rise"><svg class="flame-i" viewBox="0 0 100 120"><use href="#flame"/></svg><b>云端 API</b><span>DeepSeek / GLM / Qwen / Claude / Gemini / OpenRouter……成色最好，用多少付多少，DeepSeek 聊上一轮还不到一分钱</span></div>
+        <div class="backend-row rise d1"><svg class="flame-i" viewBox="0 0 100 120"><use href="#flame"/></svg><b>本地模型</b><span>KoboldCpp / llama.cpp / Ollama，普通笔记本就能跑起小模型——断了网照样转，窝在宿舍就能玩</span></div>
+        <div class="backend-row rise d2"><svg class="flame-i" viewBox="0 0 100 120"><use href="#flame"/></svg><b>完全免费</b><span>AI Horde 众包算力、Pollinations——开箱即连，零成本把全套功能玩个遍</span></div>
       </div>
     </div>
     <aside class="spk" aria-hidden="true">
       <h3>第二幕 · 讲者备注</h3>
       <ul>
-        <li>全场最重要的一页：界面 ≠ 智能。</li>
-        <li>LIVE 演示和体验站用的都是这条原理。</li>
-        <li>免费档就能玩全部功能；本地模型=断网也能玩。</li>
-        <li>串场：那它到底能玩出什么花？进入第三幕。</li>
+        <li>压轴重点，加重语气念：界面 ≠ 智能。</li>
+        <li>回扣前文：刚才 LIVE 演示和体验站全靠这招。</li>
+        <li>打消顾虑：免费档能玩全套功能；本地模型断网也能跑。</li>
+        <li>串场：吧台搭好了，今晚端什么菜？翻开第三幕。</li>
       </ul>
     </aside>
   </div>
@@ -981,34 +981,34 @@ html.speaker-progress .progress { height: 5px; }
 <section id="menu" aria-labelledby="h-menu" style="padding-top:clamp(44px,6vw,96px)">
   <div class="wrap">
     <h2 class="display rise" id="h-menu">第三幕 · 今晚的菜单</h2>
-    <p class="lede rise d1">酒馆能玩什么？按菜单点。每一道都是同一个原理的变体：把文字喂进去，把角色请出来。</p>
+    <p class="lede rise d1">酒馆里能玩出什么花样？照着菜单点。道道菜都是同一套手艺的变体：把字喂进去，把活人请出来。</p>
 
     <div class="menu-cat rise"><h3>桌上菜</h3><span>五道 · 全部本地</span></div>
     <ul class="menu-list" data-stagger>
       <li class="menu-item rise">
         <img class="bullet" src="assets/demo-card.png" alt="" style="filter:brightness(1.15)" width="128" height="128" loading="lazy" />
         <div><h4>角色卡 · 一张 PNG 的魔法<span class="tag">结构化提示词</span></h4>
-          <p>名字、描述、性格、场景、示例对话、首条消息——图片是皮，藏在里面的 JSON 是魂。V2/V3 规范互通，社区百万张卡直接导入就能玩。</p></div>
+          <p>名字、描述、性格、场景、示例对话、首条消息——PNG 图片只是外皮，藏在里头的 JSON 才是魂。V2/V3 规范互通，社区百万张现成卡拖进来就能聊。</p></div>
       </li>
       <li class="menu-item rise d1">
         <img class="bullet" src="assets/ui-mobile.png" alt="" style="object-position:50% 40%;filter:brightness(1.5)" width="128" height="128" loading="lazy" />
         <div><h4>群聊 · 让角色同台<span class="tag">一个模型演一台戏</span></h4>
-          <p>多个角色头像互相接话，你 @ 谁谁说话。原理没变：提示词里写了「你现在扮演房间里所有人」。</p></div>
+          <p>一桌角色轮流接茬，你 @ 谁谁开口。底子一点没变：无非在提示词里塞了句「你现在扮演屋里所有人」。</p></div>
       </li>
       <li class="menu-item rise">
         <img class="bullet" src="assets/worldbook.png" alt="" style="filter:brightness(1.45)" width="128" height="128" loading="lazy" />
         <div><h4>世界书 · 会自己出现的设定<span class="tag">RAG 的种子</span></h4>
-          <p>设定库平时睡觉，聊天里提到「蟹堡王」，那条设定才醒来、飞进请求包。记住这个动作，第四幕给它一个学名。</p></div>
+          <p>设定库平时只管睡大觉，等聊天里提到「蟹堡王」，对应那条才猛地醒来、钻进请求包。记牢这个动作，第四幕给它揭晓学名。</p></div>
       </li>
       <li class="menu-item rise d1">
         <img class="bullet" src="assets/ui-skin.png" alt="" style="object-position:50% 30%;filter:brightness(1.75)" width="128" height="128" loading="lazy" />
         <div><h4>插件货架 · 给酒馆装插件<span class="tag">一切皆是文字加工</span></h4>
-          <p>TTS 语音、AI 绘图、自动翻译、总结记忆、正则渲染成状态栏……全在改写「发出去的文字」、美化「收回来的文字」。</p></div>
+          <p>TTS 语音、AI 绘图、自动翻译、总结记忆、正则渲染出状态栏……花样再多，干的也是同一件事：改写「发出去的字」，梳妆「收回来的字」。</p></div>
       </li>
       <li class="menu-item rise">
         <img class="bullet" src="assets/ui-desktop.png" alt="" style="object-position:50% 18%;filter:brightness(1.55)" width="128" height="128" loading="lazy" />
         <div><h4>界面 · 从极客到手机 App<span class="tag">主题随便换</span></h4>
-          <p>桌面深色主题、手机竖屏像聊天 App、正则 + CSS 能把消息渲染成游戏 UI。界面是前端——所以皮肤随便换，大脑不受影响。</p></div>
+          <p>桌面端是深色极客风，手机竖屏看着就像聊天 App，用正则 + CSS 还能把对话直接画成游戏 UI。界面只是前端——外皮随你折腾，后厨大脑纹丝不动。</p></div>
       </li>
     </ul>
 
@@ -1016,30 +1016,30 @@ html.speaker-progress .progress { height: 5px; }
     <ul class="menu-list" data-stagger>
       <li class="menu-item"><button class="pick" data-vid="rpg" aria-pressed="true">
         <span class="thumb"><img class="bullet" src="assets/play-rpg.png" alt="" width="128" height="128" loading="lazy" /><i class="pb" aria-hidden="true"><svg viewBox="0 0 12 14"><path d="M0 0l12 7L0 14Z"/></svg></i><span class="now">正在放映</span></span>
-        <div><h4>跑团 GM<span class="tag">骰子 · 剧情推进</span></h4><p>掷骰判定、状态栏、剧情推进，一个人也能开团。</p></div>
+        <div><h4>跑团 GM<span class="tag">骰子 · 剧情推进</span></h4><p>掷骰判定、状态栏、推着剧情走，半夜一个人也能开团。</p></div>
       </button></li>
       <li class="menu-item"><button class="pick" data-vid="tutor" aria-pressed="false">
         <span class="thumb"><img class="bullet" src="assets/play-tutor.png" alt="" width="128" height="128" loading="lazy" /><i class="pb" aria-hidden="true"><svg viewBox="0 0 12 14"><path d="M0 0l12 7L0 14Z"/></svg></i><span class="now">正在放映</span></span>
-        <div><h4>语言陪练<span class="tag">纠错 · 情景对话</span></h4><p>顺手纠错、代入情景，比背单词软件有耐心得多。</p></div>
+        <div><h4>语言陪练<span class="tag">纠错 · 情景对话</span></h4><p>边聊边纠错、随时入戏，比背单词软件有耐心得多。</p></div>
       </button></li>
       <li class="menu-item"><button class="pick" data-vid="coauthor" aria-pressed="false">
         <span class="thumb"><img class="bullet" src="assets/play-coauthor.png" alt="" width="128" height="128" loading="lazy" /><i class="pb" aria-hidden="true"><svg viewBox="0 0 12 14"><path d="M0 0l12 7L0 14Z"/></svg></i><span class="now">正在放映</span></span>
-        <div><h4>小说共创<span class="tag">给开头 · AI 接龙</span></h4><p>你起个头，它接龙改写——接龙机器的本职工作。</p></div>
+        <div><h4>小说共创<span class="tag">给开头 · AI 接龙</span></h4><p>你起个头，它顺着接龙改写——这本就是接龙机器的老本行。</p></div>
       </button></li>
     </ul>
     <div class="vid-stage rise">
       <div class="vid-frame"><video id="vidPlayer" src="assets/rpg.mp4" poster="assets/play-rpg.png" controls preload="none" playsinline></video></div>
       <div class="vid-side">
         <h3 id="vidTitle">跑团 GM · 实录</h3>
-        <p>不是宣传图，是我们自己录的。今晚之后，你们每个人都能搭出一模一样的。</p>
+        <p>可不是官宣概念图，全是我们拿本机实录的。过了今晚，在座每位都能亲手搭出同款。</p>
       </div>
     </div>
     <aside class="spk" aria-hidden="true">
       <h3>第三幕 · 讲者备注</h3>
       <ul>
-        <li>走马观花即可，体验站/安装后大家自己摸。</li>
-        <li>实录三连是真实录制，强调「你们也能搭」。</li>
-        <li>串场：看懂了「是什么」和「能干什么」——现在拆开看「为什么」。</li>
+        <li>快速带过即可，留到体验站或装好后大家自己上手摸。</li>
+        <li>点播三段实录，咬死一句：「今晚回去你们也能搭」。</li>
+        <li>串场：看过了「是什么」和「能玩什么」——现在掀开引擎盖，看「为什么」。</li>
       </ul>
     </aside>
   </div>
@@ -1049,26 +1049,26 @@ html.speaker-progress .progress { height: 5px; }
 <section class="anatomy" id="anatomy" aria-labelledby="h-anatomy">
   <div class="wrap">
     <h2 class="display rise" id="h-anatomy">第四幕 · 解剖一次请求</h2>
-    <p class="lede rise d1">你在酒馆里按下「发送」的那几秒，其实发生了什么。左边的散料，被装配成一包，发往大脑——回复再逐字流回来。</p>
+    <p class="lede rise d1">你在酒馆里按下「发送」的那几秒，幕后到底忙活了什么？左边的散料被严丝合缝打成一包，直送大脑——回复再逐字流回桌前。</p>
     <svg class="diagram" viewBox="0 0 1200 270" role="img" aria-label="示意图：散落的材料被装配成一个请求包，再展开为逐字回复" id="diagram"></svg>
     <div class="d-labels">
-      <div class="rise"><h3>收集</h3><p>角色卡、世界书（提到「酒馆」才醒来的那条）、预设（社区调好的「说话风格」参数包）、聊天记录——四种散料。</p></div>
-      <div class="rise d1"><h3>装配</h3><p>按真实拼装顺序压成一包。<b style="color:var(--ink)">这一包，就是模型看到的全世界。</b></p></div>
-      <div class="rise d2"><h3>回流</h3><p>大脑逐字接龙，回复流回聊天窗口。你看到「它在思考」，其实它在猜下一个字。序幕的问题到这里也揭晓了：<b style="color:var(--ink)">没有谁在「扮演」老板——只有一包字，和一台读完它、猜下一个字的接龙机器。</b></p></div>
+      <div class="rise"><h3>收集</h3><p>角色卡、世界书（听到「酒馆」才惊醒的那条）、预设（社区老手调好的「说话腔调」参数包）、聊天记录——四样散料齐备。</p></div>
+      <div class="rise d1"><h3>装配</h3><p>按严丝合缝的顺序压成一包字。<b style="color:var(--ink)">这一包字，就是模型眼里的全部世界。</b></p></div>
+      <div class="rise d2"><h3>回流</h3><p>大脑逐字接龙，把回复淌回聊天窗口。你以为「它在思考」，它只是在闷头猜下一个字。序幕留下的悬念，到这儿也就水落石出了：<b style="color:var(--ink)">压根没谁在「扮演」老板——只有一包字，外加一台读完它、接着猜下一个字的接龙机器。</b></p></div>
     </div>
     <h3 class="display rag-head rise">这个动作，有个学名</h3>
-    <p class="lede rag-lede rise d1">检索增强生成（RAG）：企业客服机器人、知识库助手，底层思想和世界书一模一样。你在酒馆里玩懂的这个机制，就是工业界 RAG 的最小模型。</p>
+    <p class="lede rag-lede rise d1">检索增强生成（RAG）：大厂里的企业客服机器人、知识库助手，底层套路和酒馆的世界书一模一样。你在酒馆里玩明白的这套把戏，就是工业界 RAG 的最小模型。</p>
     <div class="patches">
-      <div class="patch rise"><h3><svg class="flame-i" viewBox="0 0 100 120"><use href="#flame"/></svg>补丁一 · 总结</h3><p>窗口又满了？把旧对话压缩成一段摘要塞回去——细节没了，脉络还在。</p></div>
-      <div class="patch rise d1"><h3><svg class="flame-i" viewBox="0 0 100 120"><use href="#flame"/></svg>补丁二 · 向量检索</h3><p>按语义（而不是关键词）把相关的旧片段找回来，重新塞进窗口。ST 的记忆扩展和内置的 Data Bank，就是这两条土方的实现。</p></div>
+      <div class="patch rise"><h3><svg class="flame-i" viewBox="0 0 100 120"><use href="#flame"/></svg>补丁一 · 总结</h3><p>窗口又快撑满了？把旧对话熬成一段摘要塞回窗里——细枝末节丢了，主干脉络还在。</p></div>
+      <div class="patch rise d1"><h3><svg class="flame-i" viewBox="0 0 100 120"><use href="#flame"/></svg>补丁二 · 向量检索</h3><p>按意思相近（而非死磕关键词）把沾边的旧片段捞回来，重新塞进窗口。ST 的记忆扩展与内置 Data Bank，干的就是这两味土方。</p></div>
     </div>
     <aside class="spk" aria-hidden="true">
       <h3>第四幕 · 讲者备注</h3>
       <ul>
-        <li>「前面所有页，全是为了让你看懂这几秒。」</li>
-        <li>人设、设定、记忆、参数——全部是这包里的字，没有魔法。</li>
-        <li>简历上可以写：理解检索增强生成。别笑，是真的。</li>
-        <li>串场：原理拆完了，剩下的问题是——你怎么上手？</li>
+        <li>指着流程图：「前面铺垫半天，就为了看懂这几秒。」</li>
+        <li>拆穿底牌：人设、设定、记忆、参数——全在这一包字里，哪有什么魔法。</li>
+        <li>调侃：简历上可以写「理解检索增强生成」。别笑，真管用。</li>
+        <li>串场：后厨底细扒干净了，只剩最后一件事——今晚怎么开张？</li>
       </ul>
     </aside>
   </div>
@@ -1080,9 +1080,9 @@ html.speaker-progress .progress { height: 5px; }
     <h2 class="display rise" id="h-openup">第五幕 · 今晚就开张</h2>
     <div class="open-grid">
       <div>
-        <p class="display openup-line rise d1">把酒馆装进你的电脑。</p>
+        <p class="display openup-line rise d1">把酒馆搬进你的电脑。</p>
         <div class="route-row rise d2">
-          <span class="route-label">选一条路：</span>
+          <span class="route-label">挑一条路：</span>
           <span class="routes" role="group" aria-label="安装路径">
             <button data-route="bundle" aria-pressed="true">一键整合包</button>
             <button data-route="git" aria-pressed="false">git + Node</button>
@@ -1091,23 +1091,23 @@ html.speaker-progress .progress { height: 5px; }
           <a class="btn" href="https://tavern.phuyu.cloud/guide/" id="guideBtn">照着指南走</a>
         </div>
         <div class="route-detail rise d3" id="routeDetail" aria-live="polite">
-          <p><b>一键整合包</b>——下载、解压、双击。三步，五分钟内进门。适合第一次接触、电脑里没有命令行的同学。</p>
+          <p><b>一键整合包</b>——下载、解压、双击。就三步，五分钟推门进店。最适合头一回尝鲜、电脑里没装命令行的同学。</p>
         </div>
-        <p class="after rise d4">模型接入 = 在设置里填一个 API 地址和 Key（DeepSeek 注册即得）。三条路殊途同归：界面、角色卡、聊天记录完全一样。卡住了，社团群里有我们。</p>
+        <p class="after rise d4">接通大脑 = 进设置填一行 API 地址和 Key（DeepSeek 注册即领）。三条路殊途同归：装出来的界面、角色卡、聊天记录分毫不差。哪步卡壳了，社团群里随时喊我们。</p>
         <a class="guide-banner rise d4" href="https://tavern.phuyu.cloud/guide/" target="_blank" rel="noopener">
           <svg class="flame-i" viewBox="0 0 100 120" aria-hidden="true"><use href="#flame"/></svg>
-          <span class="txt"><b>手把手图文 · 上手指南</b><br/>从下载到第一句对话，每一步带截图。tavern.phuyu.cloud/guide</span>
+          <span class="txt"><b>手把手图文 · 上手指南</b><br/>从下载安装包到聊上第一句，步步带截图。tavern.phuyu.cloud/guide</span>
           <span class="go">前往 ↗</span>
         </a>
       </div>
-      <img class="open-shot rise d2" src="assets/ui-mobile.png" alt="手机浏览器里的 SillyTavern：聊天界面" width="390" height="844" loading="lazy" />
+      <img class="open-shot rise d2" src="assets/ui-mobile.png" alt="手机浏览器里的 SillyTavern：竖屏聊天界面" width="390" height="844" loading="lazy" />
     </div>
     <aside class="spk" aria-hidden="true">
       <h3>第五幕 · 讲者备注</h3>
       <ul>
-        <li>指南站二维码在页尾，照着做 10 分钟搞定。</li>
-        <li>Docker 就是我们体验站的部署方式。</li>
-        <li>串场：上桌之前，三条纪律。</li>
+        <li>预告：页尾有指南站二维码，照着点 10 分钟开张。</li>
+        <li>顺嘴提一句：体验站就是用 Docker 跑的。</li>
+        <li>串场：端酒上桌前，立三条规矩。</li>
       </ul>
     </aside>
   </div>
@@ -1119,19 +1119,19 @@ html.speaker-progress .progress { height: 5px; }
     <h2 class="display rise" id="h-rules">上桌之前 · 三条纪律</h2>
     <div class="rule-stack" data-stagger>
     <div class="rule rise"><svg class="flame-i" viewBox="0 0 100 120" width="18" height="22"><use href="#flame"/></svg>
-      <div><b>API Key = 钱包</b><p>别提交到 GitHub，别发群里。泄漏了 = 别人拿你的钱包刷 API。</p></div></div>
+      <div><b>API Key = 钱包</b><p>千万别传上 GitHub，也别往群里发。漏了 Key = 把钱包递给别人刷 API。</p></div></div>
     <div class="rule rise d1"><svg class="flame-i" viewBox="0 0 100 120" width="18" height="22"><use href="#flame"/></svg>
-      <div><b>云端 API 看得到你的全部对话</b><p>发出去的字都经过对方服务器。隐私内容，想清楚再发。</p></div></div>
+      <div><b>云端 API 看得到你的全部对话</b><p>你发出的每个字都会过一遍别人的服务器。私密话，掂量清楚再发。</p></div></div>
     <div class="rule rise d2"><svg class="flame-i" viewBox="0 0 100 120" width="18" height="22"><use href="#flame"/></svg>
-      <div><b>内容有分寸</b><p>模型有护栏，违法有害内容别碰。体验站会记日志——互联网没有真正「删除」。</p></div></div>
+      <div><b>内容有分寸</b><p>模型自带护栏，违法有害内容别碰。社团体验站后台会记日志——互联网上没有真正的「删除」。</p></div></div>
     </div>
     <aside class="spk" aria-hidden="true">
       <h3>纪律 · 讲者备注</h3>
       <ul>
-        <li>三条逐条过：Key=钱包、云端看得到全部对话、内容有分寸。</li>
-        <li>语气认真但不吓人——这是真实世界的使用纪律，不是免责套话。</li>
-        <li>「体验站会记日志」务必说到：互联网没有真正删除。</li>
-        <li>串场：有疑问的，散场前几个高频问题。</li>
+        <li>三条铁律逐条敲打：Key=钱包、云端看得到全部对话、内容有分寸。</li>
+        <li>口吻沉稳别吓人——强调这是真金白银换来的江湖规矩，绝非免责套话。</li>
+        <li>点明「体验站会记日志」：提醒大家互联网没有真正的删除。</li>
+        <li>串场：还有问号的，散场前拆几个高频问题。</li>
       </ul>
     </aside>
   </div>
@@ -1144,44 +1144,44 @@ html.speaker-progress .progress { height: 5px; }
     <div class="faq-cards" id="faqCards" data-stagger>
       <div class="fcard" data-open="true">
         <button class="tab" aria-expanded="true"><h3>手机能玩吗？<span class="marker" aria-hidden="true">+</span></h3></button>
-        <div class="answer"><p><b>能。</b>酒馆装在电脑上，手机浏览器访问同一局域网地址即可，界面本身就是手机优先设计。整合包也有手机端方案（Termux），但推荐从电脑开始。</p></div>
+        <div class="answer"><p><b>能。</b>酒馆跑在电脑上，拿手机浏览器连同一局域网地址就能玩，它的界面本来就是按手机优先设计的。整合包也有纯手机方案（Termux），但新手还是推荐从电脑起步。</p></div>
       </div>
       <div class="fcard" data-open="false">
         <button class="tab" aria-expanded="false"><h3>要花多少钱？<span class="marker" aria-hidden="true">+</span></h3></button>
-        <div class="answer"><p><b>软件本体永久免费</b>（开源）。花钱的只有「大脑」：免费档（AI Horde / Pollinations）零成本；DeepSeek 这类云端 API 按量付费，一次对话不到一分钱；本地模型电费即可。</p></div>
+        <div class="answer"><p><b>软件本体永久免费</b>（开源）。花钱的只有后厨那颗「大脑」：免费档（AI Horde / Pollinations）零成本白嫖；DeepSeek 这类云端 API 按量计费，聊一轮不到一分钱；跑本地模型只花点电费。</p></div>
       </div>
       <div class="fcard" data-open="false">
         <button class="tab" aria-expanded="false"><h3>和 Character.AI 有什么区别？<span class="marker" aria-hidden="true">+</span></h3></button>
-        <div class="answer"><p>Character.AI 是<b>捆绑套餐</b>：界面、大脑、数据都在别人服务器上。酒馆把界面拆出来——大脑随便换、角色卡随便导入、聊天记录是你自己的本地文件。代价是要自己动手装。</p></div>
+        <div class="answer"><p>Character.AI 卖的是<b>捆绑套餐</b>：界面、大脑、聊天记录全攥在别人手里。酒馆把界面单独拆出来——大脑随你换、角色卡随你导、存档全在你自己电脑里。唯一的代价，是得自己动手装一回。</p></div>
       </div>
       <div class="fcard" data-open="false">
         <button class="tab" aria-expanded="false"><h3>Key 泄漏了怎么办？<span class="marker" aria-hidden="true">+</span></h3></button>
-        <div class="answer"><p><b>立刻去服务商后台吊销重发。</b>DeepSeek 等平台都有「删除并重建 Key」入口，一分钟搞定。养成习惯：Key 只贴进酒馆设置里，不进任何聊天和代码仓库。</p></div>
+        <div class="answer"><p><b>立刻去服务商后台吊销重发。</b>DeepSeek 等平台都有「删除并重建 Key」按钮，一分钟就能掐断止损。养成铁习惯：Key 只往酒馆设置里贴，绝不进任何聊天窗口和代码仓库。</p></div>
       </div>
       <div class="fcard" data-open="false">
         <button class="tab" aria-expanded="false"><h3>卡住了找谁？<span class="marker" aria-hidden="true">+</span></h3></button>
-        <div class="answer"><p>指南站（页尾二维码）覆盖 90% 的问题；剩下 10%，<b>社团群里喊一声</b>。官方中文文档在 sillytavern.wiki，安装之外的问题先查它。</p></div>
+        <div class="answer"><p>指南站（扫页尾二维码）能挡下 90% 的坑；剩下 10%，直接<b>在社团群里喊一声</b>。官方中文文档在 sillytavern.wiki，装好之后的进阶玩法先去那儿翻。</p></div>
       </div>
       <div class="fcard" data-open="false">
         <button class="tab" aria-expanded="false"><h3>需要会编程吗？<span class="marker" aria-hidden="true">+</span></h3></button>
-        <div class="answer"><p><b>不用。</b>一键整合包下载、解压、双击，全程图形界面；git 和 Docker 两条路才碰命令行，而且是复制粘贴级别。装好之后的一切操作，都在界面里点选完成。</p></div>
+        <div class="answer"><p><b>不用。</b>一键整合包就是下载、解压、双击，全程图形界面；只有选 git 和 Docker 两条路才碰命令行，那也只是复制粘贴的活儿。装好之后，所有操作都在界面里点选完成。</p></div>
       </div>
       <div class="fcard" data-open="false">
         <button class="tab" aria-expanded="false"><h3>它一本正经地胡说八道怎么办？<span class="marker" aria-hidden="true">+</span></h3></button>
-        <div class="answer"><p>这叫<b>幻觉</b>：接龙机器只负责「像」，不负责「真」——它没有事实核查，只是把下一个字猜得连贯。角色扮演里读作「出戏」，用示例对话和世界书能纠住大半；拿它查资料，就要留个心眼。</p></div>
+        <div class="answer"><p>这叫<b>幻觉</b>：接龙机器只管接得「像」，不管事情「真」——它肚子里没有事实核查，只求把下一个字猜得顺溜。放在角色扮演里叫「出戏」，靠示例对话和世界书能扳回大半；真拿它查正经资料，就得留个心眼。</p></div>
       </div>
       <div class="fcard" data-open="false">
         <button class="tab" aria-expanded="false"><h3>角色卡去哪找？<span class="marker" aria-hidden="true">+</span></h3></button>
-        <div class="answer"><p>酒馆自带默认角色，内置的「下载扩展和资源」菜单里有精选社区卡；Reddit、Discord 社区是主产地。指南站整理了入口——导入就是拖一张 PNG 的事。</p></div>
+        <div class="answer"><p>酒馆出厂自带默认角色，内置的「下载扩展和资源」菜单里就躺着精选社区卡；Reddit、Discord 社区则是大本营。指南站已经替你备好了直达入口——导入无非是拖张 PNG 进门的事。</p></div>
       </div>
     </div>
     <aside class="spk" aria-hidden="true">
       <h3>FAQ · 讲者备注</h3>
       <ul>
-        <li>按观众提问展开对应卡片，其余跳过——本页就是 Q&A 弹药库。</li>
-        <li>「胡说八道」一问大概率出现：幻觉 = 接龙只管像、不管真。</li>
-        <li>「需要会编程吗」给犹豫的人吃定心丸：整合包零命令行。</li>
-        <li>串场：最后，盘点今晚的战利品。</li>
+        <li>台下问哪条就点开哪张卡，没问的直接略过——这页就是你的 Q&amp;A 弹药库。</li>
+        <li>「胡说八道」这题十有八九会问：记住金句，幻觉 = 接龙只管像、不管真。</li>
+        <li>借「需要会编程吗」给还在犹豫的同学喂颗定心丸：整合包零命令行。</li>
+        <li>串场：打烊前，清点一下今晚的战利品。</li>
       </ul>
     </aside>
   </div>
@@ -1191,7 +1191,7 @@ html.speaker-progress .progress { height: 5px; }
 <section class="spoils" aria-labelledby="h-spoils">
   <div class="wrap">
     <h2 class="display rise" id="h-spoils">散场前，查一眼战利品</h2>
-    <p class="lede rise d1">一杯酒的时间，你其实已经把这门课修完了：</p>
+    <p class="lede rise d1">一杯酒喝完，你不知不觉已经把这门课修完了：</p>
     <div class="spoil-words" id="spoilWords">
       <span><svg class="flame-i dim" viewBox="0 0 100 120"><use href="#flame"/></svg>提示词</span>
       <span><svg class="flame-i dim" viewBox="0 0 100 120"><use href="#flame"/></svg>上下文窗口</span>
@@ -1202,20 +1202,20 @@ html.speaker-progress .progress { height: 5px; }
     <aside class="spk" aria-hidden="true">
       <h3>收束 · 讲者备注</h3>
       <ul>
-        <li>词条逐个点亮，各回扣一幕：提示词=角色卡、窗口=模拟器、RAG=世界书、前后端=酒馆本体、Token=逐字生成的计量。</li>
-        <li>「酒馆最好玩的地方……」慢读，停两拍。</li>
-        <li>提醒扫码；体验站开放后此处加第二张码。</li>
-        <li>收尾句：「今晚，酒馆永远开张。」留在屏上直到散场。</li>
+        <li>五个词条逐一点亮，顺手回扣前五幕：提示词=角色卡、窗口=模拟器、RAG=世界书、前后端=酒馆本体、Token=逐字接龙的计量。</li>
+        <li>念到「酒馆最好玩的地方……」放慢语速，停两拍。</li>
+        <li>招呼大家扫码；等体验站开放，这儿补第二张码。</li>
+        <li>落槌收尾：「今晚，酒馆永远开张。」画面定格在屏上直到散场。</li>
       </ul>
     </aside>
     <p class="last-line rise">今晚，酒馆永远开张。</p>
     <div class="spoil-grid">
       <figure class="qr-card rise">
-        <img src="assets/qr-guide.png" alt="指南站二维码，指向 tavern.phuyu.cloud/guide" width="148" height="148" loading="lazy" />
+        <img src="assets/qr-guide.png" alt="指南站二维码，直达 tavern.phuyu.cloud/guide" width="148" height="148" loading="lazy" />
         <figcaption>上手指南 · 扫码即达<br/><span class="qr-url">tavern.phuyu.cloud/guide</span></figcaption>
       </figure>
       <div class="rise d1">
-        <p class="statement" style="font-size:clamp(19px,1.9vw,26px)">酒馆最好玩的地方不是它多能玩，<br/>而是你玩着玩着，把 LLM 学了。</p>
+        <p class="statement" style="font-size:clamp(19px,1.9vw,26px)">酒馆最好玩的地方不是它多能玩，<br/>而是你玩着玩着，把 LLM 摸透了。</p>
       </div>
     </div>
   </div>
@@ -1255,7 +1255,7 @@ html.speaker-progress .progress { height: 5px; }
       </div>
       <div>
         <h3>关于素材</h3>
-        <span>插画由 AI 生成；实录为本机 SillyTavern 录制；界面截图为真实软件。</span>
+        <span>插画由 AI 绘制；演示实录均在本机 SillyTavern 录制；界面截图取自真实软件。</span>
         <span>SillyTavern 采用 AGPL-3.0 开源协议。</span>
       </div>
     </div>
@@ -1468,9 +1468,9 @@ html.speaker-progress .progress { height: 5px; }
 
   /* 罐头剧本 */
   var CANNED = [
-    { me: "老板，听说今晚有故事？", them: "（擦杯子）来这儿的，都过得不好。坐吧。想听什么故事，酒单上没有，你嘴里有。" },
-    { me: "那你呢？你记得昨天的事吗？", them: "（笑）每一轮对话，你们都要把我的「人生」重新念给我听一遍。念到哪儿，我就记得哪儿。" },
-    { me: "……所以你其实不记得我？", them: "我记得这扇窗里的每一个字。窗外的——（吹灭一支蜡烛）那不归我管。" }
+    { me: "老板，听说你这儿今晚有故事？", them: "（擦杯子）深更半夜推门进来的，心里都装着事。坐吧。想听什么故事，酒单上没有，你嘴里有。" },
+    { me: "那你呢？昨天的事你还记得吗？", them: "（笑）每聊一句，你们都得把我的「生平」从头念给我听一遍。你们念到哪儿，我就记得哪儿。" },
+    { me: "……所以你压根不记得我？", them: "我只认这扇窗里的每一个字。至于窗外的——（吹灭一支蜡烛）那不归我管。" }
   ];
 
   var chatBody = document.getElementById("chatBody");
@@ -1529,7 +1529,7 @@ html.speaker-progress .progress { height: 5px; }
     var gen = ++replayGen;
     setBusy(true);
     chip("离线回放", false);
-    addMsg("them", fmt("（点亮柜台上的蜡烛）晚上好。今晚的酒馆，只讲一个东西——你手里那块发光的屏幕，背后到底发生了什么。"));
+    addMsg("them", fmt("（点亮柜台上的蜡烛）晚上好。今晚这间酒馆，只讲一件事——你手里那块发光的屏幕，背后到底是谁在说话。"));
     setTimeout(function () { replayScript(0, gen); }, reduced ? 100 : 800);
   }
 
@@ -1544,7 +1544,7 @@ html.speaker-progress .progress { height: 5px; }
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         messages: [
-          { role: "system", content: "你是深夜酒馆的老板，说话简短、带一点江湖气，动作用（）描述。不超过 60 字。" },
+          { role: "system", content: "你是深夜酒馆的老板：话要短，带一点江湖气，动作用（）描述，一次不超过 60 字。" },
           { role: "user", content: text }
         ]
       }),
@@ -1574,7 +1574,7 @@ html.speaker-progress .progress { height: 5px; }
       if (tmo) clearTimeout(tmo);
       t.classList.remove("typing");
       t.classList.add("streaming");
-      typeInto(t, "（擦杯子）今晚断网——这句是离线罐头。网络通了，我就能现编；刚才的开场回放，也是罐头。", function () {
+      typeInto(t, "（擦杯子）外头断网了——这句是提前备好的离线罐头。等网一通，我就给你现编；刚才那段开场回放，也是罐头。", function () {
         t.classList.remove("streaming");
         chip("离线罐头 · 断网", false);
         setBusy(false); chatSend.disabled = false;
@@ -1604,11 +1604,11 @@ html.speaker-progress .progress { height: 5px; }
   /* ---------- 上下文窗口模拟器 ---------- */
   var SIM_SCRIPT = [
     ["me", "老板，来杯热的。"], ["them", "（擦杯子）今晚想喝点什么？"],
-    ["me", "有什么故事吗？"], ["them", "酒单上没有，你嘴里有。"],
-    ["me", "讲讲这家店的历史吧。"], ["them", "这家店啊，比你爷爷的年纪还大。"],
-    ["me", "那面墙上挂的是什么？"], ["them", "（抬头）一张老船票，一个故事。"],
-    ["me", "今晚打烊几点？"], ["them", "你走的时候。"],
-    ["me", "能不能便宜点？"], ["them", "（笑）烛光不要钱。"]
+    ["me", "店里有什么故事？"], ["them", "酒单上没有，你嘴里有。"],
+    ["me", "聊聊这家店的来历吧。"], ["them", "这间老铺子，比你爷爷的岁数都大。"],
+    ["me", "那面墙上挂的是什么？"], ["them", "（抬头）一张旧船票，一桩陈年事。"],
+    ["me", "今晚几点打烊？"], ["them", "你走的时候。"],
+    ["me", "能不能算便宜点？"], ["them", "（笑）烛光不要钱。"]
   ];
   var CAP = 6;
   var simChat = document.getElementById("simChat");
@@ -1905,9 +1905,9 @@ html.speaker-progress .progress { height: 5px; }
 
   /* ---------- 上手路径 ---------- */
   var ROUTES = {
-    bundle: { label: "一键整合包", html: "<p><b>一键整合包</b>——下载、解压、双击。三步，五分钟内进门。适合第一次接触、电脑里没有命令行的同学。</p>" },
-    git: { label: "git + Node", html: "<p><b>正统路</b>——git clone 之后 npm install，五分钟。以后 git pull 就是升级，适合愿意长期玩的同学。</p>" },
-    docker: { label: "Docker", html: "<p><b>极客路</b>——docker compose up -d 一行起服务，我们的体验站就是这么部署的。适合有服务器、想一直挂着 nomad 同学。</p>" }
+    bundle: { label: "一键整合包", html: "<p><b>一键整合包</b>——下载、解压、双击。就三步，五分钟推门进店。最适合头一回尝鲜、电脑里没装命令行的同学。</p>" },
+    git: { label: "git + Node", html: "<p><b>正统路</b>——git clone 之后 npm install，五分钟进门。以后升级只要 git pull 一行，适合打算长期住下的同学。</p>" },
+    docker: { label: "Docker", html: "<p><b>极客路</b>——docker compose up -d 一行起服务，常驻后台，我们的体验站就是这么部署的。适合有服务器、想让酒馆一直开着的同学。</p>" }
   };
   document.querySelectorAll(".routes button").forEach(function (b) {
     b.addEventListener("click", function () {
