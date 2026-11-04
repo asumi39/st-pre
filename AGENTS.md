@@ -1,0 +1,56 @@
+# AGENTS.md · ST-PRE
+
+SillyTavern 社团分享交付仓库。主体是**单文件 Web 特稿** `web/index.html`（约 2000 行，全部 CSS/JS/SVG 内联，无构建、无 package.json、零外部依赖），配套 `guide/`（上手指南）、`proxy/`（持 Key 的 SSE 反代，本地 ：3011）、`deploy/`（服务器配置与手册）、`slides/`（v1 deck 冻结归档，已下线，勿动）。生产站点 tavern.phuyu.cloud（GitHub 私库 asumi39/st-pre，直接 push origin main）。
+
+## 铁律（违反=返工，详见 PLAN.md）
+
+- **教室离线可放映**：零 CDN、零外部请求、零字体下载，`file://` 直开必须完整可用
+- **Key 零暴露**：`server.txt` / `deepseek-key.txt` / `imagegen.txt` 已 gitignore（服务器凭据在 server.txt），永不进仓库、不进日志
+- **不为加而加 / 不降级**：升级要留痕（改了什么、为什么更好）
+- **图像预算 8/8 已用满**：新增图片需用户裁定
+- **每次设计/交互改动**在 `notes/design-v2-critique.md` 追加 ROUND 条目（决策 + 理由 + 验证证据）——纪律 #2「升级留痕」，不是可选项
+
+## 验证（改 JS/CSS 后必跑，顺序固定）
+
+```bash
+# ① JS 语法：主脚本内联在 index.html 里，先抽出再查
+python3 -c "import re;open('/tmp/main.js','w').write(re.search(r'<script>(.*)</script>',open('web/index.html').read(),re.S).group(1))"
+node --check /tmp/main.js
+# ② taste 门禁（0 FAIL 才算过；WARN 留痕即可）
+node ~/.agents/skills/design-taste-frontend/scripts/lint.mjs web/index.html
+node ~/.agents/skills/design-taste-frontend/scripts/inspect.mjs "http://127.0.0.1:<PORT>/index.html?door=0" --widths 1440,390
+# ③ 部署（密钥认证已配好，见 server.txt）
+rsync -av web/index.html f@47.93.34.126:/opt/st-pre/web/
+rsync -av guide/index.html f@47.93.34.126:/opt/st-pre/guide/
+```
+
+- 本地预览用 `python3 -m http.server`（agent-browser/openchamber_web 不吃 file://；后台起服务，测完记得杀）
+- gate 例外：inspect 的 `empty-screens` 在 ?door=1 锁定页是误报；`gradient`/`text-shadow` 有豁免——allow 名单在 `.taste-skill/direction.json`，每条豁免都要在批判日志留理由
+
+## 触觉系统（一个口径，勿加专属节拍）
+
+- 全站唯一档位 = `netPat`（默认门口 90ms 单发），一个 pointerdown/click 委托按平台分挂（安卓 pointerdown / iPhone click）覆盖门、滑杆、一切链接按钮
+- 用户校准入口 `?haptic-test=1`（候选试选 → localStorage `vibNetPat` 本机记忆）——校准一处，门/滑杆/交互网同步生效，勿给单个元素写第二档
+- 平台现实：iOS 无 vibrate API（18.4+ 合成翻转只认可信 click，pointerdown 永不授权）；安卓 Chrome 首次 click 前振动被拒（有 1ms hapticUnlock 脉冲处理）；马达 80ms 以下无感，「轻嗒」要么 90ms 单发要么 PWM 短脉冲串（单发短嗒=没震）
+
+## 测试
+
+- **真机**（时序敏感的验证只信它）：Pixel 6 Pro USB + adb（`platform-tools/`）→ `adb forward tcp:9222 localabstract:chrome_devtools_remote` → CDP 脚本在 OpenCode 临时目录 `cdp/pixel-*.js`（依赖 ws 包）。三个坑：**先唤醒**（KEYCODE_WAKEUP + keyevent 82 + `svc power stayon usb`）；**Chrome reload 会恢复滚动位置**（量坐标前先 scrollTo(0,0)）；截图挂起多半是熄屏了
+- **桌面**：agent-browser CLI（`set viewport 1440 900`）。openchamber_web 面板多 tab 会串台（localhost 与 127.0.0.1 算两个 tab，滚动和截图落在不同页）、视口会在调用间自行漂移——只单 tab 串行用；时序敏感的验证信真机
+- URL 参数：`?door=0/1`（封面锁）、`?speaker=1`（讲者备注）、`?liveurl=`（真大脑地址覆盖）、`?haptic-test=1`；带 hash 进入自动跳过门锁
+
+## 已知坑（多次踩过）
+
+- `width`/`height` 属性会废掉 CSS `aspect-ratio`——改图框比例时两处要一致
+- `guide/assets/tokens.css` 不得加 `@font-face` 的 `local()`（Firefox 乱码，v4 已修）
+- 全局 3s 安全网强制揭示一切 `.rise`——首屏以下的入场动效实际是静态的，别指望它们
+- body `overflow-x:hidden` 是潜在第二滚动容器（封门锁定态已强制 body visible）；Android Chrome 在 `overflow:hidden` 根下忽略 scrollIntoView——用 `window.scrollTo(0, top + pageYOffset)`
+- 同一文件里同名类选择器的规则分处两处会互相覆盖（后者静默获胜）——改前先 grep 全部引用
+- 讲义 `web/handout.pdf`（12MB）只在**内容**变化时重出；交互/样式轮跳过
+- 截图落在 `.openchamber/screenshots/`，回复里用相对路径引用即可展示给用户
+
+## 状态与待决
+
+- 阶段 5 体验站：`deploy/` compose 与配置模板已备好，待用户裁定（建号数量、是否长期开放）后才执行；届时 `web/assets/qr-play.png` 与页脚「体验站·筹备中」要指向真地址
+- deploy/README.md 安全清单：sshd 禁密码、备份 cron——待用户决策
+- 涉及服务器与公网暴露的动作（阶段 4+），执行前先取得用户确认
