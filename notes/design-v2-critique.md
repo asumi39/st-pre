@@ -944,3 +944,22 @@ vibTickMs 本机记忆废止（不再读取）；netPat 校准（vibNetPat）成
   指南页固有形态，非本轮回归；同环境对照实验判定）。桌面+手机截图目检：首屏 lede 三行/
   四行收纳，内页聊天卡、模拟器、上手路径卡无破版。
 - 未部署、未提交，待用户裁定。
+
+## ROUND · 体验站定案与文案校准（2026-11-07）
+
+- 定案：体验站不再部署完整 SillyTavern（Docker 路线废弃留痕），改 fork 减法版 st-lite
+  （公开仓库 asumi39/st-lite，AGPL 合规）；账号自助注册、仅分享当晚开放、入口挂
+  tavern.phuyu.cloud/play/（用户三项+主域裁定，均在 OpenChamber 选项框完成）。
+- 特化实现（fork 侧，本地 E2E 全绿）：basePath 子路径补丁（27 处上游根绝对 import 修正 +
+  extensions 加载器三态路径修正 + 入口 HTML 注入 + fetch/XHR 包装）、自助注册端点、
+  脚手架预置（8 卡 + playgate 连接 + 假 key）、全局 user.css 烛光皮肤（减法面板 + 色板 +
+  登录页品牌化，data/_css 全局通道连登录页一并生效）。
+- 文案校准（本文件留痕）：web/index.html 两处「体验站=Docker/官方镜像」、guide 一处同源说法
+  → 改为「精简特版/裸 Node」表述；「后台会记日志」保留（playgate + ST access log 兑现）。
+  门禁：node --check 0 错；lint 0 FAIL（1 WARN=既有中文破折号风格，留痕）。
+- 教学协同保留位：playgate 的费用闸/日志是「互联网没有真正的删除」与成本教学的活素材，
+  分享当晚可在讲者备注里口播一次 health 面板数字。
+
+## ROUND · 页尾二维码网址升级为可点外链（2026-11-07）
+- 两个 .qr-url 由 span 改 <a target="_blank" rel="noopener">（https 绝对地址），hover 补下划线
+  + 提亮（全局 a 语言不变）；桌面/单列布局均不受影响。门禁 0 FAIL。已同步生产并目检 href/target。

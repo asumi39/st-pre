@@ -585,6 +585,7 @@ input[type="range"].big::-moz-range-thumb {
 .qr-card img { width: 148px; height: 148px; border-radius: 12px; background: #fff; padding: 10px; }
 .qr-card figcaption { margin-top: 12px; font-size: 15px; color: var(--muted); }
 .qr-url { display: inline-block; margin-top: 4px; font-size: 14px; color: var(--accent); letter-spacing: .03em; font-variant-numeric: tabular-nums; }
+.qr-url:hover { text-decoration: underline; color: var(--ink-strong); }
 .spoils .last-line { margin-top: clamp(48px, 7vw, 96px); font-family: var(--font-display); font-size: clamp(30px, 3.6vw, 54px); color: var(--ink-strong); font-weight: 700; }
 
 /* ---------- 页脚 · 大标记 ---------- */
@@ -1212,11 +1213,11 @@ html.speaker-progress .progress { height: 5px; }
     <div class="spoil-grid">
       <figure class="qr-card rise">
         <img src="assets/qr-guide.png" alt="指南站二维码，直达 tavern.phuyu.cloud/guide" width="148" height="148" loading="lazy" />
-        <figcaption>上手指南 · 扫码即达<br/><span class="qr-url">tavern.phuyu.cloud/guide</span></figcaption>
+        <figcaption>上手指南 · 扫码即达<br/><a class="qr-url" href="https://tavern.phuyu.cloud/guide/" target="_blank" rel="noopener">tavern.phuyu.cloud/guide</a></figcaption>
       </figure>
       <figure class="qr-card rise d1">
         <img src="assets/qr-play.png" alt="体验站二维码，直达 tavern.phuyu.cloud/play" width="148" height="148" loading="lazy" />
-        <figcaption>深夜酒馆 · 体验站<br/><span class="qr-url">tavern.phuyu.cloud/play</span></figcaption>
+        <figcaption>深夜酒馆 · 体验站<br/><a class="qr-url" href="https://tavern.phuyu.cloud/play/" target="_blank" rel="noopener">tavern.phuyu.cloud/play</a></figcaption>
       </figure>
       <div class="rise d1">
         <p class="statement" style="font-size:clamp(19px,1.9vw,26px)">酒馆最好玩的地方不是它多能玩，<br/>而是你玩着玩着，把 LLM 摸透了。</p>
