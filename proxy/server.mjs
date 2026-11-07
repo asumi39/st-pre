@@ -13,7 +13,7 @@
  *                                      data: {"code":"timeout"} ← 首包 >6s（已中止上游）
  *                                      data: {"code":"network"} ← 连接失败 / 流中断
  *
- * DeepSeek 调用规格见 PLAN.md §4（api-docs.deepseek.com，2026-10）：
+ * DeepSeek 调用规格（api-docs.deepseek.com，2026-10；完整契约见 proxy/README.md「端点契约」）：
  *   - POST {BASE}/chat/completions，Authorization: Bearer <KEY>
  *   - model deepseek-flash；thinking 显式 disabled（默认 enabled 会先吐 reasoning_content
  *     且首包延迟大增）；max_tokens 120；temperature 0.9；非思考模式 top_p 无效故不传

@@ -2,13 +2,21 @@
 
 SillyTavern 社团分享交付仓库。主体是**单文件 Web 特稿** `web/index.html`（约 2000 行，全部 CSS/JS/SVG 内联，无构建、无 package.json、零外部依赖），配套 `guide/`（上手指南）、`proxy/`（持 Key 的 SSE 反代，本地 ：3011）、`deploy/`（服务器配置与手册）、`slides/`（v1 deck 冻结归档，已下线，勿动）。生产站点 tavern.phuyu.cloud（GitHub 私库 asumi39/st-pre，直接 push origin main）。
 
-## 铁律（违反=返工，详见 PLAN.md）
+## 铁律（违反=返工）
 
-- **教室离线可放映**：零 CDN、零外部请求、零字体下载，`file://` 直开必须完整可用
+- **教室离线可放映**：零 CDN、零外部请求、零字体下载，`file://` 直开必须完整可用；LIVE 不可达自动无感回退罐头剧本
+- **动效即知识点**：所有动效都在讲知识点，不加纯装饰动画
 - **Key 零暴露**：`server.txt` / `deepseek-key.txt` / `imagegen.txt` 已 gitignore（服务器凭据在 server.txt），永不进仓库、不进日志
 - **不为加而加 / 不降级**：升级要留痕（改了什么、为什么更好）
 - **图像预算 8/8 已用满**：新增图片需用户裁定
-- **每次设计/交互改动**在 `notes/design-v2-critique.md` 追加 ROUND 条目（决策 + 理由 + 验证证据）——纪律 #2「升级留痕」，不是可选项
+- **每次设计/交互改动**在 `notes/design-v2-critique.md` 追加 ROUND 条目（决策 + 理由 + 验证证据）——「升级留痕」纪律，不是可选项
+
+## 执行纪律（2026-11-07 自 PLAN.md 合并；v1~v2 执行方案原文见 git 历史）
+
+- **遇阻让路**：某一步走不通时记录阻塞点与已试路径，转做下一个可执行部分；不原地卡死、不擅自换方案
+- **残项上交**：完成后把残留阻塞项汇总为「现象 / 已尝试 / 影响范围 / 待决选项」提交用户裁定；裁定前保持原样
+- **善用子代理**：相互独立的工作（调研、素材生产、设计探索）并行派发子代理，主线负责集成与最终一致性审查，产出按同等标准验收
+- 「按图施工」「连续执行」随阶段 1~5 交付完成失效；「不降级，升级留痕」已并入上方铁律；服务器与公网暴露动作先确认（见文末「状态与待决」）。原 PLAN.md 的 LIVE 调用规格现存于 `proxy/README.md`「端点契约」，生产部署实况见「状态与待决」与 `deploy/README.md`
 
 ## 验证（改 JS/CSS 后必跑，顺序固定）
 
@@ -51,6 +59,14 @@ rsync -av guide/index.html f@47.93.34.126:/opt/st-pre/guide/
 
 ## 状态与待决
 
-- 阶段 5 体验站：`deploy/` compose 与配置模板已备好，待用户裁定（建号数量、是否长期开放）后才执行；届时 `web/assets/qr-play.png` 与页脚「体验站·筹备中」要指向真地址
+- 阶段 5 体验站（2026-11-07 **已上线生产**）：入口 https://tavern.phuyu.cloud/play/ ，fork 减法版
+  st-lite（公开仓库 asumi39/st-lite，AGPL 合规；分支 st-pre-play，本地副本 ~/Documents/st-lite，
+  服务器 /opt/st-pre/st-play）。生产组件：st-play-lite.service（:8000）+ st-play-playgate.service
+  （:3012 持真 Key、并发 10、当日费用闸 15 元）+ nginx /play/ 块（zone=play 12r/s burst30）。
+  default-user=管理员（密码在服务器 /opt/st-pre/st-play-admin-password.txt，600）。注册开放中（cap 80）。
+  **关站流程**：sudo systemctl stop st-play-lite + config.yaml registration.enabled:false + 打包
+  /opt/st-pre/st-play/data 留档（见 deploy/README.md §3）。特稿双码已上（web/assets/qr-play.png +
+  页脚体验站链接与 st-lite 源码链接）。已知小项：demo 卡 mes_example 字段位置警告（不影响使用）；
+  关站后 qr-play 二维码与页脚是否撤下待用户裁定。
 - deploy/README.md 安全清单：sshd 禁密码、备份 cron——待用户决策
 - 涉及服务器与公网暴露的动作（阶段 4+），执行前先取得用户确认

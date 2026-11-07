@@ -1,6 +1,6 @@
 # ST-PRE LIVE Proxy
 
-单文件、零依赖（仅 `node:` 内置模块）的 DeepSeek 流式代理。持有 Key，幻灯片 JS 永远接触不到它。调用规格见 `PLAN.md §4`（api-docs.deepseek.com，2026-10 版）。
+单文件、零依赖（仅 `node:` 内置模块）的 DeepSeek 流式代理。持有 Key，幻灯片 JS 永远接触不到它。调用规格见下方「端点契约」（api-docs.deepseek.com，2026-10 版）。
 
 ## 怎么跑
 

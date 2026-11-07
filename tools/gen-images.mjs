@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* 一次性素材脚本：按 PLAN.md §8 清单生成幻灯片插画（b64 落盘优先）。
+/* 一次性素材脚本：按原 PLAN.md §8 清单生成幻灯片插画（b64 落盘优先；PLAN.md 已删除，原文见 git 历史）。
  * 用法：node tools/gen-images.mjs
  * 读取 imagegen.txt（baseurl / key / model 三行），Key 不落日志。
  */
