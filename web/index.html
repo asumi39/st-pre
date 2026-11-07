@@ -579,7 +579,7 @@ input[type="range"].big::-moz-range-thumb {
 }
 .spoil-words span .flame-i { width: 0.55em; height: 0.7em; }
 .section-lit .spoil-words span { color: var(--accent); }
-.spoil-grid { display: grid; grid-template-columns: auto auto; gap: clamp(30px, 5vw, 70px); margin-top: clamp(44px, 6vw, 80px); align-items: center; justify-content: start; }
+.spoil-grid { display: grid; grid-template-columns: auto auto 1fr; gap: clamp(30px, 5vw, 70px); margin-top: clamp(44px, 6vw, 80px); align-items: center; justify-content: start; }
 @media (max-width: 640px) { .spoil-grid { grid-template-columns: 1fr; } }
 .qr-card { text-align: center; }
 .qr-card img { width: 148px; height: 148px; border-radius: 12px; background: #fff; padding: 10px; }
@@ -1106,7 +1106,7 @@ html.speaker-progress .progress { height: 5px; }
       <h3>第五幕 · 讲者备注</h3>
       <ul>
         <li>预告：页尾有指南站二维码，照着点 10 分钟开张。</li>
-        <li>顺嘴提一句：体验站就是用 Docker 跑的。</li>
+        <li>顺嘴提一句：体验站是我们改的精简特版酒馆（开源、挂在指南站同一个域名下）。</li>
         <li>串场：端酒上桌前，立三条规矩。</li>
       </ul>
     </aside>
@@ -1214,6 +1214,10 @@ html.speaker-progress .progress { height: 5px; }
         <img src="assets/qr-guide.png" alt="指南站二维码，直达 tavern.phuyu.cloud/guide" width="148" height="148" loading="lazy" />
         <figcaption>上手指南 · 扫码即达<br/><span class="qr-url">tavern.phuyu.cloud/guide</span></figcaption>
       </figure>
+      <figure class="qr-card rise d1">
+        <img src="assets/qr-play.png" alt="体验站二维码，直达 tavern.phuyu.cloud/play" width="148" height="148" loading="lazy" />
+        <figcaption>深夜酒馆 · 体验站<br/><span class="qr-url">tavern.phuyu.cloud/play</span></figcaption>
+      </figure>
       <div class="rise d1">
         <p class="statement" style="font-size:clamp(19px,1.9vw,26px)">酒馆最好玩的地方不是它多能玩，<br/>而是你玩着玩着，把 LLM 摸透了。</p>
       </div>
@@ -1251,12 +1255,13 @@ html.speaker-progress .progress { height: 5px; }
         <a href="https://github.com/SillyTavern/SillyTavern" target="_blank" rel="noopener">SillyTavern · GitHub</a>
         <a href="https://sillytavern.wiki/" target="_blank" rel="noopener">SillyTavern · 中文文档</a>
         <a href="https://aihorde.net/" target="_blank" rel="noopener">AI Horde · 免费算力</a>
-        <span>体验站 · 筹备中</span>
+        <a href="https://tavern.phuyu.cloud/play/">体验站 · 深夜酒馆</a>
+        <a href="https://github.com/asumi39/st-lite" target="_blank" rel="noopener">体验站源码 · st-lite fork</a>
       </div>
       <div>
         <h3>关于素材</h3>
         <span>插画由 AI 绘制；演示实录均在本机 SillyTavern 录制；界面截图取自真实软件。</span>
-        <span>SillyTavern 采用 AGPL-3.0 开源协议。</span>
+        <span>SillyTavern 采用 AGPL-3.0 开源协议；体验站为其特化 fork（st-lite），修改版源码同协议公开。</span>
       </div>
     </div>
     <div class="foot-base">
@@ -1907,7 +1912,7 @@ html.speaker-progress .progress { height: 5px; }
   var ROUTES = {
     bundle: { label: "一键整合包", html: "<p><b>一键整合包</b>——下载、解压、双击。就三步，五分钟推门进店。最适合头一回尝鲜、电脑里没装命令行的同学。</p>" },
     git: { label: "git + Node", html: "<p><b>正统路</b>——git clone 之后 npm install，五分钟进门。以后升级只要 git pull 一行，适合打算长期住下的同学。</p>" },
-    docker: { label: "Docker", html: "<p><b>极客路</b>——docker compose up -d 一行起服务，常驻后台，我们的体验站就是这么部署的。适合有服务器、想让酒馆一直开着的同学。</p>" }
+    docker: { label: "Docker", html: "<p><b>极客路</b>——docker compose up -d 一行起服务，常驻后台。适合有服务器、想让酒馆一直开着的同学；我们的体验站走的是更轻的裸 Node 路子（改过的精简特版）。</p>" }
   };
   document.querySelectorAll(".routes button").forEach(function (b) {
     b.addEventListener("click", function () {
