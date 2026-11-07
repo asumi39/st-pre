@@ -1,32 +1,67 @@
-# SillyTavern 预配置模板 —— 拷到 deploy/st-data/config/config.yaml 并按需修改
-# ⚠ 以 SillyTavern 1.19.0 实际 config.yaml 为准做字段核对；本模板标注了必改项。
+# st-lite（SillyTavern fork 1.19.0 · 体验站特化版）预配置模板
+# 用法：拷到 /opt/st-play/config.yaml，改定下方「必改」项后 systemctl restart st-play-lite
+# 完整键位说明见 st-lite 仓库 default/config.yaml；本模板只列体验站关心的键。
 
-# ── 监听 ─────────────────────────────────────────────
-listen: false            # 容器内保持 false（由 docker ports 映射）；由宿主 nginx 反代
+# ── 监听（只绑回环，公网入口仅 nginx tavern.phuyu.cloud/play/）────
+listen: false
 port: 8000
-whitelistMode: false     # 容器方案关（反代层做访问控制）
-basicAuthMode: false     # 用 ST 自带用户系统，不用 basic auth
+# 必改：子路径部署前缀（fork 特化键）。nginx 以 /play/ 前缀反代并剥掉前缀时设 '/play'
+basePath: '/play'
+browserLaunch:
+  enabled: false
 
-# ── 用户系统（体验站核心）───────────────────────────
+# ── 多用户 + 自助注册（fork 特化：registration 键为上游所无）────────
 enableUserAccounts: true
 enableDiscreetLogin: true
+sessionTimeout: -1
+registration:
+  enabled: true         # 必改：分享当晚 true；关站改回 false
+  cap: 80               # 账号总数上限（含 default-user），超出即拒绝新注册
+  apiKeyToken: 'CHANGE_ME_PLAYGATE_TOKEN'   # 必改：与服务器 /opt/st-pre/playgate-token.txt 一致（假 key，泄露无害）
+
+# ── 安全硬化 ────────────────────────────────────────────
+whitelistMode: true      # listen:false 时白名单仅本机生效
+whitelist:               # 必须显式列出！缺失时空白名单会把回环一起挡掉
+  - 127.0.0.1
+  - ::1
+enableForwardedWhitelist: false   # nginx 后多用户必设 false：否则白名单校验转发后的
+                                  # 访客公网 IP，全场 403（default/config.yaml 补键后默认 true）
 enableCorsProxy: false
-autorun: true
+enableServerPlugins: false
+allowKeysExposure: false
+disableCsrfProtection: false
+securityOverride: false
+basicAuthMode: false
+hostWhitelist:
+  enabled: true
+  scan: true
+  hosts:
+    - tavern.phuyu.cloud   # 必改后保持：只接受自家域名 Host 头
+rateLimiting:
+  preferRealIpHeader: true # nginx 已传 X-Real-IP
+  accountsLoginMaxAttempts: 120   # 会场共享出口 IP：整队共用一个公网地址，登录限流按总量给
+privateAddressWhitelist:
+  enabled: false          # 默认关；ST 服务端要 fetch 本机 playgate(127.0.0.1:3012)
 
-# ⚠ 官方明示：多用户密码「非安全特性」；聊天/角色卡全部明文存储。
-#   仅限社团可信范围使用；定期备份 data/；敏感内容不上。
+# ── 功能裁剪（配合全局 user.css 的面板隐藏）──────────────────
+extensions:
+  enabled: true           # 生产实测 false 会影响首启向导流程，保持 true；
+  autoUpdate: false       # 面板隐藏交给 user.css（扩展抽屉/wand 菜单均已隐藏）
 
-# ── DeelSeek 预配置（OpenAI 兼容自定义端点）─────────
-# 在「API 连接 → 自定义(OpenAI 兼容)」里填：
-#   API URL:  https://api.deepseek.com/v1
-#   API Key:  <服务器上注入，勿写死在本文件>
-#   模型:     deepseek-flash
-# ⚠ ST 官方文档的 DeepSeek 条目（deepseek-chat/deepseek-reasoner）已过时，
-#   以 DeepSeek 官方文档为准。
-#
-# 若需服务端代持 Key（体验站用户不填 Key），可用 ST 的 API key 管理或在
-# 反代层做（tavern 站的 /live/ 思路一致：Key 只存在于服务端）。
+# ── 记日志（「体验站后台会记日志」的兑现）─────────────────────
+logging:
+  enableAccessLog: true
+  minLogLevel: 1
 
-# ── 性能/限流 ───────────────────────────────────────
-# 30 人同时聊：DeepSeek Flash 并发充足；ST 侧无特殊配置。
-# 反代层（宿主 nginx）对 play.<域名> 加 limit_req 防滥用。
+# ── 备份（当晚结束后打包 data/ 留档）─────────────────────────
+backups:
+  allowFullDataBackup: false   # 公网场景不给用户全量打包入口
+  chat:
+    enabled: true
+    maxTotalBackups: 20
+
+# ── 连接预置说明 ────────────────────────────────────────
+# 每个新账号的连接已由脚手架预置（default/content/settings.json）：
+#   Custom(OpenAI 兼容) → http://127.0.0.1:3012/v1 → playgate → DeepSeek
+# model 固定 deepseek-flash、max_tokens≤400、thinking disabled 由 playgate 强制。
+# default-user（管理员账号）部署时手工设密码，并手工写入其 secrets.json 的假 key。

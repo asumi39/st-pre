@@ -1,6 +1,16 @@
-# tavern.phuyu.cloud — Web 原生单页特稿（v2 主交付物）+ 指南站 + LIVE proxy 反代
+# tavern.phuyu.cloud — Web 原生单页特稿（v2 主交付物）+ 指南站 + LIVE proxy 反代 + 体验站
 # v2 变更：root 切至 /opt/st-pre/web（单页特稿）；deck 放映版归档进仓库、生产下线；
 # 404 兜底不再指向 deck.html；/guide/ 与 /live/ 原样保留
+# 阶段5 新增：/play/ → st-lite（SillyTavern fork 体验站）；nginx 剥前缀反代 127.0.0.1:8000，
+# st-lite config.yaml 的 basePath 需设为 '/play'（同源同证书，不再单开子域名）
+#
+# ⚠ 限流架构（2026-11-07 生产教训，勿回退）：
+#   ① /play/ 整段【不做 limit_req】——ST 冷启动一次拉 ~200 个静态文件（resource storm），
+#     逐 IP 限流会把整次启动打成 429、前端静默死在半路（表现为「Not connected to API!」）；
+#     且会场整队共享出口 IP，30 人同时扫码互相挤兑。滥用防护由 playgate（并发+费用闸）
+#     与认证端点限流承担。
+#   ② 认证端点单独限流：location ^~ /play/api/users/（最长前缀必胜；proxy_pass 带 URI
+#     剥前缀。regex location 里 proxy_pass 不许带 URI——nginx 硬规则）。
 
 server {
     server_name tavern.phuyu.cloud;
@@ -20,6 +30,32 @@ server {
         proxy_buffering off;
         proxy_read_timeout 30s;
         limit_req zone=live burst=5 nodelay;
+    }
+
+    # ── 体验站（阶段5 · st-lite）：/play/ 前缀反代，ST 前端由 basePath 补丁适配子路径 ──
+    location = /play { return 301 /play/; }
+    location ^~ /play/ {
+        proxy_pass http://127.0.0.1:8000/;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;      # st-lite config: forwardedHeaders.xRealIp
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_buffering off;                          # SSE 流式回复不缓冲
+        proxy_request_buffering off;
+        proxy_read_timeout 300s;                      # 长回复
+        client_max_body_size 50m;                     # 角色卡 PNG 导入
+    }
+
+    # 认证端点限流（登录/注册/改密；最长前缀胜过上面的 /play/）
+    location ^~ /play/api/users/ {
+        limit_req zone=play burst=30 nodelay;
+        limit_req_status 429;
+        proxy_pass http://127.0.0.1:8000/api/users/;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_read_timeout 60s;
     }
 
     location ~* \.(png|jpg|jpeg|mp4|webm|woff2|css|js)$ {
