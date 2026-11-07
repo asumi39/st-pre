@@ -1463,7 +1463,7 @@ html.speaker-progress .progress { height: 5px; }
   /* ---------- LIVE 客户端 ---------- */
   var LIVE_BASE = (function () {
     try {
-      var saved = localStorage.getItem("st-pre-live-url");
+      var saved = localStorage.getItem("live-base-url");
       if (saved !== null) return saved;
       var q = new URLSearchParams(location.search).get("liveurl");
       if (q) return q;

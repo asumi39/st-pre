@@ -963,3 +963,6 @@ vibTickMs 本机记忆废止（不再读取）；netPat 校准（vibNetPat）成
 ## ROUND · 页尾二维码网址升级为可点外链（2026-11-07）
 - 两个 .qr-url 由 span 改 <a target="_blank" rel="noopener">（https 绝对地址），hover 补下划线
   + 提亮（全局 a 语言不变）；桌面/单列布局均不受影响。门禁 0 FAIL。已同步生产并目检 href/target。
+- 追加：内部代号 ST-PRE 从公开面清除（用户指出这是汇报内部名）——特稿 localStorage 键
+  st-pre-live-url → live-base-url（旧迁移代码一并删除，生产源码零残留）；st-lite 公开
+  README/皮肤注释/分支名（st-pre-play→station）/仓库描述同步清除。服务器与内部文档保留。
