@@ -4,6 +4,10 @@ imagegen.txt
 .env
 .env.*
 
+# 体验站 playgate（阶段5）——永不进仓库
+playgate-token.txt
+playgate-state.json
+
 # 依赖与运行时缓存
 node_modules/
 .hyperframes/
@@ -17,3 +21,6 @@ dist-cache/
 
 # 服务器凭据（阶段4临时）——永不进仓库
 server.txt
+
+# 内部 QA 截图 —— 不进公开仓库
+.openchamber/screenshots/
